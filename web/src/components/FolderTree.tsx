@@ -1,5 +1,7 @@
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import Box from "@mui/material/Box";
+import FolderIcon from "@mui/icons-material/Folder";
 import Typography from "@mui/material/Typography";
 import type { FolderTreeNode } from "../api.js";
 
@@ -13,7 +15,16 @@ interface FolderTreeProps {
 
 function renderNode(node: FolderTreeNode) {
   return (
-    <TreeItem key={node.path} itemId={node.path} label={node.name}>
+    <TreeItem
+      key={node.path}
+      itemId={node.path}
+      label={
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FolderIcon fontSize="small" />
+          {node.name}
+        </Box>
+      }
+    >
       {node.children.map(renderNode)}
     </TreeItem>
   );

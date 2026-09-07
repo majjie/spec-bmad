@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
+import FolderIcon from "@mui/icons-material/Folder";
 import type { ContentsEntry } from "../api.js";
 import { sortContentsEntries, type SortColumn, type SortDirection } from "../sortEntries.js";
 
@@ -66,7 +68,7 @@ export default function ContentsTable({ entries, onSelectFolder }: ContentsTable
   const sortedEntries = sortContentsEntries(entries, sortColumn, sortDirection);
 
   return (
-    <Table size="small">
+    <Table size="small" sx={{ "& .MuiTableCell-root": { borderBottom: "none" } }}>
       <TableHead>
         <TableRow>
           {COLUMNS.map((column) => (
@@ -87,14 +89,22 @@ export default function ContentsTable({ entries, onSelectFolder }: ContentsTable
           <TableRow
             key={entry.path}
             hover
-            sx={{ cursor: entry.type === "folder" ? "pointer" : "default" }}
+            sx={{
+              cursor: entry.type === "folder" ? "pointer" : "default",
+              "&:nth-of-type(odd)": { backgroundColor: "action.hover" },
+            }}
             onClick={() => {
               if (entry.type === "folder") {
                 onSelectFolder(entry.path);
               }
             }}
           >
-            <TableCell>{entry.name}</TableCell>
+            <TableCell>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                {entry.type === "folder" && <FolderIcon fontSize="small" />}
+                {entry.name}
+              </Box>
+            </TableCell>
             <TableCell>{formatDate(entry.createdAt)}</TableCell>
             <TableCell>{formatDate(entry.updatedAt)}</TableCell>
             <TableCell>{formatSize(entry.size)}</TableCell>
