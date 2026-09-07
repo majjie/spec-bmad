@@ -5,6 +5,11 @@ import { serveStaticFile } from "./static-files.js";
 export interface RouteResponse {
   status: number;
   body?: unknown;
+  /**
+   * When set and `body` is a `string`, the body is sent as-is with this content type
+   * instead of being JSON-encoded (feature 004 — serving a file's raw text contents).
+   */
+  contentType?: string;
 }
 
 /**
@@ -71,18 +76,24 @@ async function handleRequest(
 
   const apiResponse = await handleApiRequest(url.pathname, url.searchParams);
   if (apiResponse !== undefined) {
-    sendJson(res, apiResponse);
+    sendResponse(res, apiResponse);
     return;
   }
 
   await serveStaticFile(url.pathname, res);
 }
 
-function sendJson(res: ServerResponse, response: RouteResponse): void {
+function sendResponse(res: ServerResponse, response: RouteResponse): void {
   if (response.body === undefined) {
     res.writeHead(response.status).end();
     return;
   }
+
+  if (response.contentType !== undefined && typeof response.body === "string") {
+    res.writeHead(response.status, { "Content-Type": response.contentType }).end(response.body);
+    return;
+  }
+
   const payload = JSON.stringify(response.body);
   res.writeHead(response.status, { "Content-Type": "application/json; charset=utf-8" }).end(payload);
 }

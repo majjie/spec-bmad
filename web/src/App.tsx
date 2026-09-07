@@ -4,8 +4,10 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import FolderTree from "./components/FolderTree.js";
 import ContentsTable from "./components/ContentsTable.js";
+import FileViewerDialog from "./components/FileViewerDialog.js";
 import {
   fetchContents,
+  fetchFileContent,
   fetchTabs,
   fetchTree,
   type ContentsEntry,
@@ -14,6 +16,12 @@ import {
   type TabId,
 } from "./api.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
+
+interface FileDialogState {
+  path: string;
+  content: string | null;
+  error: string | null;
+}
 
 interface TabViewState {
   tree: FolderTreeNode | null;
@@ -36,6 +44,7 @@ export default function App() {
     infra: createEmptyTabState(),
     output: createEmptyTabState(),
   });
+  const [openFile, setOpenFile] = useState<FileDialogState | null>(null);
 
   // The NavigationState the history stack is currently at, so `navigate` can tell whether
   // a call is a real change worth pushing (statesEqual) or a redundant re-click of the
@@ -73,6 +82,42 @@ export default function App() {
     },
     [],
   );
+
+  // Fetches one file's content and applies it to `openFile` state, ignoring the result if
+  // a different file has since been opened (matches the same stale-response guard the
+  // initial-load effect already uses for tabs/trees/contents).
+  function loadFileContent(tab: TabId, path: string) {
+    void fetchFileContent(tab, path).then(
+      (content) => {
+        setOpenFile((prev) => (prev && prev.path === path ? { ...prev, content } : prev));
+      },
+      (error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        setOpenFile((prev) => (prev && prev.path === path ? { ...prev, error: message } : prev));
+      },
+    );
+  }
+
+  // Opening a file pushes a new history entry carrying the *current* tab/path plus
+  // openFile (research.md § 6) — it never changes which folder/tab is active.
+  function openFileDialog(path: string) {
+    const nextState: NavigationState = {
+      tab: activeTab,
+      path: tabStates[activeTab].selectedPath ?? "",
+      openFile: path,
+    };
+    currentNavStateRef.current = nextState;
+    window.history.pushState(nextState, "");
+    setOpenFile({ path, content: null, error: null });
+    loadFileContent(activeTab, path);
+  }
+
+  // Closing — from the "X" icon, Escape, or backdrop-click — always steps history back
+  // rather than clearing `openFile` directly (Clarifications session): the resulting
+  // `popstate` event is what actually clears it, keeping history and UI in sync.
+  function closeFileDialog() {
+    window.history.back();
+  }
 
   // Load tab availability, then each available tab's tree + its root's contents, once on
   // mount — so the Infra tab already shows its root contents as soon as it loads (FR-002).
@@ -130,8 +175,16 @@ export default function App() {
   useEffect(() => {
     function handlePopState(event: PopStateEvent) {
       const state = event.state as NavigationState | null;
-      if (state) {
-        navigate(state.tab, state.path, { fromHistory: true });
+      if (!state) {
+        return;
+      }
+      navigate(state.tab, state.path, { fromHistory: true });
+      if (state.openFile) {
+        const filePath = state.openFile;
+        setOpenFile({ path: filePath, content: null, error: null });
+        loadFileContent(state.tab, filePath);
+      } else {
+        setOpenFile(null);
       }
     }
 
@@ -166,9 +219,16 @@ export default function App() {
             key={`${activeTab}:${activeState.selectedPath ?? ""}`}
             entries={activeState.contents}
             onSelectFolder={(path) => navigate(activeTab, path)}
+            onOpenFile={(path) => openFileDialog(path)}
           />
         </Box>
       </Box>
+      <FileViewerDialog
+        path={openFile?.path ?? null}
+        content={openFile?.content ?? null}
+        error={openFile?.error ?? null}
+        onClose={closeFileDialog}
+      />
     </Box>
   );
 }

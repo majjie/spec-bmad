@@ -119,3 +119,110 @@ test("GET /api/contents/infra?path=<outside infra's tree> returns 403", async ()
     await rm(outsidePath, { recursive: true, force: true });
   }
 });
+
+test("GET /api/file/infra?path=<a real text file> returns 200 with its exact contents", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const specPath = join(projectPath, "_bmad", "specs", "spec.md");
+    const res = await fetch(`${server.url}/api/file/infra?path=${encodeURIComponent(specPath)}`);
+
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get("content-type") ?? "", /text\/plain/);
+    assert.equal(await res.text(), "content");
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/infra with no path query param returns 400", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/file/infra`);
+    assert.equal(res.status, 400);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/bogus-tab returns 400 for an unrecognized tab", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const specPath = join(projectPath, "_bmad", "specs", "spec.md");
+    const res = await fetch(
+      `${server.url}/api/file/bogus-tab?path=${encodeURIComponent(specPath)}`,
+    );
+    assert.equal(res.status, 400);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/output returns 404 when output's folder doesn't exist for this project", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const somePath = join(projectPath, "_bmad-output", "whatever.md");
+    const res = await fetch(
+      `${server.url}/api/file/output?path=${encodeURIComponent(somePath)}`,
+    );
+    assert.equal(res.status, 404);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/infra?path=<outside infra's tree> returns 403", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  const outsidePath = await mkdtemp(join(tmpdir(), "bmad-web-server-outside-"));
+  try {
+    const outsideFile = join(outsidePath, "secret.txt");
+    await writeFile(outsideFile, "shh");
+    const res = await fetch(
+      `${server.url}/api/file/infra?path=${encodeURIComponent(outsideFile)}`,
+    );
+    assert.equal(res.status, 403);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+    await rm(outsidePath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/infra?path=<nonexistent> returns 404", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const missingPath = join(projectPath, "_bmad", "does-not-exist.md");
+    const res = await fetch(
+      `${server.url}/api/file/infra?path=${encodeURIComponent(missingPath)}`,
+    );
+    assert.equal(res.status, 404);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/file/infra?path=<a file with a null byte> returns 415", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const binaryPath = join(projectPath, "_bmad", "specs", "binary.dat");
+    await writeFile(binaryPath, Buffer.from([0x00, 0x01, 0x02]));
+    const res = await fetch(
+      `${server.url}/api/file/infra?path=${encodeURIComponent(binaryPath)}`,
+    );
+    assert.equal(res.status, 415);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});

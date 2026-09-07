@@ -28,3 +28,31 @@ test("statesEqual() returns false when the tab differs", () => {
 
   assert.equal(statesEqual(a, b), false);
 });
+
+test("statesEqual() returns true when both states lack openFile", () => {
+  const a = { tab: "infra" as const, path: "/project/_bmad" };
+  const b = { tab: "infra" as const, path: "/project/_bmad" };
+
+  assert.equal(statesEqual(a, b), true);
+});
+
+test("statesEqual() returns true when both states have the same openFile", () => {
+  const a = { tab: "infra" as const, path: "/project/_bmad", openFile: "/project/_bmad/spec.md" };
+  const b = { tab: "infra" as const, path: "/project/_bmad", openFile: "/project/_bmad/spec.md" };
+
+  assert.equal(statesEqual(a, b), true);
+});
+
+test("statesEqual() returns false when only one state has openFile set", () => {
+  const a = { tab: "infra" as const, path: "/project/_bmad" };
+  const b = { tab: "infra" as const, path: "/project/_bmad", openFile: "/project/_bmad/spec.md" };
+
+  assert.equal(statesEqual(a, b), false);
+});
+
+test("statesEqual() returns false when openFile is set to different paths", () => {
+  const a = { tab: "infra" as const, path: "/project/_bmad", openFile: "/project/_bmad/spec.md" };
+  const b = { tab: "infra" as const, path: "/project/_bmad", openFile: "/project/_bmad/plan.md" };
+
+  assert.equal(statesEqual(a, b), false);
+});

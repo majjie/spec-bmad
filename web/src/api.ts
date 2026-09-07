@@ -48,3 +48,14 @@ export async function fetchContents(tab: TabId, path: string): Promise<ContentsE
   }
   return (await response.json()) as ContentsEntry[];
 }
+
+export async function fetchFileContent(tab: TabId, path: string): Promise<string> {
+  const response = await fetch(`/api/file/${tab}?path=${encodeURIComponent(path)}`);
+  if (!response.ok) {
+    if (response.status === 415) {
+      throw new Error("This file doesn't look like text, so it can't be previewed.");
+    }
+    throw new Error(`GET /api/file/${tab} failed with ${response.status}`);
+  }
+  return await response.text();
+}

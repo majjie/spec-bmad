@@ -14,6 +14,7 @@ import { sortContentsEntries, type SortColumn, type SortDirection } from "../sor
 interface ContentsTableProps {
   entries: ContentsEntry[] | null;
   onSelectFolder: (path: string) => void;
+  onOpenFile: (path: string) => void;
 }
 
 const COLUMNS: { id: SortColumn; label: string }[] = [
@@ -44,7 +45,7 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleString();
 }
 
-export default function ContentsTable({ entries, onSelectFolder }: ContentsTableProps) {
+export default function ContentsTable({ entries, onSelectFolder, onOpenFile }: ContentsTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -96,6 +97,11 @@ export default function ContentsTable({ entries, onSelectFolder }: ContentsTable
             onClick={() => {
               if (entry.type === "folder") {
                 onSelectFolder(entry.path);
+              }
+            }}
+            onDoubleClick={() => {
+              if (entry.type === "file") {
+                onOpenFile(entry.path);
               }
             }}
           >
