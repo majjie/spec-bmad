@@ -1,0 +1,21 @@
+{
+  "name": "bmad-browser",
+  "version": "0.1.0",
+  "description": "Browse BMAD spec-driven-development artifacts from a localhost web UI",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "bmad-browser": "src/cli.ts"
+  },
+  "scripts": {
+    "test": "tsx --test tests/unit/**/*.test.ts tests/integration/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
