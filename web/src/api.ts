@@ -1,0 +1,50 @@
+export interface TabAvailability {
+  infra: boolean;
+  output: boolean;
+}
+
+export interface FolderTreeNode {
+  name: string;
+  path: string;
+  children: FolderTreeNode[];
+}
+
+export type ContentsEntryType = "file" | "folder";
+
+export interface ContentsEntry {
+  name: string;
+  path: string;
+  type: ContentsEntryType;
+  size: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TabId = "infra" | "output";
+
+export async function fetchTabs(): Promise<TabAvailability> {
+  const response = await fetch("/api/tabs");
+  if (!response.ok) {
+    throw new Error(`GET /api/tabs failed with ${response.status}`);
+  }
+  return (await response.json()) as TabAvailability;
+}
+
+export async function fetchTree(tab: TabId): Promise<FolderTreeNode | null> {
+  const response = await fetch(`/api/tree/${tab}`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`GET /api/tree/${tab} failed with ${response.status}`);
+  }
+  return (await response.json()) as FolderTreeNode;
+}
+
+export async function fetchContents(tab: TabId, path: string): Promise<ContentsEntry[]> {
+  const response = await fetch(`/api/contents/${tab}?path=${encodeURIComponent(path)}`);
+  if (!response.ok) {
+    throw new Error(`GET /api/contents/${tab} failed with ${response.status}`);
+  }
+  return (await response.json()) as ContentsEntry[];
+}

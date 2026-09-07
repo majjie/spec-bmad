@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createHierarchyCache } from "./artifacts/cache.js";
 import { resolveProjectFolder } from "./discovery/resolve-project-folder.js";
+import { createApiRequestHandler } from "./server/api-router.js";
+import { startHttpServer } from "./server/http-server.js";
 
 const HELP_TEXT = `Usage: bmad-browser [folder]
 
@@ -42,8 +44,8 @@ async function main(argv: string[]): Promise<void> {
 
   if (result.kind === "valid") {
     const cache = createHierarchyCache();
-    await cache.get(result.root!);
-    process.exitCode = 0;
+    const server = await startHttpServer(createApiRequestHandler(result.root!, cache));
+    process.stdout.write(`${server.url}\n`);
     return;
   }
 

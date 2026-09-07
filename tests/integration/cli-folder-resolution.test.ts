@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { mkdtemp, mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -23,15 +23,64 @@ function runCli(args: string[], options: { cwd?: string } = {}) {
   });
 }
 
-test("valid folder: exits 0 with no error output", async () => {
+const SERVER_URL_PATTERN = /http:\/\/127\.0\.0\.1:\d+/;
+
+/**
+ * Starts the CLI with `spawn` (NOT `spawnSync`, which would hang forever once a valid
+ * folder starts a persistent server instead of exiting on its own) and resolves once the
+ * server's URL has been printed to stdout.
+ */
+function startCli(
+  args: string[],
+  options: { cwd?: string } = {},
+): Promise<{ child: ChildProcessWithoutNullStreams; url: string }> {
+  const child = spawn(process.execPath, ["--import", TSX_LOADER, CLI_PATH, ...args], {
+    cwd: options.cwd,
+  });
+
+  return new Promise((resolvePromise, reject) => {
+    let stdout = "";
+    const timeout = setTimeout(() => {
+      reject(new Error(`CLI did not print a server URL within 5s; stdout so far: ${stdout}`));
+    }, 5000);
+
+    child.stdout.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString();
+      const match = stdout.match(SERVER_URL_PATTERN);
+      if (match) {
+        clearTimeout(timeout);
+        resolvePromise({ child, url: match[0] });
+      }
+    });
+
+    child.once("error", (error) => {
+      clearTimeout(timeout);
+      reject(error);
+    });
+  });
+}
+
+/** Sends SIGINT and waits for the process to actually exit, returning its exit code. */
+function stopCli(child: ChildProcessWithoutNullStreams): Promise<number | null> {
+  return new Promise((resolvePromise) => {
+    child.once("exit", (code) => resolvePromise(code));
+    child.kill("SIGINT");
+  });
+}
+
+test("valid folder: starts the server and /api/tabs responds", async () => {
   const workspace = await mkdtemp(join(tmpdir(), "bmad-cli-it-"));
   try {
     await mkdir(join(workspace, "_bmad"), { recursive: true });
 
-    const result = runCli([workspace]);
-
-    assert.equal(result.status, 0);
-    assert.equal(result.stderr.trim(), "");
+    const { child, url } = await startCli([workspace]);
+    try {
+      const response = await fetch(`${url}/api/tabs`);
+      assert.equal(response.status, 200);
+    } finally {
+      const exitCode = await stopCli(child);
+      assert.equal(exitCode, 0);
+    }
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
@@ -97,9 +146,14 @@ test("no folder argument: defaults to the current working directory", async () =
   try {
     await mkdir(join(workspace, "_bmad"), { recursive: true });
 
-    const result = runCli([], { cwd: workspace });
-
-    assert.equal(result.status, 0);
+    const { child, url } = await startCli([], { cwd: workspace });
+    try {
+      const response = await fetch(`${url}/api/tabs`);
+      assert.equal(response.status, 200);
+    } finally {
+      const exitCode = await stopCli(child);
+      assert.equal(exitCode, 0);
+    }
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
