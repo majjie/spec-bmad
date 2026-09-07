@@ -26,8 +26,8 @@ test("getFileRenderMode() treats .txt as plain", () => {
   assert.deepEqual(getFileRenderMode("notes.txt"), { kind: "plain" });
 });
 
-test("getFileRenderMode() treats .csv as plain", () => {
-  assert.deepEqual(getFileRenderMode("data.csv"), { kind: "plain" });
+test("getFileRenderMode() treats .csv as csv-grid", () => {
+  assert.deepEqual(getFileRenderMode("data.csv"), { kind: "csv-grid" });
 });
 
 test("getFileRenderMode() falls back to plain for an unrecognized extension", () => {

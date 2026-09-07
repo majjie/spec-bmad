@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileRenderMode } from "../fileRenderMode.js";
+import CsvGrid from "./CsvGrid.js";
 
 interface FileViewerDialogProps {
   path: string | null;
@@ -40,11 +41,20 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
 
   const mode = getFileRenderMode(fileNameOf(path));
 
+  // csv-grid renders flush, with no ambient padding: its sticky header/row-number cells
+  // need to sit right at the scroll container's own clip boundary. A padding gap between
+  // that boundary and where the header actually sticks was found to leave a band where
+  // scrolled-past rows stay visible, uncovered by the header — see the Box below.
+  if (mode.kind === "csv-grid") {
+    return <CsvGrid content={content} />;
+  }
+
   if (mode.kind === "markdown") {
     return (
       <Typography
         component="div"
         sx={{
+          p: 2,
           color: "text.primary",
           "& table, & th, & td": { borderColor: "divider" },
           "& code": { backgroundColor: "action.hover", borderRadius: 0.5, px: 0.5 },
@@ -61,16 +71,20 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
     // yaml/toml/python, so no per-language registration is needed (research.md § 4's
     // "light" build nuance doesn't apply to this export).
     return (
-      <SyntaxHighlighter language={mode.language} style={vscDarkPlus} showLineNumbers>
-        {content}
-      </SyntaxHighlighter>
+      <Box sx={{ p: 2 }}>
+        <SyntaxHighlighter language={mode.language} style={vscDarkPlus} showLineNumbers>
+          {content}
+        </SyntaxHighlighter>
+      </Box>
     );
   }
 
   return (
-    <SyntaxHighlighter language="text" style={vscDarkPlus} showLineNumbers>
-      {content}
-    </SyntaxHighlighter>
+    <Box sx={{ p: 2 }}>
+      <SyntaxHighlighter language="text" style={vscDarkPlus} showLineNumbers>
+        {content}
+      </SyntaxHighlighter>
+    </Box>
   );
 }
 
@@ -94,7 +108,9 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           position: "absolute",
           top: 8,
           right: 8,
-          zIndex: 1,
+          // Above any per-rendering-mode content — e.g. CsvGrid's frozen header cells,
+          // which use zIndex up to 5 — so the close icon can never be painted over.
+          zIndex: 10,
           padding: "4px",
           borderRadius: 1,
           backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -104,7 +120,7 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           <CloseIcon />
         </IconButton>
       </Box>
-      <div style={{ overflow: "auto", height: "100%", padding: "16px" }}>
+      <div style={{ overflow: "auto", height: "100%" }}>
         {path && <DialogBody path={path} content={content} error={error} />}
       </div>
     </Dialog>

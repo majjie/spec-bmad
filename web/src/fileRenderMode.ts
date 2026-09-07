@@ -1,6 +1,7 @@
 export type FileRenderMode =
   | { kind: "markdown" }
   | { kind: "syntax"; language: "yaml" | "toml" | "python" }
+  | { kind: "csv-grid" }
   | { kind: "plain" };
 
 const KNOWN_EXTENSIONLESS_FILES = new Set([".gitignore"]);
@@ -32,6 +33,10 @@ export function getFileRenderMode(filename: string): FileRenderMode {
 
   if (extension === ".md") {
     return { kind: "markdown" };
+  }
+
+  if (extension === ".csv") {
+    return { kind: "csv-grid" };
   }
 
   const syntaxLanguage = SYNTAX_LANGUAGES_BY_EXTENSION[extension];
