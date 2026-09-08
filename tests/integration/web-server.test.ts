@@ -334,7 +334,7 @@ test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and e
     assert.equal(res.status, 200);
     const body = (await res.json()) as {
       summary: { project: string; activeEpic: string };
-      epics: { epicKey: string; status: string; stories: { key: string }[]; retrospectiveStatus: string | null }[];
+      epics: { epicKey: string; status: string; steps: { key: string }[]; retrospectiveStatus: string | null }[];
       actionItems: unknown[];
     };
     assert.equal(body.summary.project, "bmad-dash");
@@ -342,9 +342,62 @@ test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and e
     assert.equal(body.epics.length, 1);
     assert.equal(body.epics[0]?.epicKey, "epic-1");
     assert.equal(body.epics[0]?.status, "done");
-    assert.deepEqual(body.epics[0]?.stories.map((s) => s.key), ["1-1-run-the-command"]);
+    assert.deepEqual(body.epics[0]?.steps.map((s) => s.key), ["1-1-run-the-command"]);
     assert.equal(body.epics[0]?.retrospectiveStatus, "done");
     assert.deepEqual(body.actionItems, []);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/sprint-status derives each step's index/title and resolves specPath from a matching file", async () => {
+  const projectPath = await makeOutputFixture();
+  await writeFile(
+    join(projectPath, "_bmad-output", "implementation-artifacts", "sprint-status.yaml"),
+    [
+      "generated: today",
+      "project: bmad-dash",
+      "development_status:",
+      "  epic-1: done",
+      "  1-1-run-the-command-and-reach-a-served-page: done",
+      "  1-2-establish-the-visual-foundation: done",
+    ].join("\n"),
+  );
+  await writeFile(
+    join(
+      projectPath,
+      "_bmad-output",
+      "implementation-artifacts",
+      "spec-1-1-run-the-command-and-reach-a-served-page.md",
+    ),
+    "# Spec 1-1",
+  );
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/sprint-status`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as {
+      epics: {
+        epicKey: string;
+        steps: { key: string; index: string; title: string; status: string; specPath: string | null }[];
+      }[];
+    };
+    const steps = body.epics[0]?.steps ?? [];
+    assert.equal(steps[0]?.index, "1-1");
+    assert.equal(steps[0]?.title, "run the command and reach a served page");
+    assert.equal(
+      steps[0]?.specPath,
+      join(
+        projectPath,
+        "_bmad-output",
+        "implementation-artifacts",
+        "spec-1-1-run-the-command-and-reach-a-served-page.md",
+      ),
+    );
+    assert.equal(steps[1]?.index, "1-2");
+    assert.equal(steps[1]?.title, "establish the visual foundation");
+    assert.equal(steps[1]?.specPath, null);
   } finally {
     await server.close();
     await rm(projectPath, { recursive: true, force: true });

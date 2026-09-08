@@ -1,4 +1,5 @@
 import { parseActionItems, type ActionItem } from "./action-items.js";
+import { buildStepDetails, type StepDetail } from "./step-detail.js";
 
 export interface SprintStatusSummary {
   generated: string;
@@ -10,15 +11,10 @@ export interface SprintStatusSummary {
   activeEpic: string;
 }
 
-export interface StoryStatus {
-  key: string;
-  status: string;
-}
-
 export interface EpicStatusGroup {
   epicKey: string;
   status: string;
-  stories: StoryStatus[];
+  steps: StepDetail[];
   retrospectiveStatus: string | null;
 }
 
@@ -63,7 +59,23 @@ export function calculateActiveEpic(epics: EpicStatusGroup[]): string {
  * (each defaults to an empty string) — only a malformed YAML *document* is an error, and
  * that's caught one layer up, by the route that calls `js-yaml`'s `load()` before this.
  */
-export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string): SprintStatusResult {
+interface RawStep {
+  key: string;
+  status: string;
+}
+
+interface RawEpicGroup {
+  epicKey: string;
+  status: string;
+  steps: RawStep[];
+  retrospectiveStatus: string | null;
+}
+
+export function parseSprintStatus(
+  parsedYaml: unknown,
+  projectRootPath: string,
+  specFileNames: string[],
+): SprintStatusResult {
   const root = (parsedYaml && typeof parsedYaml === "object" ? parsedYaml : {}) as Record<string, unknown>;
 
   const developmentStatusRaw = root.development_status;
@@ -77,7 +89,7 @@ export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string):
   // First pass: an epic shell per epic-N key (in file order) plus each epic's own
   // retrospective status, keyed by epic number so the second pass can look epics up by
   // number rather than by "whichever epic was seen most recently."
-  const epicsByNumber = new Map<string, EpicStatusGroup>();
+  const epicsByNumber = new Map<string, RawEpicGroup>();
   const epicOrder: string[] = [];
   const retrospectiveByNumber = new Map<string, string>();
 
@@ -85,7 +97,7 @@ export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string):
     const epicMatch = key.match(EPIC_KEY_PATTERN);
     if (epicMatch) {
       const epicNumber = epicMatch[1] ?? "";
-      epicsByNumber.set(epicNumber, { epicKey: key, status: asString(value), stories: [], retrospectiveStatus: null });
+      epicsByNumber.set(epicNumber, { epicKey: key, status: asString(value), steps: [], retrospectiveStatus: null });
       epicOrder.push(epicNumber);
       continue;
     }
@@ -106,7 +118,7 @@ export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string):
     }
     const epic = epicsByNumber.get(storyMatch[1] ?? "");
     if (epic) {
-      epic.stories.push({ key, status: asString(value) });
+      epic.steps.push({ key, status: asString(value) });
     }
   }
 
@@ -114,9 +126,15 @@ export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string):
     epic.retrospectiveStatus = retrospectiveByNumber.get(epicNumber) ?? null;
   }
 
-  const epics = epicOrder
+  const epics: EpicStatusGroup[] = epicOrder
     .map((epicNumber) => epicsByNumber.get(epicNumber))
-    .filter((epic): epic is EpicStatusGroup => epic !== undefined);
+    .filter((epic): epic is RawEpicGroup => epic !== undefined)
+    .map((epic) => ({
+      epicKey: epic.epicKey,
+      status: epic.status,
+      steps: buildStepDetails(epic.steps, specFileNames, projectRootPath),
+      retrospectiveStatus: epic.retrospectiveStatus,
+    }));
 
   const summary: SprintStatusSummary = {
     generated: asString(root.generated),

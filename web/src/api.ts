@@ -59,15 +59,18 @@ export interface SprintStatusSummary {
   activeEpic: string;
 }
 
-export interface StoryStatus {
+export interface StepDetail {
   key: string;
+  index: string;
+  title: string;
   status: string;
+  specPath: string | null;
 }
 
 export interface EpicStatusGroup {
   epicKey: string;
   status: string;
-  stories: StoryStatus[];
+  steps: StepDetail[];
   retrospectiveStatus: string | null;
 }
 

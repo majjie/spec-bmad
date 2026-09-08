@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { load, YAMLException } from "js-yaml";
+import { listRealEntries } from "../../artifacts/fs-entries.js";
 import type { ProjectRoot } from "../../artifacts/types.js";
 import { parseSprintStatus } from "../../navigator/sprint-status.js";
 import type { RouteResponse } from "../http-server.js";
@@ -15,11 +16,8 @@ export async function getNavigatorSprintStatusResponse(root: ProjectRoot): Promi
     return { status: 404 };
   }
 
-  const sprintStatusPath = join(
-    root.bmadOutputFolderPath,
-    "implementation-artifacts",
-    "sprint-status.yaml",
-  );
+  const implementationArtifactsPath = join(root.bmadOutputFolderPath, "implementation-artifacts");
+  const sprintStatusPath = join(implementationArtifactsPath, "sprint-status.yaml");
 
   let text: string;
   try {
@@ -38,5 +36,11 @@ export async function getNavigatorSprintStatusResponse(root: ProjectRoot): Promi
     throw error;
   }
 
-  return { status: 200, body: parseSprintStatus(parsed, root.path) };
+  // Step-detail spec-file matching (research.md § 2 of feature 009) needs this same
+  // folder's file listing — reusing `listRealEntries` keeps the symlink-exclusion
+  // guarantee it already provides for the Infra/Output content routes.
+  const entries = await listRealEntries(implementationArtifactsPath);
+  const specFileNames = entries.filter((entry) => !entry.isDirectory).map((entry) => entry.name);
+
+  return { status: 200, body: parseSprintStatus(parsed, root.path, specFileNames) };
 }

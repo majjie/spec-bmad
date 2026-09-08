@@ -1,12 +1,16 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import SearchIcon from "@mui/icons-material/Search";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import type { SprintStatusResult } from "../api.js";
+import type { SprintStatusResult, StepDetail } from "../api.js";
 import ActionItemsTile from "./ActionItemsTile.js";
 
 interface SprintStatusViewProps {
@@ -69,6 +73,38 @@ function Tile({ children, sx }: { children: ReactNode; sx?: object }) {
   );
 }
 
+// FR-004: a header line (index, status, optional magnifying-glass) followed by a body
+// line (title) — matching the Action Items tile's established header/body, candy-striped
+// row pattern (FR-006/FR-011). The magnifying glass (FR-007) only renders when a matching
+// spec document exists (`step.specPath !== null`), reusing the same `onOpenFile` path the
+// Action Items tile's own jump icon already uses (feature 008).
+function StepRow({
+  step,
+  index,
+  onOpenFile,
+}: {
+  step: StepDetail;
+  index: number;
+  onOpenFile: (path: string) => void;
+}) {
+  return (
+    <Box sx={{ py: 0.5, px: 1, bgcolor: index % 2 === 0 ? "action.hover" : "transparent" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Typography variant="caption" color="text.secondary">
+          {step.index}
+        </Typography>
+        <StatusText status={step.status} />
+        {step.specPath !== null && (
+          <IconButton size="small" onClick={() => onOpenFile(step.specPath!)}>
+            <SearchIcon fontSize="small" />
+          </IconButton>
+        )}
+      </Box>
+      <Typography variant="body2">{step.title}</Typography>
+    </Box>
+  );
+}
+
 export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewProps) {
   // Action Items' own content is unbounded (it can hold arbitrarily many items) — in plain
   // CSS, a flex/grid sibling's *natural* content size always contributes to the shared
@@ -80,6 +116,23 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
   // scrolling internally past that height however many items it holds.
   const summaryRef = useRef<HTMLDivElement>(null);
   const [summaryHeight, setSummaryHeight] = useState(FALLBACK_HEIGHT);
+
+  // Every epic tile collapses by default (FR-001) — membership in this set is what
+  // "expanded" means, so an epic never in it starts (and stays, until toggled) collapsed,
+  // independently of every other tile (research.md § 5).
+  const [expandedEpicKeys, setExpandedEpicKeys] = useState<Set<string>>(new Set());
+
+  function toggleEpic(epicKey: string) {
+    setExpandedEpicKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(epicKey)) {
+        next.delete(epicKey);
+      } else {
+        next.add(epicKey);
+      }
+      return next;
+    });
+  }
 
   useLayoutEffect(() => {
     const el = summaryRef.current;
@@ -131,23 +184,42 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
           </Typography>
         </Tile>
       ) : (
-        data.epics.map((epic) => (
-          <Tile key={epic.epicKey} sx={{ width: "100%" }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              {epic.epicKey} — <StatusText status={epic.status} />
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 1 }}>
-              {epic.stories.map((story) => (
-                <Typography key={story.key} variant="body2">
-                  {story.key}: <StatusText status={story.status} />
+        data.epics.map((epic) => {
+          const isExpanded = expandedEpicKeys.has(epic.epicKey);
+          return (
+            <Tile key={epic.epicKey} sx={{ width: "100%" }}>
+              {/* The whole header toggles expand/collapse, not just the chevron (FR-002) —
+                  the chevron is a plain icon here, not its own nested button, so a click
+                  anywhere in the header fires exactly one toggle rather than two. */}
+              <Box
+                onClick={() => toggleEpic(epic.epicKey)}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                }}
+              >
+                <Typography variant="subtitle2">
+                  {epic.epicKey} — <StatusText status={epic.status} />
                 </Typography>
-              ))}
-            </Box>
-            <Typography variant="caption" color="text.secondary">
-              Retrospective: {epic.retrospectiveStatus ?? "not started"}
-            </Typography>
-          </Tile>
-        ))
+                {isExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+              </Box>
+              {isExpanded && (
+                <>
+                  <Box sx={{ display: "flex", flexDirection: "column", mb: 1, mt: 1 }}>
+                    {epic.steps.map((step, index) => (
+                      <StepRow key={step.key} step={step} index={index} onOpenFile={onOpenFile} />
+                    ))}
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Retrospective: {epic.retrospectiveStatus ?? "not started"}
+                  </Typography>
+                </>
+              )}
+            </Tile>
+          );
+        })
       )}
     </Box>
   );
