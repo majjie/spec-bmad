@@ -20,11 +20,14 @@ interface ActionItemsTileProps {
 }
 
 // FR-005: anything other than exactly "dev loop" gets the human-outline icon.
+// The extra `mr` (on top of the header row's own `gap`) widens only the gap before the
+// status checkbox, to visually match the larger gap the jump control's own IconButton
+// padding already creates before it (research.md § 1, feature 011 FR-001).
 function OwnerIcon({ owner }: { owner: string }) {
   const Icon = owner === "dev loop" ? ComputerIcon : PersonOutlineIcon;
   return (
     <Tooltip title={owner}>
-      <Icon fontSize="small" />
+      <Icon fontSize="small" sx={{ mr: 0.75 }} />
     </Tooltip>
   );
 }
@@ -107,7 +110,9 @@ export default function ActionItemsTile({ actionItems, onOpenFile, height }: Act
       variant="outlined"
       sx={{ p: 2, flex: 1, minWidth: 260, height, display: "flex", flexDirection: "column" }}
     >
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      {/* primary.light: the blue accent, deliberately pinned in theme.ts (feature 011
+          FR-005, research.md § 4). */}
+      <Typography variant="subtitle2" color="primary.light" sx={{ mb: 1 }}>
         Action Items
       </Typography>
       <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
