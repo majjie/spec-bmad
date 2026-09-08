@@ -4,6 +4,7 @@ import type { TabAvailability } from "../types.js";
 
 export function getTabsResponse(root: ProjectRoot): RouteResponse {
   const availability: TabAvailability = {
+    navigator: root.bmadOutputFolderPath !== null,
     infra: root.bmadFolderPath !== null,
     output: root.bmadOutputFolderPath !== null,
   };

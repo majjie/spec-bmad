@@ -9,6 +9,9 @@
   "bin": {
     "bmad-browser": "src/cli.ts"
   },
+  "dependencies": {
+    "js-yaml": "^5.4.1"
+  },
   "scripts": {
     "test": "tsx --test tests/unit/**/*.test.ts tests/integration/**/*.test.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p web/tsconfig.json",

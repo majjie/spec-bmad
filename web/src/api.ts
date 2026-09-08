@@ -1,4 +1,5 @@
 export interface TabAvailability {
+  navigator: boolean;
   infra: boolean;
   output: boolean;
 }
@@ -20,7 +21,59 @@ export interface ContentsEntry {
   updatedAt: string;
 }
 
-export type TabId = "infra" | "output";
+export type TabId = "navigator" | "infra" | "output";
+
+export interface PrdDateEntry {
+  date: string;
+  folderName: string;
+  path: string;
+}
+
+export interface PrdProjectGroup {
+  project: string;
+  dates: PrdDateEntry[];
+}
+
+export interface PrdNonConformingEntry {
+  folderName: string;
+  path: string;
+}
+
+export interface PrdGroupingResult {
+  projects: PrdProjectGroup[];
+  nonConforming: PrdNonConformingEntry[];
+}
+
+export interface NavigatorTree {
+  prd: PrdGroupingResult | null;
+  sprintStatusAvailable: boolean;
+}
+
+export interface SprintStatusSummary {
+  generated: string;
+  lastUpdated: string;
+  project: string;
+  projectKey: string;
+  trackingSystem: string;
+  storyLocation: string;
+}
+
+export interface StoryStatus {
+  key: string;
+  status: string;
+}
+
+export interface EpicStatusGroup {
+  epicKey: string;
+  status: string;
+  stories: StoryStatus[];
+  retrospectiveStatus: string | null;
+}
+
+export interface SprintStatusResult {
+  summary: SprintStatusSummary;
+  epics: EpicStatusGroup[];
+}
 
 export async function fetchTabs(): Promise<TabAvailability> {
   const response = await fetch("/api/tabs");

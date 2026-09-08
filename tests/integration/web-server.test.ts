@@ -28,7 +28,7 @@ test("GET /api/tabs, /api/tree/infra, /api/contents/infra match the valid-folder
   try {
     const tabsRes = await fetch(`${server.url}/api/tabs`);
     assert.equal(tabsRes.status, 200);
-    assert.deepEqual(await tabsRes.json(), { infra: true, output: false });
+    assert.deepEqual(await tabsRes.json(), { navigator: false, infra: true, output: false });
 
     const treeRes = await fetch(`${server.url}/api/tree/infra`);
     assert.equal(treeRes.status, 200);
@@ -94,7 +94,7 @@ test("GET /api/tree/output returns the missing-folder response when only _bmad e
   const server = await startServerFor(projectPath);
   try {
     const tabsRes = await fetch(`${server.url}/api/tabs`);
-    assert.deepEqual(await tabsRes.json(), { infra: true, output: false });
+    assert.deepEqual(await tabsRes.json(), { navigator: false, infra: true, output: false });
 
     const treeRes = await fetch(`${server.url}/api/tree/output`);
     assert.equal(treeRes.status, 404);
@@ -221,6 +221,157 @@ test("GET /api/file/infra?path=<a file with a null byte> returns 415", async () 
       `${server.url}/api/file/infra?path=${encodeURIComponent(binaryPath)}`,
     );
     assert.equal(res.status, 415);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+async function makeOutputFixture(): Promise<string> {
+  const projectPath = await mkdtemp(join(tmpdir(), "bmad-web-server-output-"));
+  await mkdir(join(projectPath, "_bmad-output", "planning-artifacts", "prds"), {
+    recursive: true,
+  });
+  await mkdir(join(projectPath, "_bmad-output", "implementation-artifacts"), {
+    recursive: true,
+  });
+  return projectPath;
+}
+
+test("GET /api/tabs reports navigator: true only when _bmad-output exists", async () => {
+  const projectPath = await makeOutputFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/tabs`);
+    assert.deepEqual(await res.json(), { navigator: true, infra: false, output: true });
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/tree groups PRD folders and reports sprintStatusAvailable", async () => {
+  const projectPath = await makeOutputFixture();
+  const prdsPath = join(projectPath, "_bmad-output", "planning-artifacts", "prds");
+  await mkdir(join(prdsPath, "prd-foo-2028-08-28"));
+  await mkdir(join(prdsPath, "prd-foo-2028-08-30"));
+  await mkdir(join(prdsPath, "not-following-convention"));
+  await writeFile(
+    join(projectPath, "_bmad-output", "implementation-artifacts", "sprint-status.yaml"),
+    "generated: today\n",
+  );
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/tree`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as {
+      prd: { projects: { project: string; dates: { date: string }[] }[]; nonConforming: { folderName: string }[] } | null;
+      sprintStatusAvailable: boolean;
+    };
+    assert.equal(body.sprintStatusAvailable, true);
+    assert.ok(body.prd);
+    assert.deepEqual(
+      body.prd.projects.map((p) => p.project),
+      ["prd-foo"],
+    );
+    assert.deepEqual(
+      body.prd.projects[0]?.dates.map((d) => d.date),
+      ["2028-08-30", "2028-08-28"],
+    );
+    assert.deepEqual(
+      body.prd.nonConforming.map((n) => n.folderName),
+      ["not-following-convention"],
+    );
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/tree returns prd: null and sprintStatusAvailable: false when neither exists", async () => {
+  const projectPath = await makeOutputFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/tree`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { prd: unknown; sprintStatusAvailable: boolean };
+    assert.equal(body.prd, null);
+    assert.equal(body.sprintStatusAvailable, false);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/tree returns 404 when _bmad-output doesn't exist", async () => {
+  const projectPath = await makeFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/tree`);
+    assert.equal(res.status, 404);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and epics", async () => {
+  const projectPath = await makeOutputFixture();
+  await writeFile(
+    join(projectPath, "_bmad-output", "implementation-artifacts", "sprint-status.yaml"),
+    [
+      "generated: today",
+      "project: bmad-dash",
+      "development_status:",
+      "  epic-1: done",
+      "  1-1-run-the-command: done",
+      "  epic-1-retrospective: done",
+    ].join("\n"),
+  );
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/sprint-status`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as {
+      summary: { project: string };
+      epics: { epicKey: string; status: string; stories: { key: string }[]; retrospectiveStatus: string | null }[];
+    };
+    assert.equal(body.summary.project, "bmad-dash");
+    assert.equal(body.epics.length, 1);
+    assert.equal(body.epics[0]?.epicKey, "epic-1");
+    assert.equal(body.epics[0]?.status, "done");
+    assert.deepEqual(body.epics[0]?.stories.map((s) => s.key), ["1-1-run-the-command"]);
+    assert.equal(body.epics[0]?.retrospectiveStatus, "done");
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/sprint-status returns 404 when the file doesn't exist", async () => {
+  const projectPath = await makeOutputFixture();
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/sprint-status`);
+    assert.equal(res.status, 404);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/sprint-status returns 422 when the file can't be parsed as YAML", async () => {
+  const projectPath = await makeOutputFixture();
+  await writeFile(
+    join(projectPath, "_bmad-output", "implementation-artifacts", "sprint-status.yaml"),
+    "key: [unclosed",
+  );
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/sprint-status`);
+    assert.equal(res.status, 422);
+    const body = (await res.json()) as { error: string };
+    assert.equal(typeof body.error, "string");
   } finally {
     await server.close();
     await rm(projectPath, { recursive: true, force: true });

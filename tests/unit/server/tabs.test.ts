@@ -13,7 +13,7 @@ test("getTabsResponse() reports false for a tab whose folder is absent from the 
   const response = getTabsResponse(root);
 
   assert.equal(response.status, 200);
-  assert.deepEqual(response.body, { infra: true, output: false });
+  assert.deepEqual(response.body, { navigator: false, infra: true, output: false });
 });
 
 test("getTabsResponse() reports true for both when both folders are present", () => {
@@ -25,5 +25,5 @@ test("getTabsResponse() reports true for both when both folders are present", ()
 
   const response = getTabsResponse(root);
 
-  assert.deepEqual(response.body, { infra: true, output: true });
+  assert.deepEqual(response.body, { navigator: true, infra: true, output: true });
 });

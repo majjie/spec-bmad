@@ -5,6 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import FolderTree from "./components/FolderTree.js";
 import ContentsTable from "./components/ContentsTable.js";
 import FileViewerDialog from "./components/FileViewerDialog.js";
+import NavigatorView from "./components/NavigatorView.js";
 import {
   fetchContents,
   fetchFileContent,
@@ -12,9 +13,11 @@ import {
   fetchTree,
   type ContentsEntry,
   type FolderTreeNode,
+  type NavigatorTree,
   type TabAvailability,
   type TabId,
 } from "./api.js";
+import { fetchNavigatorTree } from "./navigatorApi.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
 
 interface FileDialogState {
@@ -22,6 +25,12 @@ interface FileDialogState {
   content: string | null;
   error: string | null;
 }
+
+// The folder-tree/contents-table state shape only ever applies to "infra"/"output" — the
+// "navigator" tab has a fundamentally different model (a curated multi-root tree, not a
+// folder mirror) and keeps its own separate state below, so it's deliberately excluded
+// from this type rather than given a meaningless empty entry.
+type FolderTabId = "infra" | "output";
 
 interface TabViewState {
   tree: FolderTreeNode | null;
@@ -34,17 +43,23 @@ function createEmptyTabState(): TabViewState {
   return { tree: null, expandedPaths: new Set(), selectedPath: null, contents: null };
 }
 
-const TAB_IDS: TabId[] = ["infra", "output"];
-const TAB_LABELS: Record<TabId, string> = { infra: "Infra", output: "Output" };
+const TAB_IDS: TabId[] = ["navigator", "infra", "output"];
+const FOLDER_TAB_IDS: FolderTabId[] = ["infra", "output"];
+const TAB_LABELS: Record<TabId, string> = { navigator: "Navigator", infra: "Infra", output: "Output" };
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("infra");
   const [, setAvailability] = useState<TabAvailability | null>(null);
-  const [tabStates, setTabStates] = useState<Record<TabId, TabViewState>>({
+  const [tabStates, setTabStates] = useState<Record<FolderTabId, TabViewState>>({
     infra: createEmptyTabState(),
     output: createEmptyTabState(),
   });
   const [openFile, setOpenFile] = useState<FileDialogState | null>(null);
+
+  // Navigator's own state — separate from `tabStates` (see `FolderTabId` above).
+  const [navigatorTree, setNavigatorTree] = useState<NavigatorTree | null>(null);
+  const [navigatorExpandedItems, setNavigatorExpandedItems] = useState<Set<string>>(new Set());
+  const [navigatorSelectedItemId, setNavigatorSelectedItemId] = useState<string | null>(null);
 
   // The NavigationState the history stack is currently at, so `navigate` can tell whether
   // a call is a real change worth pushing (statesEqual) or a redundant re-click of the
@@ -52,17 +67,19 @@ export default function App() {
   const currentNavStateRef = useRef<NavigationState | null>(null);
   const baselineEstablishedRef = useRef(false);
 
-  function updateTabState(tabId: TabId, patch: Partial<TabViewState>) {
+  function updateTabState(tabId: FolderTabId, patch: Partial<TabViewState>) {
     setTabStates((prev) => ({
       ...prev,
       [tabId]: { ...prev[tabId], ...patch },
     }));
   }
 
-  // Single entry point for every tab/folder-selection change (Tabs' onChange, tree
-  // clicks, table row clicks, and popstate restoration) — contracts/ui-behavior.md.
+  // Single entry point for every folder-tab selection change (Tabs' onChange for
+  // Infra/Output, tree clicks, table row clicks, and popstate restoration) —
+  // contracts/ui-behavior.md. The Navigator tab uses `navigateNavigator` instead (below):
+  // it doesn't have a folder path to fetch contents for.
   const navigate = useCallback(
-    (tab: TabId, path: string, options: { fromHistory?: boolean } = {}) => {
+    (tab: FolderTabId, path: string, options: { fromHistory?: boolean } = {}) => {
       const nextState: NavigationState = { tab, path };
       const isRedundant =
         currentNavStateRef.current !== null && statesEqual(currentNavStateRef.current, nextState);
@@ -74,6 +91,29 @@ export default function App() {
         void fetchContents(tab, path).then((contents) => {
           updateTabState(tab, { contents });
         });
+      }
+
+      if (!options.fromHistory && !isRedundant) {
+        window.history.pushState(nextState, "");
+      }
+    },
+    [],
+  );
+
+  // Navigator's own equivalent of `navigate` — same NavigationState/pushState/redundancy
+  // mechanism (contracts/ui-behavior.md's History integration section), but `itemId` is an
+  // opaque node id (a PRD folder's real path, or "sprint-status"), never a folder to fetch
+  // contents for.
+  const navigateNavigator = useCallback(
+    (itemId: string, options: { fromHistory?: boolean } = {}) => {
+      const nextState: NavigationState = { tab: "navigator", path: itemId };
+      const isRedundant =
+        currentNavStateRef.current !== null && statesEqual(currentNavStateRef.current, nextState);
+      currentNavStateRef.current = nextState;
+
+      setActiveTab("navigator");
+      if (itemId) {
+        setNavigatorSelectedItemId(itemId);
       }
 
       if (!options.fromHistory && !isRedundant) {
@@ -99,17 +139,19 @@ export default function App() {
   }
 
   // Opening a file pushes a new history entry carrying the *current* tab/path plus
-  // openFile (research.md § 6) — it never changes which folder/tab is active.
-  function openFileDialog(path: string) {
+  // openFile (research.md § 6) — it never changes which folder/tab is active. Only ever
+  // called from the Infra/Output ContentsTable (Navigator has no file-opening UI), so
+  // `tab` is a `FolderTabId`, not the broader `TabId`.
+  function openFileDialog(tab: FolderTabId, path: string) {
     const nextState: NavigationState = {
-      tab: activeTab,
-      path: tabStates[activeTab].selectedPath ?? "",
+      tab,
+      path: tabStates[tab].selectedPath ?? "",
       openFile: path,
     };
     currentNavStateRef.current = nextState;
     window.history.pushState(nextState, "");
     setOpenFile({ path, content: null, error: null });
-    loadFileContent(activeTab, path);
+    loadFileContent(tab, path);
   }
 
   // Closing — from the "X" icon, Escape, or backdrop-click — always steps history back
@@ -132,7 +174,21 @@ export default function App() {
       }
       setAvailability(tabs);
 
-      for (const tabId of TAB_IDS) {
+      if (tabs.navigator) {
+        const tree = await fetchNavigatorTree();
+        if (cancelled) {
+          return;
+        }
+        setNavigatorTree(tree);
+        setNavigatorExpandedItems(
+          new Set([
+            ...(tree.prd ? ["prd"] : []),
+            ...(tree.sprintStatusAvailable ? ["sprint-status"] : []),
+          ]),
+        );
+      }
+
+      for (const tabId of FOLDER_TAB_IDS) {
         if (!tabs[tabId]) {
           continue;
         }
@@ -178,7 +234,11 @@ export default function App() {
       if (!state) {
         return;
       }
-      navigate(state.tab, state.path, { fromHistory: true });
+      if (state.tab === "navigator") {
+        navigateNavigator(state.path, { fromHistory: true });
+      } else {
+        navigate(state.tab, state.path, { fromHistory: true });
+      }
       if (state.openFile) {
         const filePath = state.openFile;
         setOpenFile({ path: filePath, content: null, error: null });
@@ -190,38 +250,54 @@ export default function App() {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [navigate]);
-
-  const activeState = tabStates[activeTab];
+  }, [navigate, navigateNavigator]);
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <Tabs
         value={activeTab}
-        onChange={(_event, value: TabId) => navigate(value, tabStates[value].selectedPath ?? "")}
+        onChange={(_event, value: TabId) => {
+          if (value === "navigator") {
+            navigateNavigator(navigatorSelectedItemId ?? "");
+          } else {
+            navigate(value, tabStates[value].selectedPath ?? "");
+          }
+        }}
       >
         {TAB_IDS.map((tabId) => (
           <Tab key={tabId} value={tabId} label={TAB_LABELS[tabId]} />
         ))}
       </Tabs>
       <Box sx={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        <Box sx={{ width: 280, overflow: "auto", borderRight: 1, borderColor: "divider" }}>
-          <FolderTree
-            tree={activeState.tree}
-            expandedPaths={activeState.expandedPaths}
-            selectedPath={activeState.selectedPath}
-            onExpandedChange={(expandedPaths) => updateTabState(activeTab, { expandedPaths })}
-            onSelect={(path) => navigate(activeTab, path)}
+        {activeTab === "navigator" ? (
+          <NavigatorView
+            tree={navigatorTree}
+            expandedItems={navigatorExpandedItems}
+            selectedItemId={navigatorSelectedItemId}
+            onExpandedChange={setNavigatorExpandedItems}
+            onNavigate={(itemId) => navigateNavigator(itemId)}
           />
-        </Box>
-        <Box sx={{ flex: 1, overflow: "auto" }}>
-          <ContentsTable
-            key={`${activeTab}:${activeState.selectedPath ?? ""}`}
-            entries={activeState.contents}
-            onSelectFolder={(path) => navigate(activeTab, path)}
-            onOpenFile={(path) => openFileDialog(path)}
-          />
-        </Box>
+        ) : (
+          <>
+            <Box sx={{ width: 280, overflow: "auto", borderRight: 1, borderColor: "divider" }}>
+              <FolderTree
+                tree={tabStates[activeTab].tree}
+                expandedPaths={tabStates[activeTab].expandedPaths}
+                selectedPath={tabStates[activeTab].selectedPath}
+                onExpandedChange={(expandedPaths) => updateTabState(activeTab, { expandedPaths })}
+                onSelect={(path) => navigate(activeTab, path)}
+              />
+            </Box>
+            <Box sx={{ flex: 1, overflow: "auto" }}>
+              <ContentsTable
+                key={`${activeTab}:${tabStates[activeTab].selectedPath ?? ""}`}
+                entries={tabStates[activeTab].contents}
+                onSelectFolder={(path) => navigate(activeTab, path)}
+                onOpenFile={(path) => openFileDialog(activeTab, path)}
+              />
+            </Box>
+          </>
+        )}
       </Box>
       <FileViewerDialog
         path={openFile?.path ?? null}
