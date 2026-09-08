@@ -3,9 +3,15 @@ import assert from "node:assert/strict";
 import { createBaselineState, statesEqual } from "../../../web/src/navigationHistory.js";
 
 test("createBaselineState() builds the Infra/root baseline state (FR-012)", () => {
-  const state = createBaselineState("/project/_bmad");
+  const state = createBaselineState("infra", "/project/_bmad");
 
   assert.deepEqual(state, { tab: "infra", path: "/project/_bmad" });
+});
+
+test("createBaselineState() builds the Navigator baseline state (feature 007 FR-001)", () => {
+  const state = createBaselineState("navigator", "");
+
+  assert.deepEqual(state, { tab: "navigator", path: "" });
 });
 
 test("statesEqual() returns true when tab and path both match", () => {

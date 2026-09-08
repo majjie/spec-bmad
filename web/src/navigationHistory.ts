@@ -7,9 +7,14 @@ export interface NavigationState {
   openFile?: string;
 }
 
-/** Builds the FR-012 baseline state: the Infra tab, its root folder selected. */
-export function createBaselineState(infraRootPath: string): NavigationState {
-  return { tab: "infra", path: infraRootPath };
+/**
+ * Builds the initial-load baseline state (FR-012, feature 002/003) for whichever tab is
+ * actually the resolved default — the Navigator tab with nothing selected (feature 007
+ * FR-001, `path: ""`), or the Infra tab with its root folder selected, when falling back
+ * (feature 007 FR-002).
+ */
+export function createBaselineState(tab: TabId, path: string): NavigationState {
+  return { tab, path };
 }
 
 /**

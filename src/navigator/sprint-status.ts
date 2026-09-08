@@ -5,6 +5,7 @@ export interface SprintStatusSummary {
   projectKey: string;
   trackingSystem: string;
   storyLocation: string;
+  activeEpic: string;
 }
 
 export interface StoryStatus {
@@ -33,6 +34,26 @@ function asString(value: unknown): string {
 }
 
 /**
+ * Feature 007 FR-009/FR-010: a calculated Summary field telling the user, at a glance,
+ * whether everything is done, nothing has started, or which epic is currently active.
+ * `epics` is already in file-declared order (parseSprintStatus's own guarantee), so "the
+ * first in-progress epic" is simply the first array match.
+ */
+export function calculateActiveEpic(epics: EpicStatusGroup[]): string {
+  if (epics.length === 0) {
+    return "unknown";
+  }
+  if (epics.every((epic) => epic.status === "done")) {
+    return "All complete";
+  }
+  if (epics.every((epic) => epic.status === "backlog")) {
+    return "Not started";
+  }
+  const inProgress = epics.find((epic) => epic.status === "in-progress");
+  return inProgress ? inProgress.epicKey : "unknown";
+}
+
+/**
  * Shapes an already-parsed YAML object into a Summary plus per-epic Status groups, per
  * data-model.md and research.md § 4's two-pass derivation. Tolerant of a missing/absent/
  * non-object `development_status` (yields `epics: []`) and of missing Summary fields
@@ -41,15 +62,6 @@ function asString(value: unknown): string {
  */
 export function parseSprintStatus(parsedYaml: unknown): SprintStatusResult {
   const root = (parsedYaml && typeof parsedYaml === "object" ? parsedYaml : {}) as Record<string, unknown>;
-
-  const summary: SprintStatusSummary = {
-    generated: asString(root.generated),
-    lastUpdated: asString(root.last_updated),
-    project: asString(root.project),
-    projectKey: asString(root.project_key),
-    trackingSystem: asString(root.tracking_system),
-    storyLocation: asString(root.story_location),
-  };
 
   const developmentStatusRaw = root.development_status;
   const developmentStatus: Record<string, unknown> =
@@ -102,6 +114,16 @@ export function parseSprintStatus(parsedYaml: unknown): SprintStatusResult {
   const epics = epicOrder
     .map((epicNumber) => epicsByNumber.get(epicNumber))
     .filter((epic): epic is EpicStatusGroup => epic !== undefined);
+
+  const summary: SprintStatusSummary = {
+    generated: asString(root.generated),
+    lastUpdated: asString(root.last_updated),
+    project: asString(root.project),
+    projectKey: asString(root.project_key),
+    trackingSystem: asString(root.tracking_system),
+    storyLocation: asString(root.story_location),
+    activeEpic: calculateActiveEpic(epics),
+  };
 
   return { summary, epics };
 }

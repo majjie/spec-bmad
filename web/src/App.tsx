@@ -48,8 +48,10 @@ const FOLDER_TAB_IDS: FolderTabId[] = ["infra", "output"];
 const TAB_LABELS: Record<TabId, string> = { navigator: "Navigator", infra: "Infra", output: "Output" };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("infra");
-  const [, setAvailability] = useState<TabAvailability | null>(null);
+  // Optimistic default (feature 007 FR-001) — corrected to "infra" in the mount effect
+  // below if the Navigator tab turns out not to be available (FR-002).
+  const [activeTab, setActiveTab] = useState<TabId>("navigator");
+  const [availability, setAvailability] = useState<TabAvailability | null>(null);
   const [tabStates, setTabStates] = useState<Record<FolderTabId, TabViewState>>({
     infra: createEmptyTabState(),
     output: createEmptyTabState(),
@@ -163,7 +165,10 @@ export default function App() {
 
   // Load tab availability, then each available tab's tree + its root's contents, once on
   // mount — so the Infra tab already shows its root contents as soon as it loads (FR-002).
-  // Once Infra's root is known, establish the FR-012 baseline history entry.
+  // Once the resolved default tab is known, establish the FR-012 baseline history entry
+  // (feature 007: that's Navigator when available — immediately, since its "nothing
+  // selected" state needs no further fetch — or Infra, once its root path is known, when
+  // falling back).
   useEffect(() => {
     let cancelled = false;
 
@@ -173,6 +178,15 @@ export default function App() {
         return;
       }
       setAvailability(tabs);
+
+      if (!tabs.navigator) {
+        setActiveTab("infra");
+      } else if (!baselineEstablishedRef.current) {
+        baselineEstablishedRef.current = true;
+        const baseline = createBaselineState("navigator", "");
+        currentNavStateRef.current = baseline;
+        window.history.replaceState(baseline, "");
+      }
 
       if (tabs.navigator) {
         const tree = await fetchNavigatorTree();
@@ -212,7 +226,7 @@ export default function App() {
 
         if (tabId === "infra" && !baselineEstablishedRef.current) {
           baselineEstablishedRef.current = true;
-          const baseline = createBaselineState(tree.path);
+          const baseline = createBaselineState("infra", tree.path);
           currentNavStateRef.current = baseline;
           window.history.replaceState(baseline, "");
         }
@@ -264,7 +278,10 @@ export default function App() {
           }
         }}
       >
-        {TAB_IDS.map((tabId) => (
+        {/* Hides a tab whose folder isn't present (feature 006/007 FR-002) — shows all
+            three optimistically before `/api/tabs` resolves (`availability === null`),
+            matching this app's existing tolerance for a brief loading flash elsewhere. */}
+        {TAB_IDS.filter((tabId) => availability === null || availability[tabId]).map((tabId) => (
           <Tab key={tabId} value={tabId} label={TAB_LABELS[tabId]} />
         ))}
       </Tabs>

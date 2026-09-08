@@ -56,6 +56,7 @@ export interface SprintStatusSummary {
   projectKey: string;
   trackingSystem: string;
   storyLocation: string;
+  activeEpic: string;
 }
 
 export interface StoryStatus {

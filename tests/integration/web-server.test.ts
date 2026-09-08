@@ -333,10 +333,11 @@ test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and e
     const res = await fetch(`${server.url}/api/navigator/sprint-status`);
     assert.equal(res.status, 200);
     const body = (await res.json()) as {
-      summary: { project: string };
+      summary: { project: string; activeEpic: string };
       epics: { epicKey: string; status: string; stories: { key: string }[]; retrospectiveStatus: string | null }[];
     };
     assert.equal(body.summary.project, "bmad-dash");
+    assert.equal(body.summary.activeEpic, "All complete");
     assert.equal(body.epics.length, 1);
     assert.equal(body.epics[0]?.epicKey, "epic-1");
     assert.equal(body.epics[0]?.status, "done");

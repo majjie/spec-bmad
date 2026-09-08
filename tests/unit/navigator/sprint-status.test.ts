@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseSprintStatus } from "../../../src/navigator/sprint-status.js";
+import { calculateActiveEpic, parseSprintStatus, type EpicStatusGroup } from "../../../src/navigator/sprint-status.js";
+
+function epic(epicKey: string, status: string): EpicStatusGroup {
+  return { epicKey, status, stories: [], retrospectiveStatus: null };
+}
 
 const SAMPLE = {
   generated: "08-28-2026 20:15",
@@ -22,7 +26,7 @@ const SAMPLE = {
   },
 };
 
-test("parseSprintStatus() extracts the six Summary fields", () => {
+test("parseSprintStatus() extracts the six Summary fields, plus the calculated Active Epic", () => {
   const result = parseSprintStatus(SAMPLE);
   assert.deepEqual(result.summary, {
     generated: "08-28-2026 20:15",
@@ -31,6 +35,7 @@ test("parseSprintStatus() extracts the six Summary fields", () => {
     projectKey: "NOKEY",
     trackingSystem: "file-system",
     storyLocation: "_bmad-output/implementation-artifacts",
+    activeEpic: "epic-2",
   });
 });
 
@@ -94,5 +99,35 @@ test("parseSprintStatus() defaults missing Summary fields to an empty string", (
     projectKey: "",
     trackingSystem: "",
     storyLocation: "",
+    activeEpic: "unknown",
   });
+});
+
+test("calculateActiveEpic() returns 'All complete' when every epic is done", () => {
+  const result = calculateActiveEpic([epic("epic-1", "done"), epic("epic-2", "done")]);
+  assert.equal(result, "All complete");
+});
+
+test("calculateActiveEpic() returns 'Not started' when every epic is backlog", () => {
+  const result = calculateActiveEpic([epic("epic-1", "backlog"), epic("epic-2", "backlog")]);
+  assert.equal(result, "Not started");
+});
+
+test("calculateActiveEpic() returns the first in-progress epic's key, in file order", () => {
+  const result = calculateActiveEpic([
+    epic("epic-1", "done"),
+    epic("epic-2", "in-progress"),
+    epic("epic-3", "in-progress"),
+  ]);
+  assert.equal(result, "epic-2");
+});
+
+test("calculateActiveEpic() returns 'unknown' for a mix with none in-progress and not all done/backlog", () => {
+  const result = calculateActiveEpic([epic("epic-1", "done"), epic("epic-2", "backlog")]);
+  assert.equal(result, "unknown");
+});
+
+test("calculateActiveEpic() returns 'unknown' for an empty epics array, not 'All complete'/'Not started'", () => {
+  const result = calculateActiveEpic([]);
+  assert.equal(result, "unknown");
 });
