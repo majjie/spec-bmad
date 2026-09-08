@@ -1,13 +1,17 @@
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileRenderMode } from "../fileRenderMode.js";
+import { stringifyPreambleValue, stripFrontmatter } from "../frontmatter.js";
 import CsvGrid from "./CsvGrid.js";
 
 interface FileViewerDialogProps {
@@ -20,6 +24,25 @@ interface FileViewerDialogProps {
 function fileNameOf(path: string): string {
   const segments = path.split("/");
   return segments[segments.length - 1] ?? path;
+}
+
+// FR-007/FR-008: one row per preamble entry, key and value in two distinct theme palette
+// colors — no hardcoded hex, consistent with this app's existing theme-driven styling.
+function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
+      {Object.entries(preamble).map(([key, value]) => (
+        <Box key={key} sx={{ display: "flex", gap: 1 }}>
+          <Box component="span" sx={{ color: "info.light", fontWeight: 600 }}>
+            {key}:
+          </Box>
+          <Box component="span" sx={{ color: "warning.light" }}>
+            {stringifyPreambleValue(value)}
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
 }
 
 function DialogBody({ path, content, error }: { path: string; content: string | null; error: string | null }) {
@@ -89,6 +112,17 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
 }
 
 export default function FileViewerDialog({ path, content, error, onClose }: FileViewerDialogProps) {
+  const [infoOpen, setInfoOpen] = useState(false);
+
+  // Frontmatter stripping only ever applies to the Markdown render mode (FR-003), and only
+  // once content has actually loaded — every other mode, and the loading/error states,
+  // pass `content` straight through to `DialogBody` unchanged.
+  const mode = path ? getFileRenderMode(fileNameOf(path)) : null;
+  const frontmatter = mode?.kind === "markdown" && content !== null && !error ? stripFrontmatter(content) : null;
+  const displayContent = frontmatter ? frontmatter.body : content;
+  const preamble = frontmatter?.preamble ?? null;
+  const hasPreamble = preamble !== null && Object.keys(preamble).length > 0;
+
   return (
     <Dialog
       open={path !== null}
@@ -114,14 +148,46 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           padding: "4px",
           borderRadius: 1,
           backgroundColor: "rgba(0, 0, 0, 0.6)",
+          display: "flex",
+          alignItems: "center",
+          gap: 0.5,
         }}
       >
+        {hasPreamble && (
+          <Tooltip
+            title={<PreambleReadout preamble={preamble} />}
+            open={infoOpen}
+            onOpen={() => setInfoOpen(true)}
+            onClose={() => setInfoOpen(false)}
+            slotProps={{
+              tooltip: {
+                sx: {
+                  // Opaque (not MUI's default translucent grey) and a larger base font
+                  // size, per feedback — the readout was hard to read against varied
+                  // Markdown content showing through it.
+                  bgcolor: "grey.900",
+                  fontSize: "0.85rem",
+                  maxWidth: "none",
+                },
+              },
+            }}
+          >
+            <IconButton
+              onClick={() => setInfoOpen(true)}
+              aria-label="Frontmatter info"
+              size="small"
+              sx={{ color: "common.white" }}
+            >
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
         <IconButton onClick={onClose} aria-label="Close" size="small" sx={{ color: "common.white" }}>
           <CloseIcon />
         </IconButton>
       </Box>
       <div style={{ overflow: "auto", height: "100%" }}>
-        {path && <DialogBody path={path} content={content} error={error} />}
+        {path && <DialogBody path={path} content={displayContent} error={error} />}
       </div>
     </Dialog>
   );
