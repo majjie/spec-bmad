@@ -9,6 +9,7 @@ interface NavigatorViewProps {
   selectedItemId: string | null;
   onExpandedChange: (expandedItems: Set<string>) => void;
   onNavigate: (itemId: string) => void;
+  onOpenFile: (path: string) => void;
 }
 
 /**
@@ -27,6 +28,7 @@ export default function NavigatorView({
   selectedItemId,
   onExpandedChange,
   onNavigate,
+  onOpenFile,
 }: NavigatorViewProps) {
   return (
     <>
@@ -44,7 +46,7 @@ export default function NavigatorView({
         />
       </Box>
       <Box sx={{ flex: 1, overflow: "auto" }}>
-        <NavigatorDetailPane tree={tree} selectedItemId={selectedItemId} />
+        <NavigatorDetailPane tree={tree} selectedItemId={selectedItemId} onOpenFile={onOpenFile} />
       </Box>
     </>
   );

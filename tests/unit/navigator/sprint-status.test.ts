@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { join } from "node:path";
 import { calculateActiveEpic, parseSprintStatus, type EpicStatusGroup } from "../../../src/navigator/sprint-status.js";
+
+const PROJECT_ROOT = "/tmp/bmad-fixture-project";
 
 function epic(epicKey: string, status: string): EpicStatusGroup {
   return { epicKey, status, stories: [], retrospectiveStatus: null };
@@ -27,7 +30,7 @@ const SAMPLE = {
 };
 
 test("parseSprintStatus() extracts the six Summary fields, plus the calculated Active Epic", () => {
-  const result = parseSprintStatus(SAMPLE);
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
   assert.deepEqual(result.summary, {
     generated: "08-28-2026 20:15",
     lastUpdated: "09-04-2026 10:02",
@@ -40,7 +43,7 @@ test("parseSprintStatus() extracts the six Summary fields, plus the calculated A
 });
 
 test("parseSprintStatus() groups stories under their own epic, in file order", () => {
-  const result = parseSprintStatus(SAMPLE);
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
   const epicKeys = result.epics.map((e) => e.epicKey);
   assert.deepEqual(epicKeys, ["epic-1", "epic-2", "epic-10"]);
 
@@ -54,7 +57,7 @@ test("parseSprintStatus() groups stories under their own epic, in file order", (
 });
 
 test("parseSprintStatus() does not confuse epic 1's stories with epic 10's", () => {
-  const result = parseSprintStatus(SAMPLE);
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
   const epic10 = result.epics.find((e) => e.epicKey === "epic-10");
   assert.deepEqual(
     epic10?.stories.map((s) => s.key),
@@ -63,35 +66,35 @@ test("parseSprintStatus() does not confuse epic 1's stories with epic 10's", () 
 });
 
 test("parseSprintStatus() sets retrospectiveStatus to null when no epic-N-retrospective key exists", () => {
-  const result = parseSprintStatus(SAMPLE);
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
   const epic2 = result.epics.find((e) => e.epicKey === "epic-2");
   assert.equal(epic2?.retrospectiveStatus, null);
 });
 
 test("parseSprintStatus() excludes an entry matching neither an epic key nor any epic's story grouping", () => {
-  const result = parseSprintStatus(SAMPLE);
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
   const allStoryKeys = result.epics.flatMap((e) => e.stories.map((s) => s.key));
   assert.ok(!allStoryKeys.includes("orphan-not-numbered"));
 });
 
 test("parseSprintStatus() returns epics: [] when development_status is absent", () => {
-  const result = parseSprintStatus({ project: "x" });
+  const result = parseSprintStatus({ project: "x" }, PROJECT_ROOT);
   assert.deepEqual(result.epics, []);
   assert.equal(result.summary.project, "x");
 });
 
 test("parseSprintStatus() returns epics: [] when development_status is empty", () => {
-  const result = parseSprintStatus({ development_status: {} });
+  const result = parseSprintStatus({ development_status: {} }, PROJECT_ROOT);
   assert.deepEqual(result.epics, []);
 });
 
 test("parseSprintStatus() tolerates a non-object development_status without throwing", () => {
-  const result = parseSprintStatus({ development_status: "not an object" });
+  const result = parseSprintStatus({ development_status: "not an object" }, PROJECT_ROOT);
   assert.deepEqual(result.epics, []);
 });
 
 test("parseSprintStatus() defaults missing Summary fields to an empty string", () => {
-  const result = parseSprintStatus({});
+  const result = parseSprintStatus({}, PROJECT_ROOT);
   assert.deepEqual(result.summary, {
     generated: "",
     lastUpdated: "",
@@ -101,6 +104,40 @@ test("parseSprintStatus() defaults missing Summary fields to an empty string", (
     storyLocation: "",
     activeEpic: "unknown",
   });
+});
+
+test("parseSprintStatus() returns actionItems: [] when action_items is absent (SAMPLE has none)", () => {
+  const result = parseSprintStatus(SAMPLE, PROJECT_ROOT);
+  assert.deepEqual(result.actionItems, []);
+});
+
+test("parseSprintStatus() parses action_items and resolves each ref against projectRootPath", () => {
+  const result = parseSprintStatus(
+    {
+      action_items: [
+        {
+          id: "item-1",
+          epic: 1,
+          action: "Do the thing",
+          owner: "dev loop",
+          status: "done",
+          ref: "_bmad-output/implementation-artifacts/retro.md",
+        },
+      ],
+    },
+    PROJECT_ROOT,
+  );
+  assert.equal(result.actionItems.length, 1);
+  assert.equal(result.actionItems[0]?.id, "item-1");
+  assert.equal(result.actionItems[0]?.epic, 1);
+  assert.equal(result.actionItems[0]?.action, "Do the thing");
+  assert.equal(result.actionItems[0]?.owner, "dev loop");
+  assert.equal(result.actionItems[0]?.status, "done");
+  assert.equal(result.actionItems[0]?.ref, "_bmad-output/implementation-artifacts/retro.md");
+  assert.equal(
+    result.actionItems[0]?.resolvedPath,
+    join(PROJECT_ROOT, "_bmad-output/implementation-artifacts/retro.md"),
+  );
 });
 
 test("calculateActiveEpic() returns 'All complete' when every epic is done", () => {

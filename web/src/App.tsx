@@ -127,9 +127,14 @@ export default function App() {
 
   // Fetches one file's content and applies it to `openFile` state, ignoring the result if
   // a different file has since been opened (matches the same stale-response guard the
-  // initial-load effect already uses for tabs/trees/contents).
+  // initial-load effect already uses for tabs/trees/contents). `GET /api/file/:tab` only
+  // recognizes "infra"/"output" (feature 004) — "navigator" isn't a folder root, so an
+  // action item's resolved path (always an Output-tab path by construction, research.md
+  // § 1/§ 3) is fetched through "output" under the hood, while the caller's own
+  // NavigationState still records "navigator" so Back/X/Escape return there.
   function loadFileContent(tab: TabId, path: string) {
-    void fetchFileContent(tab, path).then(
+    const fetchTab = tab === "navigator" ? "output" : tab;
+    void fetchFileContent(fetchTab, path).then(
       (content) => {
         setOpenFile((prev) => (prev && prev.path === path ? { ...prev, content } : prev));
       },
@@ -141,13 +146,15 @@ export default function App() {
   }
 
   // Opening a file pushes a new history entry carrying the *current* tab/path plus
-  // openFile (research.md § 6) — it never changes which folder/tab is active. Only ever
-  // called from the Infra/Output ContentsTable (Navigator has no file-opening UI), so
-  // `tab` is a `FolderTabId`, not the broader `TabId`.
-  function openFileDialog(tab: FolderTabId, path: string) {
+  // openFile (research.md § 6) — it never changes which folder/tab is active. `currentPath`
+  // is supplied explicitly by the caller (Infra/Output pass `tabStates[tab].selectedPath`;
+  // Navigator has no `tabStates` entry to look it up from, so it passes
+  // `navigatorSelectedItemId` instead) so this works for any `TabId`, not just the
+  // Infra/Output `FolderTabId` (research.md § 3).
+  function openFileDialog(tab: TabId, currentPath: string, path: string) {
     const nextState: NavigationState = {
       tab,
-      path: tabStates[tab].selectedPath ?? "",
+      path: currentPath,
       openFile: path,
     };
     currentNavStateRef.current = nextState;
@@ -293,6 +300,7 @@ export default function App() {
             selectedItemId={navigatorSelectedItemId}
             onExpandedChange={setNavigatorExpandedItems}
             onNavigate={(itemId) => navigateNavigator(itemId)}
+            onOpenFile={(path) => openFileDialog("navigator", navigatorSelectedItemId ?? "", path)}
           />
         ) : (
           <>
@@ -310,7 +318,7 @@ export default function App() {
                 key={`${activeTab}:${tabStates[activeTab].selectedPath ?? ""}`}
                 entries={tabStates[activeTab].contents}
                 onSelectFolder={(path) => navigate(activeTab, path)}
-                onOpenFile={(path) => openFileDialog(activeTab, path)}
+                onOpenFile={(path) => openFileDialog(activeTab, tabStates[activeTab].selectedPath ?? "", path)}
               />
             </Box>
           </>

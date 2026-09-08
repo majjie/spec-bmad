@@ -335,6 +335,7 @@ test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and e
     const body = (await res.json()) as {
       summary: { project: string; activeEpic: string };
       epics: { epicKey: string; status: string; stories: { key: string }[]; retrospectiveStatus: string | null }[];
+      actionItems: unknown[];
     };
     assert.equal(body.summary.project, "bmad-dash");
     assert.equal(body.summary.activeEpic, "All complete");
@@ -343,6 +344,64 @@ test("GET /api/navigator/sprint-status returns 200 with the parsed Summary and e
     assert.equal(body.epics[0]?.status, "done");
     assert.deepEqual(body.epics[0]?.stories.map((s) => s.key), ["1-1-run-the-command"]);
     assert.equal(body.epics[0]?.retrospectiveStatus, "done");
+    assert.deepEqual(body.actionItems, []);
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/sprint-status returns actionItems with each ref resolved against the project root", async () => {
+  const projectPath = await makeOutputFixture();
+  await writeFile(
+    join(projectPath, "_bmad-output", "implementation-artifacts", "sprint-status.yaml"),
+    [
+      "generated: today",
+      "project: bmad-dash",
+      "action_items:",
+      "  - id: item-1",
+      "    epic: 1",
+      "    action: Do the thing",
+      "    owner: dev loop",
+      "    status: done",
+      "    ref: _bmad-output/implementation-artifacts/retro.md",
+      "  - id: item-2",
+      "    action: An item missing several properties",
+    ].join("\n"),
+  );
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/sprint-status`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as {
+      actionItems: {
+        id: string;
+        epic: number | null;
+        action: string | null;
+        owner: string | null;
+        status: string | null;
+        ref: string | null;
+        resolvedPath: string | null;
+      }[];
+    };
+    // item-2 (non-"done") sorts before item-1 (status "done") — FR-009's post-implementation
+    // stable partition by done-status.
+    assert.equal(body.actionItems.length, 2);
+    assert.equal(body.actionItems[0]?.id, "item-2");
+    assert.equal(body.actionItems[0]?.owner, null);
+    assert.equal(body.actionItems[0]?.status, null);
+    assert.equal(body.actionItems[0]?.ref, null);
+    assert.equal(body.actionItems[0]?.resolvedPath, null);
+    assert.equal(body.actionItems[1]?.id, "item-1");
+    assert.equal(body.actionItems[1]?.epic, 1);
+    assert.equal(body.actionItems[1]?.action, "Do the thing");
+    assert.equal(body.actionItems[1]?.owner, "dev loop");
+    assert.equal(body.actionItems[1]?.status, "done");
+    assert.equal(body.actionItems[1]?.ref, "_bmad-output/implementation-artifacts/retro.md");
+    assert.equal(
+      body.actionItems[1]?.resolvedPath,
+      join(projectPath, "_bmad-output/implementation-artifacts/retro.md"),
+    );
   } finally {
     await server.close();
     await rm(projectPath, { recursive: true, force: true });

@@ -38,5 +38,5 @@ export async function getNavigatorSprintStatusResponse(root: ProjectRoot): Promi
     throw error;
   }
 
-  return { status: 200, body: parseSprintStatus(parsed) };
+  return { status: 200, body: parseSprintStatus(parsed, root.path) };
 }

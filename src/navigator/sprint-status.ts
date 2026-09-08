@@ -1,3 +1,5 @@
+import { parseActionItems, type ActionItem } from "./action-items.js";
+
 export interface SprintStatusSummary {
   generated: string;
   lastUpdated: string;
@@ -23,6 +25,7 @@ export interface EpicStatusGroup {
 export interface SprintStatusResult {
   summary: SprintStatusSummary;
   epics: EpicStatusGroup[];
+  actionItems: ActionItem[];
 }
 
 const EPIC_KEY_PATTERN = /^epic-(\d+)$/;
@@ -60,7 +63,7 @@ export function calculateActiveEpic(epics: EpicStatusGroup[]): string {
  * (each defaults to an empty string) — only a malformed YAML *document* is an error, and
  * that's caught one layer up, by the route that calls `js-yaml`'s `load()` before this.
  */
-export function parseSprintStatus(parsedYaml: unknown): SprintStatusResult {
+export function parseSprintStatus(parsedYaml: unknown, projectRootPath: string): SprintStatusResult {
   const root = (parsedYaml && typeof parsedYaml === "object" ? parsedYaml : {}) as Record<string, unknown>;
 
   const developmentStatusRaw = root.development_status;
@@ -125,5 +128,7 @@ export function parseSprintStatus(parsedYaml: unknown): SprintStatusResult {
     activeEpic: calculateActiveEpic(epics),
   };
 
-  return { summary, epics };
+  const actionItems = parseActionItems(root, projectRootPath);
+
+  return { summary, epics, actionItems };
 }

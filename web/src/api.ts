@@ -71,9 +71,20 @@ export interface EpicStatusGroup {
   retrospectiveStatus: string | null;
 }
 
+export interface ActionItem {
+  id: string;
+  epic: number | null;
+  action: string | null;
+  owner: string | null;
+  status: string | null;
+  ref: string | null;
+  resolvedPath: string | null;
+}
+
 export interface SprintStatusResult {
   summary: SprintStatusSummary;
   epics: EpicStatusGroup[];
+  actionItems: ActionItem[];
 }
 
 export async function fetchTabs(): Promise<TabAvailability> {

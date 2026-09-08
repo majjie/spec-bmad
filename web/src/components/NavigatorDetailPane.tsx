@@ -7,6 +7,7 @@ import { fetchSprintStatus } from "../navigatorApi.js";
 interface NavigatorDetailPaneProps {
   tree: NavigatorTree | null;
   selectedItemId: string | null;
+  onOpenFile: (path: string) => void;
 }
 
 /**
@@ -34,7 +35,7 @@ function findPrdFolderName(tree: NavigatorTree | null, selectedItemId: string): 
  * NavigatorView only updates it for a selectable leaf, so this component never needs to
  * special-case them; the pane simply keeps rendering whatever it last rendered.
  */
-export default function NavigatorDetailPane({ tree, selectedItemId }: NavigatorDetailPaneProps) {
+export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }: NavigatorDetailPaneProps) {
   const [sprintStatus, setSprintStatus] = useState<SprintStatusResult | null>(null);
   const [sprintStatusError, setSprintStatusError] = useState<string | null>(null);
 
@@ -77,7 +78,7 @@ export default function NavigatorDetailPane({ tree, selectedItemId }: NavigatorD
         </Typography>
       );
     }
-    return <SprintStatusView data={sprintStatus} />;
+    return <SprintStatusView data={sprintStatus} onOpenFile={onOpenFile} />;
   }
 
   if (selectedItemId === null) {
