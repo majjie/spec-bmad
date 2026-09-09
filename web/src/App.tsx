@@ -20,7 +20,7 @@ import {
   type TabAvailability,
   type TabId,
 } from "./api.js";
-import { fetchNavigatorTree, findPrdFolderEntry } from "./navigatorApi.js";
+import { fetchNavigatorTree, findFolderEntry } from "./navigatorApi.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
 
 interface FileDialogState {
@@ -228,7 +228,9 @@ export default function App() {
           if (current === "sprint-status") {
             return tree.sprintStatusAvailable ? current : null;
           }
-          return findPrdFolderEntry(tree, current) ? current : null;
+          return findFolderEntry(tree.prd, current) || findFolderEntry(tree.architecture, current)
+            ? current
+            : null;
         });
       });
 
@@ -276,6 +278,7 @@ export default function App() {
         setNavigatorExpandedItems(
           new Set([
             ...(tree.prd ? ["prd"] : []),
+            ...(tree.architecture ? ["architecture"] : []),
             ...(tree.sprintStatusAvailable ? ["sprint-status"] : []),
           ]),
         );

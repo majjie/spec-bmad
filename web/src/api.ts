@@ -46,6 +46,9 @@ export interface PrdGroupingResult {
 
 export interface NavigatorTree {
   prd: PrdGroupingResult | null;
+  // Reuses the exact same PRD grouping shape for architecture folders too (research.md
+  // § 2, feature 015) — not a new, separately-named type.
+  architecture: PrdGroupingResult | null;
   sprintStatusAvailable: boolean;
 }
 

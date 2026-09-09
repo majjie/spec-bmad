@@ -30,6 +30,14 @@ export async function getNavigatorTreeResponse(
   const subfolders = (prdsNode?.children ?? []).filter((child) => child.type === "folder");
   const prd = subfolders.length > 0 ? groupPrdFolders(subfolders) : null;
 
+  // Architecture folders follow the exact same <project>-YYYY-MM-DD naming convention as
+  // PRD folders, so the same already-generic groupPrdFolders() applies unmodified — a
+  // deliberate reuse, not a coincidence (research.md § 1/§ 2, feature 015).
+  const architecturePath = join(root.bmadOutputFolderPath, "planning-artifacts", "architecture");
+  const architectureNode = findFolderNodeByPath(outputTree, architecturePath);
+  const architectureSubfolders = (architectureNode?.children ?? []).filter((child) => child.type === "folder");
+  const architecture = architectureSubfolders.length > 0 ? groupPrdFolders(architectureSubfolders) : null;
+
   const sprintStatusPath = join(
     root.bmadOutputFolderPath,
     "implementation-artifacts",
@@ -43,6 +51,6 @@ export async function getNavigatorTreeResponse(
     sprintStatusAvailable = false;
   }
 
-  const body: NavigatorTree = { prd, sprintStatusAvailable };
+  const body: NavigatorTree = { prd, architecture, sprintStatusAvailable };
   return { status: 200, body };
 }

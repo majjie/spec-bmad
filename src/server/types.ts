@@ -27,5 +27,10 @@ export interface ContentsEntry {
 
 export interface NavigatorTree {
   prd: PrdGroupingResult | null;
+  // Reuses the exact same PRD grouping shape for architecture folders too — a deliberate
+  // choice, not an oversight (research.md § 2, feature 015): the underlying grouping is
+  // already artifact-agnostic, so a parallel, differently-named type would be purely
+  // cosmetic.
+  architecture: PrdGroupingResult | null;
   sprintStatusAvailable: boolean;
 }

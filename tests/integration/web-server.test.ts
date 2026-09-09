@@ -288,14 +288,50 @@ test("GET /api/navigator/tree groups PRD folders and reports sprintStatusAvailab
   }
 });
 
-test("GET /api/navigator/tree returns prd: null and sprintStatusAvailable: false when neither exists", async () => {
+test("GET /api/navigator/tree groups architecture folders the same way it groups PRD folders", async () => {
+  const projectPath = await makeOutputFixture();
+  const architecturePath = join(projectPath, "_bmad-output", "planning-artifacts", "architecture");
+  await mkdir(join(architecturePath, "architecture-foo-2028-08-28"), { recursive: true });
+  await mkdir(join(architecturePath, "architecture-foo-2028-08-30"), { recursive: true });
+  await mkdir(join(architecturePath, "not-following-convention"), { recursive: true });
+  const server = await startServerFor(projectPath);
+  try {
+    const res = await fetch(`${server.url}/api/navigator/tree`);
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as {
+      architecture: {
+        projects: { project: string; dates: { date: string }[] }[];
+        nonConforming: { folderName: string }[];
+      } | null;
+    };
+    assert.ok(body.architecture);
+    assert.deepEqual(
+      body.architecture.projects.map((p) => p.project),
+      ["architecture-foo"],
+    );
+    assert.deepEqual(
+      body.architecture.projects[0]?.dates.map((d) => d.date),
+      ["2028-08-30", "2028-08-28"],
+    );
+    assert.deepEqual(
+      body.architecture.nonConforming.map((n) => n.folderName),
+      ["not-following-convention"],
+    );
+  } finally {
+    await server.close();
+    await rm(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("GET /api/navigator/tree returns prd: null, architecture: null, and sprintStatusAvailable: false when none exist", async () => {
   const projectPath = await makeOutputFixture();
   const server = await startServerFor(projectPath);
   try {
     const res = await fetch(`${server.url}/api/navigator/tree`);
     assert.equal(res.status, 200);
-    const body = (await res.json()) as { prd: unknown; sprintStatusAvailable: boolean };
+    const body = (await res.json()) as { prd: unknown; architecture: unknown; sprintStatusAvailable: boolean };
     assert.equal(body.prd, null);
+    assert.equal(body.architecture, null);
     assert.equal(body.sprintStatusAvailable, false);
   } finally {
     await server.close();

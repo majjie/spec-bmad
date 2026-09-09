@@ -18,13 +18,14 @@ interface NavigatorViewProps {
 }
 
 /**
- * The "PRD" root and every project itemId (`prd:${project}`) are structural only
- * (FR-010) — clicking them must not change the detail pane. `NavigatorTree` reports every
- * click uniformly; filtering out the non-selectable ones lives here rather than in
- * `App.tsx`, which has no reason to know this tab's itemId scheme.
+ * The "PRD"/"Architecture" roots and every project itemId (`prd:${project}`,
+ * `architecture:${project}`) are structural only (FR-010, and feature 015's own FR-004) —
+ * clicking them must not change the detail pane. `NavigatorTree` reports every click
+ * uniformly; filtering out the non-selectable ones lives here rather than in `App.tsx`,
+ * which has no reason to know this tab's itemId scheme.
  */
 function isStructuralOnly(itemId: string): boolean {
-  return itemId === "prd" || itemId.startsWith("prd:");
+  return itemId === "prd" || itemId.startsWith("prd:") || itemId === "architecture" || itemId.startsWith("architecture:");
 }
 
 export default function NavigatorView({

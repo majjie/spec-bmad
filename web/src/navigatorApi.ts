@@ -1,27 +1,30 @@
-import type { NavigatorTree, PrdDateEntry, PrdNonConformingEntry, SprintStatusResult } from "./api.js";
+import type { NavigatorTree, PrdDateEntry, PrdGroupingResult, PrdNonConformingEntry, SprintStatusResult } from "./api.js";
 
 /**
- * Finds the PRD folder entry (a date node or a non-conforming node) matching `itemId` by
- * its `path`, returning the whole entry — not just `folderName` — so callers can also read
- * its `path`. Shared by `NavigatorDetailPane.tsx` (to render a PRD leaf's own detail view)
- * and `App.tsx`'s refresh handler (to check whether the currently selected PRD leaf still
- * exists after a refresh, feature 014). Returns `undefined` if `itemId` doesn't match any
- * known PRD folder (e.g. it's a "sprint-status" or `null` selection).
+ * Finds the folder entry (a date node or a non-conforming node) matching `itemId` by its
+ * `path`, returning the whole entry — not just `folderName` — so callers can also read its
+ * `path`. Takes a grouping result directly (not a whole `NavigatorTree`) so the identical
+ * traversal serves both `tree.prd` and `tree.architecture` lookups (feature 015) rather
+ * than duplicating it. Shared by `NavigatorDetailPane.tsx` (to render a PRD or
+ * architecture leaf's own detail view) and `App.tsx`'s refresh handler (to check whether
+ * the currently selected leaf still exists after a refresh, feature 014). Returns
+ * `undefined` if `itemId` doesn't match any entry in `grouping` (e.g. `grouping` is `null`,
+ * or `itemId` is a "sprint-status"/structural selection).
  */
-export function findPrdFolderEntry(
-  tree: NavigatorTree | null,
+export function findFolderEntry(
+  grouping: PrdGroupingResult | null,
   itemId: string,
 ): PrdDateEntry | PrdNonConformingEntry | undefined {
-  if (!tree?.prd) {
+  if (!grouping) {
     return undefined;
   }
-  for (const projectGroup of tree.prd.projects) {
+  for (const projectGroup of grouping.projects) {
     const dateEntry = projectGroup.dates.find((entry) => entry.path === itemId);
     if (dateEntry) {
       return dateEntry;
     }
   }
-  return tree.prd.nonConforming.find((entry) => entry.path === itemId);
+  return grouping.nonConforming.find((entry) => entry.path === itemId);
 }
 
 export async function fetchNavigatorTree(): Promise<NavigatorTree> {

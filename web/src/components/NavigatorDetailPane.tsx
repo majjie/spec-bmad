@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import PrdDetailView from "./PrdDetailView.js";
 import SprintStatusView from "./SprintStatusView.js";
 import type { NavigatorTree, SprintStatusResult } from "../api.js";
-import { fetchSprintStatus, findPrdFolderEntry } from "../navigatorApi.js";
+import { fetchSprintStatus, findFolderEntry } from "../navigatorApi.js";
 
 interface NavigatorDetailPaneProps {
   tree: NavigatorTree | null;
@@ -71,9 +71,20 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
     );
   }
 
-  const prdEntry = findPrdFolderEntry(tree, selectedItemId);
+  const prdEntry = findFolderEntry(tree?.prd ?? null, selectedItemId);
   if (prdEntry !== undefined) {
     return <PrdDetailView entry={prdEntry} onOpenFile={onOpenFile} />;
+  }
+
+  // Deliberately minimal — the bare folder name, not a full detail view — mirroring how
+  // the PRD leaf view itself looked before feature 012 built it out further (feature 015).
+  const architectureEntry = findFolderEntry(tree?.architecture ?? null, selectedItemId);
+  if (architectureEntry !== undefined) {
+    return (
+      <Typography variant="body2" sx={{ p: 2 }}>
+        {architectureEntry.folderName}
+      </Typography>
+    );
   }
 
   return (
