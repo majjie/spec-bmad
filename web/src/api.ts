@@ -127,3 +127,21 @@ export async function fetchFileContent(tab: TabId, path: string): Promise<string
   }
   return await response.text();
 }
+
+// A narrowly-scoped sibling to fetchFileContent: resolves to null on a 404 instead of
+// throwing, so a caller can distinguish "no such file" from a genuine fetch failure
+// without string-matching an already-formatted error message (research.md § 7, feature
+// 012). fetchFileContent itself is left unchanged for its existing callers.
+export async function fetchFileContentOrNull(tab: TabId, path: string): Promise<string | null> {
+  const response = await fetch(`/api/file/${tab}?path=${encodeURIComponent(path)}`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    if (response.status === 415) {
+      throw new Error("This file doesn't look like text, so it can't be previewed.");
+    }
+    throw new Error(`GET /api/file/${tab} failed with ${response.status}`);
+  }
+  return await response.text();
+}

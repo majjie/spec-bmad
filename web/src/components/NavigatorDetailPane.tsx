@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
+import PrdDetailView from "./PrdDetailView.js";
 import SprintStatusView from "./SprintStatusView.js";
-import type { NavigatorTree, SprintStatusResult } from "../api.js";
+import type { NavigatorTree, PrdDateEntry, PrdNonConformingEntry, SprintStatusResult } from "../api.js";
 import { fetchSprintStatus } from "../navigatorApi.js";
 
 interface NavigatorDetailPaneProps {
@@ -12,21 +13,25 @@ interface NavigatorDetailPaneProps {
 
 /**
  * Finds the PRD folder entry (a date node or a non-conforming node) matching
- * `selectedItemId` by its `path`, so FR-009's placeholder text can show that folder's own
- * `folderName`. Returns `undefined` if `selectedItemId` doesn't match any known PRD folder
- * (e.g. it's a "sprint-status" or `null` selection, both handled by the caller instead).
+ * `selectedItemId` by its `path`, returning the whole entry — not just `folderName` — so
+ * callers can also read its `path` (needed to locate that folder's `prd.md`, feature 012).
+ * Returns `undefined` if `selectedItemId` doesn't match any known PRD folder (e.g. it's a
+ * "sprint-status" or `null` selection, both handled by the caller instead).
  */
-function findPrdFolderName(tree: NavigatorTree | null, selectedItemId: string): string | undefined {
+function findPrdFolderEntry(
+  tree: NavigatorTree | null,
+  selectedItemId: string,
+): PrdDateEntry | PrdNonConformingEntry | undefined {
   if (!tree?.prd) {
     return undefined;
   }
   for (const projectGroup of tree.prd.projects) {
     const dateEntry = projectGroup.dates.find((entry) => entry.path === selectedItemId);
     if (dateEntry) {
-      return dateEntry.folderName;
+      return dateEntry;
     }
   }
-  return tree.prd.nonConforming.find((entry) => entry.path === selectedItemId)?.folderName;
+  return tree.prd.nonConforming.find((entry) => entry.path === selectedItemId);
 }
 
 /**
@@ -89,13 +94,9 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
     );
   }
 
-  const folderName = findPrdFolderName(tree, selectedItemId);
-  if (folderName !== undefined) {
-    return (
-      <Typography variant="body2" sx={{ p: 2 }}>
-        {folderName}
-      </Typography>
-    );
+  const prdEntry = findPrdFolderEntry(tree, selectedItemId);
+  if (prdEntry !== undefined) {
+    return <PrdDetailView entry={prdEntry} />;
   }
 
   return (
