@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
@@ -8,14 +8,17 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { PrdDateEntry, PrdNonConformingEntry } from "../api.js";
-import { fetchFileContentOrNull } from "../api.js";
+import type { ContentsEntry, PrdDateEntry, PrdNonConformingEntry } from "../api.js";
+import { fetchContents, fetchFileContentOrNull } from "../api.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import { buildRequirementCodeIndex, groupByPrefix, type RequirementCodeReference } from "../prdIndex.js";
+import { buildReviewFileList, type ReviewFileReference } from "../reviewFiles.js";
 import FrontmatterInfoControl from "./FrontmatterInfoControl.js";
+import MemoryLogDialog from "./MemoryLogDialog.js";
 
 interface PrdDetailViewProps {
   entry: PrdDateEntry | PrdNonConformingEntry;
+  onOpenFile: (path: string) => void;
 }
 
 type LoadState =
@@ -24,28 +27,153 @@ type LoadState =
   | { kind: "error"; message: string }
   | { kind: "ready"; content: string };
 
-// One tile per placeholder — icon left of title, per FR-005; none of them carry any
-// interaction logic in this feature.
-const PLACEHOLDER_TILES = [
-  { title: "reviews", Icon: RateReviewIcon },
-  { title: "addendum", Icon: PostAddIcon },
-  { title: "memory log", Icon: HistoryIcon },
-];
+// FR-002/FR-004/FR-006: hovering (or clicking) reveals a tooltip listing each review by
+// its friendly name, alphabetically — the same controlled-Tooltip configuration
+// (leaveDelay/opaque/scrollable sx) PrefixTile already uses for the requirement-code
+// index, kept as a separate component since a review's shape (alphabetic sort, opens a
+// dialog) differs enough from a RequirementCodeReference's (numeric sort, scrolls to an
+// anchor) that generalizing the two felt like more risk than the small duplication saved
+// (research.md § 4).
+function ReviewsTile({
+  reviews,
+  onSelectReview,
+}: {
+  reviews: ReviewFileReference[];
+  onSelectReview: (path: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const tileRef = useRef<HTMLDivElement>(null);
+  const [tileWidth, setTileWidth] = useState<number | null>(null);
 
-function PlaceholderTilesRow() {
+  // Matches the tooltip's width to the tile's own rendered width (feedback: the tooltip
+  // felt too small/narrow) — tracked live via ResizeObserver, the same technique
+  // SprintStatusView.tsx already uses to match Action Items' height to Summary's, since
+  // this tile's own width is itself dynamic (a flex:1 sibling in the tile row, not a fixed
+  // pixel value). Depends on whether `reviews` is empty: the disabled and enabled states
+  // below return structurally different elements, so `tileRef` points at a different DOM
+  // node once the fetch resolves and this tile switches from one to the other — without
+  // this dependency, the effect's one-time (empty-deps) run would have already captured
+  // (and permanently missed) a still-null ref from before that switch.
+  useLayoutEffect(() => {
+    const el = tileRef.current;
+    if (!el) {
+      return;
+    }
+    // el.offsetWidth (not entry.contentRect.width, which excludes padding/border) is what
+    // matches the tile's own visual width — the Paper's horizontal padding and outlined
+    // border would otherwise be double-counted as a gap between the tooltip and the tile.
+    const observer = new ResizeObserver(() => {
+      setTileWidth(el.offsetWidth);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [reviews.length > 0]);
+
+  if (reviews.length === 0) {
+    return (
+      <Paper
+        ref={tileRef}
+        variant="outlined"
+        sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1 }}
+      >
+        <RateReviewIcon fontSize="small" color="disabled" />
+        <Typography variant="body2" color="text.disabled">
+          reviews
+        </Typography>
+      </Paper>
+    );
+  }
+
   return (
-    <Box sx={{ display: "flex", gap: 1, p: 1, flexShrink: 0 }}>
-      {PLACEHOLDER_TILES.map(({ title, Icon }) => (
-        <Paper
-          key={title}
-          variant="outlined"
-          sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1 }}
-        >
-          <Icon fontSize="small" color="primary" />
-          <Typography variant="body2">{title}</Typography>
-        </Paper>
-      ))}
-    </Box>
+    <Tooltip
+      title={
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          {reviews.map((review) => (
+            <Box
+              key={review.fileName}
+              component="button"
+              type="button"
+              onClick={() => {
+                onSelectReview(review.path);
+                setOpen(false);
+              }}
+              sx={{
+                all: "unset",
+                cursor: "pointer",
+                px: 0.5,
+                py: 0.25,
+                borderRadius: 0.5,
+                "&:hover": { bgcolor: "action.hover" },
+              }}
+            >
+              {review.displayName}
+            </Box>
+          ))}
+        </Box>
+      }
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      leaveDelay={400}
+      slotProps={{
+        tooltip: {
+          sx: {
+            bgcolor: "grey.900",
+            fontSize: "0.85rem",
+            maxWidth: "none",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            width: tileWidth !== null ? `${tileWidth}px` : undefined,
+          },
+        },
+      }}
+    >
+      <Paper
+        ref={tileRef}
+        variant="outlined"
+        onClick={() => setOpen(true)}
+        sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1, cursor: "pointer" }}
+      >
+        <RateReviewIcon fontSize="small" color="primary" />
+        <Typography variant="body2">reviews</Typography>
+      </Paper>
+    </Tooltip>
+  );
+}
+
+// FR-007/FR-008/FR-009/FR-010: a single-file tile — enabled with onClick when the target
+// file exists, disabled (no onClick) otherwise. No tooltip: with only one file, there's
+// nothing to list (research.md).
+function SingleFileTile({
+  title,
+  Icon,
+  enabled,
+  onClick,
+}: {
+  title: string;
+  Icon: typeof PostAddIcon;
+  enabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Paper
+      variant="outlined"
+      onClick={enabled ? onClick : undefined}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 0.75,
+        px: 1.5,
+        py: 0.75,
+        flex: 1,
+        cursor: enabled ? "pointer" : "default",
+      }}
+    >
+      <Icon fontSize="small" color={enabled ? "primary" : "disabled"} />
+      <Typography variant="body2" color={enabled ? "text.primary" : "text.disabled"}>
+        {title}
+      </Typography>
+    </Paper>
   );
 }
 
@@ -136,9 +264,15 @@ function fileBody({
   return { body: frontmatter.body, preamble: frontmatter.preamble };
 }
 
-export default function PrdDetailView({ entry }: PrdDetailViewProps) {
+type MemlogDialogState = { open: boolean; content: string | null; error: string | null };
+
+const CLOSED_MEMLOG_DIALOG: MemlogDialogState = { open: false, content: null, error: null };
+
+export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps) {
   const [state, setState] = useState<LoadState>({ kind: "loading" });
   const [openPrefix, setOpenPrefix] = useState<string | null>(null);
+  const [folderFiles, setFolderFiles] = useState<ContentsEntry[]>([]);
+  const [memlogDialog, setMemlogDialog] = useState<MemlogDialogState>(CLOSED_MEMLOG_DIALOG);
 
   useEffect(() => {
     let cancelled = false;
@@ -162,11 +296,57 @@ export default function PrdDetailView({ entry }: PrdDetailViewProps) {
     };
   }, [entry.path]);
 
+  // Every tile's enabled/disabled state reads from this one shared listing — a fetch
+  // failure here is treated the same as "no matching files" (contracts/ui-behavior.md),
+  // since prd.md's own fetch already owns this pane's primary error/loading states.
+  useEffect(() => {
+    let cancelled = false;
+    setFolderFiles([]);
+    setMemlogDialog(CLOSED_MEMLOG_DIALOG);
+    fetchContents("output", entry.path).then(
+      (entries) => {
+        if (!cancelled) {
+          setFolderFiles(entries);
+        }
+      },
+      () => {
+        if (!cancelled) {
+          setFolderFiles([]);
+        }
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [entry.path]);
+
   const { body, preamble } = fileBody({ state });
   const hasPreamble = preamble !== null && Object.keys(preamble).length > 0;
 
   const references = useMemo(() => (body !== null ? buildRequirementCodeIndex(body) : []), [body]);
   const groups = useMemo(() => groupByPrefix(references), [references]);
+
+  const reviews = useMemo(() => buildReviewFileList(folderFiles), [folderFiles]);
+  const hasAddendum = folderFiles.some((f) => f.type === "file" && f.name === "addendum.md");
+  const hasMemlog = folderFiles.some((f) => f.type === "file" && f.name === ".memlog.md");
+
+  function handleOpenMemlog() {
+    setMemlogDialog({ open: true, content: null, error: null });
+    fetchFileContentOrNull("output", `${entry.path}/.memlog.md`).then(
+      (content) => {
+        setMemlogDialog((prev) => (prev.open ? { ...prev, content } : prev));
+      },
+      (error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        setMemlogDialog((prev) => (prev.open ? { ...prev, error: message } : prev));
+      },
+    );
+  }
+
+  function handleSelectMemlogReference(id: string) {
+    handleSelectReference(id);
+    setMemlogDialog(CLOSED_MEMLOG_DIALOG);
+  }
 
   // Reset once per render, before ReactMarkdown's own custom-renderer callbacks run
   // (during this same synchronous render pass) — each one consumes the next entry from
@@ -192,8 +372,30 @@ export default function PrdDetailView({ entry }: PrdDetailViewProps) {
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <PlaceholderTilesRow />
+        <Box sx={{ display: "flex", gap: 1, p: 1, flexShrink: 0 }}>
+          <ReviewsTile reviews={reviews} onSelectReview={onOpenFile} />
+          <SingleFileTile
+            title="addendum"
+            Icon={PostAddIcon}
+            enabled={hasAddendum}
+            onClick={() => onOpenFile(`${entry.path}/addendum.md`)}
+          />
+          <SingleFileTile
+            title="memory log"
+            Icon={HistoryIcon}
+            enabled={hasMemlog}
+            onClick={handleOpenMemlog}
+          />
+        </Box>
       </Box>
+      <MemoryLogDialog
+        open={memlogDialog.open}
+        content={memlogDialog.content}
+        error={memlogDialog.error}
+        prdReferences={references}
+        onClose={() => setMemlogDialog(CLOSED_MEMLOG_DIALOG)}
+        onSelectReference={handleSelectMemlogReference}
+      />
       <Box sx={{ flex: 1, minHeight: 0, display: "flex" }}>
         <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           {hasPreamble && (

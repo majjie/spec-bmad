@@ -96,7 +96,7 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
 
   const prdEntry = findPrdFolderEntry(tree, selectedItemId);
   if (prdEntry !== undefined) {
-    return <PrdDetailView entry={prdEntry} />;
+    return <PrdDetailView entry={prdEntry} onOpenFile={onOpenFile} />;
   }
 
   return (

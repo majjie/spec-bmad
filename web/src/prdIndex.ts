@@ -13,6 +13,12 @@ export interface PrefixGroup {
   references: RequirementCodeReference[];
 }
 
+// The shape of a requirement code itself — two-or-more uppercase letters, a dash,
+// one-or-more digits (Assumptions, spec.md) — exported so other modules (e.g. feature
+// 013's memlogParser.ts, which detects bare inline mentions with no wrapping syntax) reuse
+// this exact definition rather than a second, potentially-drifting copy.
+export const REQUIREMENT_CODE_PATTERN = /\b[A-Z]{2,}-\d+\b/g;
+
 // Bullet style: two-or-more letters, a dash, one-or-more digits, wrapped in **...** (e.g.
 // `**FR-25**`). Header style: a level-3 heading starting with the same code shape,
 // followed by a space and an em dash (e.g. `### UJ-1 — Verifying a completed stage`).
