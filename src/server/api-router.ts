@@ -4,6 +4,7 @@ import { getContentsResponse } from "./routes/contents.js";
 import { getFileResponse } from "./routes/file.js";
 import { getNavigatorSprintStatusResponse } from "./routes/navigator-sprint-status.js";
 import { getNavigatorTreeResponse } from "./routes/navigator-tree.js";
+import { getRefreshResponse } from "./routes/refresh.js";
 import { getTabsResponse } from "./routes/tabs.js";
 import { getTreeResponse } from "./routes/tree.js";
 
@@ -33,6 +34,10 @@ export function createApiRequestHandler(
 
     if (pathname === "/api/navigator/sprint-status") {
       return getNavigatorSprintStatusResponse(root);
+    }
+
+    if (pathname === "/api/refresh") {
+      return getRefreshResponse(root, cache);
     }
 
     const treeMatch = pathname.match(TREE_PATH_PATTERN);

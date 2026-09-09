@@ -132,6 +132,13 @@ export async function fetchFileContent(tab: TabId, path: string): Promise<string
 // throwing, so a caller can distinguish "no such file" from a genuine fetch failure
 // without string-matching an already-formatted error message (research.md § 7, feature
 // 012). fetchFileContent itself is left unchanged for its existing callers.
+export async function fetchRefresh(): Promise<void> {
+  const response = await fetch("/api/refresh");
+  if (!response.ok) {
+    throw new Error(`GET /api/refresh failed with ${response.status}`);
+  }
+}
+
 export async function fetchFileContentOrNull(tab: TabId, path: string): Promise<string | null> {
   const response = await fetch(`/api/file/${tab}?path=${encodeURIComponent(path)}`);
   if (response.status === 404) {

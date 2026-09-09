@@ -10,6 +10,11 @@ interface NavigatorViewProps {
   onExpandedChange: (expandedItems: Set<string>) => void;
   onNavigate: (itemId: string) => void;
   onOpenFile: (path: string) => void;
+  // Bumped by App.tsx once per completed refresh (feature 014). Applied as `key` on
+  // NavigatorDetailPane only (not the tree sidebar) so a refresh remounts just the detail
+  // pane, forcing whichever view it owns (Sprint Status or the PRD detail view) to re-run
+  // its own fetch effect from scratch — no changes needed inside either component.
+  refreshToken: number;
 }
 
 /**
@@ -29,6 +34,7 @@ export default function NavigatorView({
   onExpandedChange,
   onNavigate,
   onOpenFile,
+  refreshToken,
 }: NavigatorViewProps) {
   return (
     <>
@@ -46,7 +52,12 @@ export default function NavigatorView({
         />
       </Box>
       <Box sx={{ flex: 1, overflow: "auto" }}>
-        <NavigatorDetailPane tree={tree} selectedItemId={selectedItemId} onOpenFile={onOpenFile} />
+        <NavigatorDetailPane
+          key={refreshToken}
+          tree={tree}
+          selectedItemId={selectedItemId}
+          onOpenFile={onOpenFile}
+        />
       </Box>
     </>
   );

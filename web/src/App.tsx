@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import FolderTree from "./components/FolderTree.js";
 import ContentsTable from "./components/ContentsTable.js";
 import FileViewerDialog from "./components/FileViewerDialog.js";
@@ -9,6 +11,7 @@ import NavigatorView from "./components/NavigatorView.js";
 import {
   fetchContents,
   fetchFileContent,
+  fetchRefresh,
   fetchTabs,
   fetchTree,
   type ContentsEntry,
@@ -17,7 +20,7 @@ import {
   type TabAvailability,
   type TabId,
 } from "./api.js";
-import { fetchNavigatorTree } from "./navigatorApi.js";
+import { fetchNavigatorTree, findPrdFolderEntry } from "./navigatorApi.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
 
 interface FileDialogState {
@@ -62,6 +65,14 @@ export default function App() {
   const [navigatorTree, setNavigatorTree] = useState<NavigatorTree | null>(null);
   const [navigatorExpandedItems, setNavigatorExpandedItems] = useState<Set<string>>(new Set());
   const [navigatorSelectedItemId, setNavigatorSelectedItemId] = useState<string | null>(null);
+
+  // Refresh control state (feature 014). `refreshToken` is bumped once per completed
+  // refresh and applied as `key` on NavigatorDetailPane (via NavigatorView) so it remounts
+  // and re-runs its own fetch effect (Sprint Status's or PrdDetailView's) from scratch —
+  // contracts/ui-behavior.md.
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshFailed, setRefreshFailed] = useState(false);
+  const [refreshToken, setRefreshToken] = useState(0);
 
   // The NavigationState the history stack is currently at, so `navigate` can tell whether
   // a call is a real change worth pushing (statesEqual) or a redundant re-click of the
@@ -170,6 +181,67 @@ export default function App() {
     window.history.back();
   }
 
+  // Invalidates the server's cached folder structure for every tab at once
+  // (Clarifications) and re-fetches whatever is currently displayed
+  // (contracts/ui-behavior.md). Each re-fetch below applies its own state update
+  // independently as it resolves — no rollback if a sibling re-fetch later fails
+  // ("Partial-failure semantics").
+  async function handleRefresh() {
+    if (refreshing) {
+      return;
+    }
+    setRefreshing(true);
+    setRefreshFailed(false);
+    try {
+      await fetchRefresh();
+
+      const tabsPromise = fetchTabs().then((tabs) => setAvailability(tabs));
+
+      const folderTabPromises = FOLDER_TAB_IDS.map(async (tabId) => {
+        const currentState = tabStates[tabId];
+        if (!currentState.tree) {
+          return;
+        }
+        const tree = await fetchTree(tabId);
+        if (!tree) {
+          return;
+        }
+        const selectedPath = currentState.selectedPath ?? tree.path;
+        try {
+          const contents = await fetchContents(tabId, selectedPath);
+          updateTabState(tabId, { tree, contents });
+        } catch {
+          // The previously selected folder no longer exists post-refresh — fall back to
+          // the tab's own root, matching the mount-time initial-load effect's own
+          // fallback (FR-006).
+          const contents = await fetchContents(tabId, tree.path);
+          updateTabState(tabId, { tree, contents, selectedPath: tree.path });
+        }
+      });
+
+      const navigatorPromise = fetchNavigatorTree().then((tree) => {
+        setNavigatorTree(tree);
+        setNavigatorSelectedItemId((current) => {
+          if (current === null) {
+            return null;
+          }
+          if (current === "sprint-status") {
+            return tree.sprintStatusAvailable ? current : null;
+          }
+          return findPrdFolderEntry(tree, current) ? current : null;
+        });
+      });
+
+      await Promise.all([tabsPromise, ...folderTabPromises, navigatorPromise]);
+      setRefreshToken((token) => token + 1);
+    } catch {
+      setRefreshFailed(true);
+      setTimeout(() => setRefreshFailed(false), 2000);
+    } finally {
+      setRefreshing(false);
+    }
+  }
+
   // Load tab availability, then each available tab's tree + its root's contents, once on
   // mount — so the Infra tab already shows its root contents as soon as it loads (FR-002).
   // Once the resolved default tab is known, establish the FR-012 baseline history entry
@@ -275,23 +347,41 @@ export default function App() {
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <Tabs
-        value={activeTab}
-        onChange={(_event, value: TabId) => {
-          if (value === "navigator") {
-            navigateNavigator(navigatorSelectedItemId ?? "");
-          } else {
-            navigate(value, tabStates[value].selectedPath ?? "");
-          }
-        }}
-      >
-        {/* Hides a tab whose folder isn't present (feature 006/007 FR-002) — shows all
-            three optimistically before `/api/tabs` resolves (`availability === null`),
-            matching this app's existing tolerance for a brief loading flash elsewhere. */}
-        {TAB_IDS.filter((tabId) => availability === null || availability[tabId]).map((tabId) => (
-          <Tab key={tabId} value={tabId} label={TAB_LABELS[tabId]} />
-        ))}
-      </Tabs>
+      {/* Refresh control sits in the same row as the tabs, on the right, vertically
+          centered against their own height rather than a hardcoded pixel value
+          (feature 014, research.md § 5). */}
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Tabs
+          value={activeTab}
+          onChange={(_event, value: TabId) => {
+            if (value === "navigator") {
+              navigateNavigator(navigatorSelectedItemId ?? "");
+            } else {
+              navigate(value, tabStates[value].selectedPath ?? "");
+            }
+          }}
+        >
+          {/* Hides a tab whose folder isn't present (feature 006/007 FR-002) — shows all
+              three optimistically before `/api/tabs` resolves (`availability === null`),
+              matching this app's existing tolerance for a brief loading flash elsewhere. */}
+          {TAB_IDS.filter((tabId) => availability === null || availability[tabId]).map((tabId) => (
+            <Tab key={tabId} value={tabId} label={TAB_LABELS[tabId]} />
+          ))}
+        </Tabs>
+        <IconButton
+          onClick={handleRefresh}
+          disabled={refreshing}
+          aria-label="Refresh"
+          sx={{
+            mr: 1,
+            color: refreshFailed ? "error.main" : "inherit",
+            "@keyframes spin": { from: { transform: "rotate(0deg)" }, to: { transform: "rotate(360deg)" } },
+            animation: refreshing ? "spin 1s linear infinite" : "none",
+          }}
+        >
+          <RefreshIcon />
+        </IconButton>
+      </Box>
       <Box sx={{ flex: 1, display: "flex", overflow: "hidden" }}>
         {activeTab === "navigator" ? (
           <NavigatorView
@@ -301,6 +391,7 @@ export default function App() {
             onExpandedChange={setNavigatorExpandedItems}
             onNavigate={(itemId) => navigateNavigator(itemId)}
             onOpenFile={(path) => openFileDialog("navigator", navigatorSelectedItemId ?? "", path)}
+            refreshToken={refreshToken}
           />
         ) : (
           <>

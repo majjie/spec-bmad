@@ -2,36 +2,13 @@ import { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import PrdDetailView from "./PrdDetailView.js";
 import SprintStatusView from "./SprintStatusView.js";
-import type { NavigatorTree, PrdDateEntry, PrdNonConformingEntry, SprintStatusResult } from "../api.js";
-import { fetchSprintStatus } from "../navigatorApi.js";
+import type { NavigatorTree, SprintStatusResult } from "../api.js";
+import { fetchSprintStatus, findPrdFolderEntry } from "../navigatorApi.js";
 
 interface NavigatorDetailPaneProps {
   tree: NavigatorTree | null;
   selectedItemId: string | null;
   onOpenFile: (path: string) => void;
-}
-
-/**
- * Finds the PRD folder entry (a date node or a non-conforming node) matching
- * `selectedItemId` by its `path`, returning the whole entry — not just `folderName` — so
- * callers can also read its `path` (needed to locate that folder's `prd.md`, feature 012).
- * Returns `undefined` if `selectedItemId` doesn't match any known PRD folder (e.g. it's a
- * "sprint-status" or `null` selection, both handled by the caller instead).
- */
-function findPrdFolderEntry(
-  tree: NavigatorTree | null,
-  selectedItemId: string,
-): PrdDateEntry | PrdNonConformingEntry | undefined {
-  if (!tree?.prd) {
-    return undefined;
-  }
-  for (const projectGroup of tree.prd.projects) {
-    const dateEntry = projectGroup.dates.find((entry) => entry.path === selectedItemId);
-    if (dateEntry) {
-      return dateEntry;
-    }
-  }
-  return tree.prd.nonConforming.find((entry) => entry.path === selectedItemId);
 }
 
 /**
