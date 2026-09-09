@@ -91,3 +91,35 @@ test("groupByPrefix() orders groups by each prefix's first appearance in the doc
 test("groupByPrefix() returns an empty array when given no references", () => {
   assert.deepEqual(groupByPrefix([]), []);
 });
+
+test("buildRequirementCodeIndex() with no styles argument still detects both styles (no regression)", () => {
+  const content = "### AD-1 — A decision\n\n**AD-1** A bullet mentioning the same code.\n";
+  const refs = buildRequirementCodeIndex(content);
+  assert.equal(refs.length, 2);
+  assert.deepEqual(
+    refs.map((r) => r.style),
+    ["header", "bullet"],
+  );
+});
+
+test("buildRequirementCodeIndex() with styles: ['header'] detects header-style codes but not bullet-style", () => {
+  const content = "### AD-1 — A decision\n\nBody text mentioning **AD-1** as a bullet-style occurrence.\n";
+  const refs = buildRequirementCodeIndex(content, ["header"]);
+  assert.equal(refs.length, 1);
+  assert.equal(refs[0]?.code, "AD-1");
+  assert.equal(refs[0]?.style, "header");
+});
+
+test("buildRequirementCodeIndex() with styles: ['bullet'] detects only bullet-style codes", () => {
+  const content = "### AD-1 — A decision\n\n**AD-2** A bullet-style code.\n";
+  const refs = buildRequirementCodeIndex(content, ["bullet"]);
+  assert.equal(refs.length, 1);
+  assert.equal(refs[0]?.code, "AD-2");
+  assert.equal(refs[0]?.style, "bullet");
+});
+
+test("buildRequirementCodeIndex() returns an empty array for empty content regardless of styles", () => {
+  assert.deepEqual(buildRequirementCodeIndex(""), []);
+  assert.deepEqual(buildRequirementCodeIndex("", ["header"]), []);
+  assert.deepEqual(buildRequirementCodeIndex("", ["bullet"]), []);
+});

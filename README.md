@@ -49,6 +49,13 @@ Three tabs, driven by what the resolved project actually contains:
 | **Infra** | `_bmad` | Explorer-style folder tree + contents table |
 | **Output** | `_bmad-output` | Explorer-style folder tree + contents table |
 
+A **refresh control** sits at the right-hand end of that same tab row, vertically centred
+against the tabs. The folder structure is cached in memory, so this is how on-disk changes
+get picked up without restarting: it invalidates the cache for every tab at once (not just
+the active one), then re-fetches whatever is currently displayed. The icon spins while the
+refresh is in flight and turns red briefly if it fails. Your selection is kept when it
+still exists afterwards, and falls back to the tab's own root when it doesn't.
+
 The theme is dark with a blue accent (`#90caf9`) carried through tile headings, a 15px
 base font, semantic status-icon colours, and a shared key/value colour pairing used
 everywhere a label sits next to a value (the Summary tile, the frontmatter readout).
@@ -57,11 +64,15 @@ everywhere a label sits next to a value (the Summary tile, the frontmatter reado
 Created, Updated, Size) on the right. Folder/tab navigation is pushed onto the browser
 history stack, so mouse Back buttons move within the app instead of leaving it.
 
-**Navigator** presents two curated roots:
+**Navigator** presents three curated roots:
 
 - **PRD view** — `planning-artifacts/prds` folders grouped by project slug, then by date
   (newest first); folders that don't match the convention are listed under their literal
   name. Selecting a leaf opens the **PRD detail view** described below.
+- **Architecture view** — `planning-artifacts/architecture` folders, grouped by exactly
+  the same slug-then-date convention and the same non-conforming bucket, since the two
+  artifact types share it. Shown only when that folder has subfolders. Selecting a leaf
+  opens the **Architecture detail view** described below.
 - **Sprint Status** — shown when `implementation-artifacts/sprint-status.yaml` exists.
   A Summary tile (including a calculated *Active epic* field), an Action Items tile, and
   one collapsible tile per epic listing its numbered steps with status icons. A step's
@@ -92,6 +103,21 @@ lines:
   pointer is over it (with a 400ms grace period after it leaves), scrolls internally when
   it's taller than the screen, and clicking a code jumps the PRD to that point.
 
+**Architecture detail view** — selecting an architecture leaf renders that folder's
+`ARCHITECTURE-SPINE.md` the same way, deliberately mirroring the PRD view's layout while
+differing in three places:
+
+- The requirement-code index indexes **header-style codes only** (`### AD-1 — …`).
+  Architecture documents don't use the bullet-pointed style, so a `**AD-1**` in the body
+  is left alone rather than indexed.
+- **reviews** are read from the folder's own `reviews/` subfolder rather than the leaf
+  folder itself; the `review-*.md` matching, friendly Title Case naming and alphabetical
+  ordering are unchanged.
+- There is **no addendum tile**, and the **memory log** dialog renders requirement codes
+  as plain text rather than links.
+
+If the folder has no `ARCHITECTURE-SPINE.md`, the pane says so instead of erroring.
+
 **File viewer** — double-clicking a file opens a full-screen dialog, rendered by
 extension: Markdown as HTML, `.yaml`/`.toml`/`.py` with syntax highlighting, `.csv` as a
 read-only spreadsheet grid, everything else as monospace text with line numbers. Escape,
@@ -119,6 +145,7 @@ paths fall through to the built frontend in `web/dist/`.
 | `GET /api/file/:tab?path=` | Raw text of a file (`415` if it looks binary) |
 | `GET /api/navigator/tree` | The curated Navigator tree |
 | `GET /api/navigator/sprint-status` | Parsed `sprint-status.yaml` (`422` if unparseable) |
+| `GET /api/refresh` | Invalidates the cached folder structure for every root at once |
 
 `path` is caller-supplied, so the server verifies containment itself: a path outside the
 tab's own root is rejected with `403` before any filesystem access. Only the `_bmad` and
@@ -132,7 +159,7 @@ src/
   artifacts/             in-memory folder/file hierarchy cache (never file contents)
   discovery/             project-folder resolution and the nearby-project crawl
   server/                dependency-free HTTP server, routing, static file serving
-  navigator/             PRD grouping, sprint status, step detail, action items
+  navigator/             PRD/architecture grouping, sprint status, steps, action items
 web/
   src/                   React + MUI frontend (Vite); the parsing/derivation modules
                          (frontmatter, prdIndex, memlogParser, reviewFiles, csvGrid,
@@ -151,7 +178,7 @@ reason (`tests/unit/web/`).
 ## Development
 
 ```bash
-npm test          # tsx --test over tests/unit and tests/integration (172 tests)
+npm test          # tsx --test over tests/unit and tests/integration (179 tests)
 npm run typecheck # tsc --noEmit for both the Node and web tsconfigs
 npm run build:web # vite build
 ```
@@ -185,3 +212,6 @@ Features shipped so far:
 | 011 | [UI visual refresh](specs/011-ui-visual-refresh/spec.md) |
 | 012 | [PRD detail viewer](specs/012-prd-detail-viewer/spec.md) |
 | 013 | [PRD tile actions](specs/013-prd-tile-actions/spec.md) |
+| 014 | [Refresh control](specs/014-refresh-control/spec.md) |
+| 015 | [Architecture tree](specs/015-architecture-tree/spec.md) |
+| 016 | [Architecture detail view](specs/016-architecture-detail-view/spec.md) |

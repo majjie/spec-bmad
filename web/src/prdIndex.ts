@@ -47,16 +47,21 @@ function collectMatches(content: string, pattern: RegExp, style: RequirementCode
 }
 
 /**
- * Scans the (already frontmatter-stripped) PRD Markdown text left to right for both
- * requirement-code styles, returning one reference per occurrence in document order.
- * Duplicates — the same code appearing twice, or appearing in both styles — each get
- * their own distinct reference; this feature never assumes codes are unique
- * (data-model.md, Edge Cases).
+ * Scans the (already frontmatter-stripped) Markdown text left to right for the requested
+ * requirement-code style(s) — defaulting to both, PRD's own established behavior —
+ * returning one reference per occurrence in document order. Duplicates — the same code
+ * appearing twice, or appearing in both styles — each get their own distinct reference;
+ * this feature never assumes codes are unique (data-model.md, Edge Cases). Feature 016
+ * (Architecture Detail View) calls this with `["header"]` only, since architecture
+ * documents never use bullet-style codes (spec.md FR-005).
  */
-export function buildRequirementCodeIndex(content: string): RequirementCodeReference[] {
+export function buildRequirementCodeIndex(
+  content: string,
+  styles: RequirementCodeStyle[] = ["bullet", "header"],
+): RequirementCodeReference[] {
   const raw = [
-    ...collectMatches(content, BULLET_PATTERN, "bullet"),
-    ...collectMatches(content, HEADER_PATTERN, "header"),
+    ...(styles.includes("bullet") ? collectMatches(content, BULLET_PATTERN, "bullet") : []),
+    ...(styles.includes("header") ? collectMatches(content, HEADER_PATTERN, "header") : []),
   ].sort((a, b) => a.index - b.index);
 
   return raw.map((m, i) => ({
