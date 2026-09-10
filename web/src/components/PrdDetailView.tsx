@@ -6,14 +6,13 @@ import Typography from "@mui/material/Typography";
 import HistoryIcon from "@mui/icons-material/History";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type { ContentsEntry, PrdDateEntry, PrdNonConformingEntry } from "../api.js";
 import { fetchContents, fetchFileContentOrNull } from "../api.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import { buildRequirementCodeIndex, groupByPrefix, type RequirementCodeReference } from "../prdIndex.js";
 import { buildReviewFileList, type ReviewFileReference } from "../reviewFiles.js";
 import FrontmatterInfoControl from "./FrontmatterInfoControl.js";
+import MarkdownContent from "./MarkdownContent.js";
 import MemoryLogDialog from "./MemoryLogDialog.js";
 
 interface PrdDetailViewProps {
@@ -427,42 +426,29 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
               </Typography>
             )}
             {state.kind === "ready" && body !== null && (
-              <Typography
-                component="div"
-                sx={{
-                  p: 2,
-                  color: "text.primary",
-                  "& table, & th, & td": { borderColor: "divider" },
-                  "& code": { backgroundColor: "action.hover", borderRadius: 0.5, px: 0.5 },
-                  "& pre code": { backgroundColor: "transparent", padding: 0 },
+              <MarkdownContent
+                content={body}
+                components={{
+                  strong: ({ children, ...rest }) => {
+                    const matched = STRONG_CODE_PATTERN.test(textOf(children));
+                    const id = nextAnchorId(matched);
+                    return (
+                      <strong id={id} {...rest}>
+                        {children}
+                      </strong>
+                    );
+                  },
+                  h3: ({ children, ...rest }) => {
+                    const matched = HEADING_CODE_PATTERN.test(textOf(children));
+                    const id = nextAnchorId(matched);
+                    return (
+                      <h3 id={id} {...rest}>
+                        {children}
+                      </h3>
+                    );
+                  },
                 }}
-              >
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    strong: ({ children, ...rest }) => {
-                      const matched = STRONG_CODE_PATTERN.test(textOf(children));
-                      const id = nextAnchorId(matched);
-                      return (
-                        <strong id={id} {...rest}>
-                          {children}
-                        </strong>
-                      );
-                    },
-                    h3: ({ children, ...rest }) => {
-                      const matched = HEADING_CODE_PATTERN.test(textOf(children));
-                      const id = nextAnchorId(matched);
-                      return (
-                        <h3 id={id} {...rest}>
-                          {children}
-                        </h3>
-                      );
-                    },
-                  }}
-                >
-                  {body}
-                </ReactMarkdown>
-              </Typography>
+              />
             )}
           </Box>
         </Box>

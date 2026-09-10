@@ -5,14 +5,13 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import HistoryIcon from "@mui/icons-material/History";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type { ContentsEntry, PrdDateEntry, PrdNonConformingEntry } from "../api.js";
 import { fetchContents, fetchFileContentOrNull } from "../api.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import { buildRequirementCodeIndex, groupByPrefix, type RequirementCodeReference } from "../prdIndex.js";
 import { buildReviewFileList, type ReviewFileReference } from "../reviewFiles.js";
 import FrontmatterInfoControl from "./FrontmatterInfoControl.js";
+import MarkdownContent from "./MarkdownContent.js";
 import MemoryLogDialog from "./MemoryLogDialog.js";
 
 interface ArchitectureDetailViewProps {
@@ -422,33 +421,20 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
               </Typography>
             )}
             {state.kind === "ready" && body !== null && (
-              <Typography
-                component="div"
-                sx={{
-                  p: 2,
-                  color: "text.primary",
-                  "& table, & th, & td": { borderColor: "divider" },
-                  "& code": { backgroundColor: "action.hover", borderRadius: 0.5, px: 0.5 },
-                  "& pre code": { backgroundColor: "transparent", padding: 0 },
+              <MarkdownContent
+                content={body}
+                components={{
+                  h3: ({ children, ...rest }) => {
+                    const matched = HEADING_CODE_PATTERN.test(textOf(children));
+                    const id = nextAnchorId(matched);
+                    return (
+                      <h3 id={id} {...rest}>
+                        {children}
+                      </h3>
+                    );
+                  },
                 }}
-              >
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    h3: ({ children, ...rest }) => {
-                      const matched = HEADING_CODE_PATTERN.test(textOf(children));
-                      const id = nextAnchorId(matched);
-                      return (
-                        <h3 id={id} {...rest}>
-                          {children}
-                        </h3>
-                      );
-                    },
-                  }}
-                >
-                  {body}
-                </ReactMarkdown>
-              </Typography>
+              />
             )}
           </Box>
         </Box>

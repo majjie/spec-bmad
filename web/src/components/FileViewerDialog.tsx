@@ -3,14 +3,13 @@ import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileRenderMode } from "../fileRenderMode.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import CsvGrid from "./CsvGrid.js";
 import FrontmatterInfoControl from "./FrontmatterInfoControl.js";
+import MarkdownContent from "./MarkdownContent.js";
 
 interface FileViewerDialogProps {
   path: string | null;
@@ -52,20 +51,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
   }
 
   if (mode.kind === "markdown") {
-    return (
-      <Typography
-        component="div"
-        sx={{
-          p: 2,
-          color: "text.primary",
-          "& table, & th, & td": { borderColor: "divider" },
-          "& code": { backgroundColor: "action.hover", borderRadius: 0.5, px: 0.5 },
-          "& pre code": { backgroundColor: "transparent", padding: 0 },
-        }}
-      >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-      </Typography>
-    );
+    return <MarkdownContent content={content} />;
   }
 
   if (mode.kind === "syntax") {
