@@ -1,6 +1,6 @@
 # BMAD Browser
 
-Browse [BMAD](https://github.com/bmad-code-org/BMAD-METHOD) spec-driven-development
+Browse [BMAD](https://docs.bmad-method.org/) spec-driven-development
 artifacts from a localhost web UI.
 
 Point the CLI at a project that contains `_bmad` and/or `_bmad-output` folders and it
