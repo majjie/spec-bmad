@@ -132,6 +132,13 @@ keys and values in distinct colours. Anything that doesn't match that exact shap
 unterminated block, a non-mapping YAML document, a non-Markdown file) renders completely
 unchanged.
 
+Everywhere Markdown renders in this tool — the file viewer, the PRD detail view, and the
+Architecture detail view — tables show a full cell grid in the app's own divider colour,
+and fenced code blocks get a background distinct from the surrounding text. A block whose
+opening fence names a language (e.g. `` ```typescript ``) is syntax-highlighted with the
+same highlighter used for the `.py`/`.yaml` file view; one with no language, or a language
+that highlighter doesn't recognize, still gets the plain background with no error.
+
 ## HTTP API
 
 All routes are read-only `GET`s; anything other than `GET` gets a `405`. Unrecognized
@@ -215,3 +222,4 @@ Features shipped so far:
 | 014 | [Refresh control](specs/014-refresh-control/spec.md) |
 | 015 | [Architecture tree](specs/015-architecture-tree/spec.md) |
 | 016 | [Architecture detail view](specs/016-architecture-detail-view/spec.md) |
+| 017 | [Markdown render polish](specs/017-markdown-render-polish/spec.md) |
