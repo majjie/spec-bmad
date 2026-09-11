@@ -92,33 +92,25 @@ Open the printed `127.0.0.1` URL.
 | F3 | Open the tool in a private window with site data blocked | The application still loads; the welcome simply appears again (FR-020) |
 | F4 | Restore `sprint-status.yaml` | — |
 
-## G. Cases the shipped sample corpus does **not** cover
+## G. Multiple lineages and non-conforming folders (US3)
 
-`examples/sample-project` contains exactly one named project lineage (`harbor`) and no
-non-conforming folders - an earlier revision had a second project and a scratch folder, and
-both were removed when the sample was narrowed to a single project. Two requirements are
-therefore **not** reachable through the demo as shipped, and need a temporary corpus:
-
-```bash
-cp -r examples/sample-project /tmp/bmad-multi
-cd /tmp/bmad-multi/_bmad-output/planning-artifacts/prds
-cp -r prd-harbor-2026-09-01 prd-lumen-2026-08-28     # a second named lineage
-mkdir -p scratch-workshop-notes && echo '# Notes' > scratch-workshop-notes/notes.md
-cd - && npx tsx src/cli.ts /tmp/bmad-multi
-```
+`examples/sample-project` covers these directly - it holds two named lineages (`harbor`,
+`lumen`) plus a `scratch-workshop-notes` folder that follows no dated convention. No
+temporary corpus is needed.
 
 | # | Step | Expected |
 |---|---|---|
-| G1 | Expand Requirements | Runs now nest under `Harbor` and `Lumen` (FR-008) |
-| G2 | Read each project's nest summary | States what it contains (e.g. PRD and architecture counts) |
-| G3 | Look for the non-conforming folder | `scratch-workshop-notes` is reachable under a separate group, sorted **last** (FR-009) |
-| G4 | Re-run C5 in this corpus | Collapsing a project's nest survives selecting within it (FR-010) |
-| G5 | Check the header | With two lineages and sprint data naming `harbor`, the header shows `Harbor` (contract § Header) |
+| G1 | Expand Requirements | Runs nest under **Harbor** and **Lumen** (FR-008) |
+| G2 | Read each lineage row | A summary of what it holds - Harbor "2 PRDs · 2 architectures", Lumen "1 PRD" |
+| G3 | Expand Architecture | **Harbor** only. Lumen has no architecture run, so it is absent from this section entirely - not shown empty |
+| G4 | Look below the named lineages under Requirements | An **Other** group holding `scratch-workshop-notes`, sorted last (FR-009) |
+| G5 | Check the header | `Harbor`, from sprint data - which resolves the name even though two lineages exist (contract § Header) |
+| G6 | Collapse the Lumen nest, then select a Harbor run | Lumen stays collapsed (FR-010, SC-008) |
+| G7 | Move `prd-lumen-2026-08-28` out of the corpus and reload | The nesting disappears: one named lineage means no grouping level containing a single child (SC-009). Move it back afterwards. |
 
-> This gap is worth noting in its own right: the multi-project path is unit-tested in
-> `shell.test.ts` but is not exercised by anything a reviewer would open by default. A
-> follow-up task in `tasks.md` proposes restoring a second lineage to the sample corpus so
-> the demo covers its own requirements.
+> G7 is the check that SC-009 is a real conditional rather than an accident of fixture
+> shape. G2 is worth reading carefully: the summary it verifies was computed but rendered
+> nowhere until this retrospective (T038b), and its unit test passed the whole time.
 
 ## H. The tool works offline (constitution Principle III)
 

@@ -15,6 +15,7 @@ import {
   expandKeyForSlug,
   formatArtifactLeafLabel,
   hasMultipleNamedSlugs,
+  slugNavSummary,
   keysForDocSelection,
   namedSlugGroups,
   seedExpandedIfNeeded,
@@ -98,12 +99,14 @@ function SlugNest({
   const key = expandKeyForSlug(section, group.key);
   const panelId = `slug-panel-${key}`;
   const headerId = `slug-header-${key}`;
+  const summary = slugNavSummary(group);
   return (
     <Box>
       <NavRow
         id={headerId}
         depth={1}
         label={group.title}
+        {...(summary ? { secondary: summary } : {})}
         selected={!open && selectedInside}
         onClick={onToggle}
         ariaExpanded={open}

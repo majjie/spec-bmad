@@ -279,11 +279,35 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       `web/src/main.tsx` imports the **latin subset** of exactly the six weights `theme.ts`
       maps. Built output now contains zero references to the CDN hosts and ~128 KB of bundled
       woff2. Verified per `quickstart.md` § H.
-- [ ] T038 Restore a second project lineage and a non-conforming folder to
-      `examples/sample-project` so the shipped demo exercises FR-008, FR-009 and SC-009. They
-      were present in an earlier revision and removed when the sample was narrowed to one
-      project; the multi-project path is now unit-tested but unreachable in the demo without
-      hand-building a corpus (quickstart.md § G).
+- [X] T038 **DONE during this retrospective.** Restored a second named lineage and a
+      non-conforming folder to `examples/sample-project`, so the shipped demo exercises
+      FR-008, FR-009 and SC-009 instead of leaving them to unit tests.
+      `prd-lumen-2026-08-28/prd.md` and `scratch-workshop-notes/notes.md` were deleted in
+      `b60b2d4` and are restored verbatim from `b60b2d4^`. The scratch file's own body states
+      it "lives here so Navigator shows the non-conforming bucket" - it had no purpose other
+      than being this fixture.
+      **This was a disagreement, not an oversight, and it was resolved by changing the
+      README.** `b60b2d4` also asserted in the sample README that "BMAD Browser sessions are
+      one project folder at a time. This seed is deliberately a single lineage (Harbor) so the
+      demo matches that model", demoting multi-lineage to "unit tests only". That conflated
+      two different things: the tool serves one project *directory* per session, but a single
+      directory can hold several named lineages - which is exactly what the deleted fixture
+      depicted, its own text describing Lumen as "a sibling initiative". The code implements
+      that case (FR-008, and a substantial `SlugNest` branch in `AppSidebar.tsx`), so the
+      README was describing a model the product does not actually have. The README now
+      describes what the tool does, and notes that deleting the Lumen folder collapses the
+      nesting again (SC-009) for anyone who wants to see the single-lineage shape.
+- [X] T038b **DONE during this retrospective.** `slugNavSummary` in `web/src/shell.ts` was
+      exported and unit-tested but **rendered nowhere**: `SlugNest` in `AppSidebar.tsx` passed
+      no `secondary` to its `NavRow`, so a lineage row showed a bare title and the
+      "2 PRDs · 2 architectures" summary never reached a user. The function had outlived the
+      markup that called it, through two restructurings of the sidebar. Now wired in, with a
+      conditional spread because `exactOptionalPropertyTypes` forbids passing `undefined` to
+      an optional prop.
+      Worth noting how this was found: its unit test passed throughout, and so did every
+      other check. It surfaced only when T038's fixture made a nest render for the first time
+      - which is the argument for T038 in miniature, and the reason a demo corpus that covers
+      its own requirements is worth more than the fixtures it costs.
 - [ ] T039 Reconcile the guided tour's copy with the delivered information architecture in
       `web/src/onboarding/onboarding.ts`. The sidebar step still describes sprint status as
       sitting "under Workspace", wording that dates from an information architecture this
