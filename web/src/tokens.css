@@ -18,6 +18,7 @@
   --color-sand-50: oklch(98% 0.012 85);
   --color-sand-100: oklch(95.5% 0.018 85);
   --color-sand-200: oklch(90.5% 0.022 85);
+  --color-sand-300: oklch(84% 0.028 85);
   --color-mist-50: oklch(96.5% 0.015 240);
   --color-mist-100: oklch(92.5% 0.025 240);
   --color-mist-200: oklch(86% 0.032 240);
@@ -143,12 +144,12 @@
   --color-bg-header: var(--color-sand-50);
   --color-bg-sidebar: var(--color-mist-50);
 
-  --color-border-default: var(--color-sand-200);
-  --color-border-subtle: var(--color-mist-100);
+  --color-border-default: var(--color-sand-300);
+  --color-border-subtle: var(--color-sand-200);
 
   --color-text-default: var(--color-ink-900);
   --color-text-muted: var(--color-ink-700);
-  --color-text-subtle: var(--color-ink-600);
+  --color-text-subtle: var(--color-ink-700);
   --color-text-disabled: var(--color-ink-400);
 
   --color-accent: var(--color-slate-blue-600);

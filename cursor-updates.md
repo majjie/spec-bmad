@@ -25,3 +25,4 @@
 - Fixed Project details disclosure button horizontal padding (was px:0 against the pill).
 - Sprint status lists epics before action items so delivery structure isn’t buried.
 - Fixed PRD/architecture jump-list tooltip contrast (semantic bg/text instead of grey.900).
+- Hardened light-mode icon and chrome contrast: muted IconButtons, stronger sand borders, semantic memory-log dialog.

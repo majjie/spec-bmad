@@ -81,6 +81,7 @@ export default function AppHeader({
             aria-label="Help - replay the guided tour"
             size="small"
             data-tour="help"
+            sx={{ color: "var(--color-text-muted)" }}
           >
             <HelpOutlineIcon fontSize="small" />
           </IconButton>
@@ -94,7 +95,7 @@ export default function AppHeader({
               size="small"
               data-tour="refresh"
               sx={{
-                color: refreshFailed ? "error.main" : "inherit",
+                color: refreshFailed ? "error.main" : "var(--color-text-muted)",
                 "@keyframes spin": {
                   from: { transform: "rotate(0deg)" },
                   to: { transform: "rotate(360deg)" },

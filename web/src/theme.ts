@@ -44,6 +44,20 @@ const sharedComponents = {
     styleOverrides: {
       root: {
         borderRadius: "var(--radius-full)",
+        color: "var(--color-text-muted)",
+        "&.Mui-disabled": {
+          color: "var(--color-text-disabled)",
+        },
+      },
+    },
+  },
+  MuiSvgIcon: {
+    styleOverrides: {
+      root: {
+        color: "inherit",
+      },
+      colorDisabled: {
+        color: "var(--color-text-disabled)",
       },
     },
   },
@@ -136,6 +150,7 @@ export function createAppTheme(mode: ColorScheme): Theme {
         info: { main: "#3b78b0" },
         error: { main: "#c44747" },
         action: {
+          active: "rgba(48, 45, 40, 0.72)",
           hover: "rgba(59, 110, 165, 0.08)",
           selected: "rgba(59, 110, 165, 0.12)",
           disabled: "#969087",

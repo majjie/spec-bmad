@@ -82,7 +82,7 @@ function ActionItemRow({ item, onOpenFile }: { item: ActionItem; onOpenFile: (pa
             alignItems: "center",
             gap: 0.75,
             pt: 0.15,
-            color: "var(--color-text-subtle)",
+            color: "var(--color-text-muted)",
             flexShrink: 0,
           }}
         >

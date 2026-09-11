@@ -109,8 +109,23 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
         },
       }}
     >
-      <Paper variant="outlined" onClick={onOpen} sx={{ px: 1, py: 0.5, textAlign: "center", cursor: "pointer" }}>
-        <Typography variant="body2">{prefix}</Typography>
+      <Paper
+        variant="outlined"
+        onClick={onOpen}
+        sx={{
+          px: 1,
+          py: 0.5,
+          textAlign: "center",
+          cursor: "pointer",
+          bgcolor: "var(--color-bg-raised)",
+          borderColor: "var(--color-border-default)",
+          color: "var(--color-text-default)",
+          "&:hover": { bgcolor: "var(--color-bg-hover)" },
+        }}
+      >
+        <Typography variant="body2" sx={{ fontWeight: 600, color: "inherit" }}>
+          {prefix}
+        </Typography>
       </Paper>
     </Tooltip>
   );

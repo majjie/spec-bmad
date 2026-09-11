@@ -106,8 +106,10 @@ export default function ContentsTable({ entries, onSelectFolder, onOpenFile }: C
             }}
           >
             <TableCell>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                {entry.type === "folder" && <FolderIcon fontSize="small" />}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "var(--color-text-default)" }}>
+                {entry.type === "folder" && (
+                  <FolderIcon fontSize="small" sx={{ color: "var(--color-text-muted)" }} />
+                )}
                 {entry.name}
               </Box>
             </TableCell>
