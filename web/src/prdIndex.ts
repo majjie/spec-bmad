@@ -25,6 +25,9 @@ export const REQUIREMENT_CODE_PATTERN = /\b[A-Z]{2,}-\d+\b/g;
 // stage`); both separators are accepted, since BMAD documents use either.
 // Both require the letter portion to be uppercase (Assumptions, spec.md).
 const BULLET_PATTERN = /\*\*([A-Z]{2,})-(\d+)\*\*/g;
+// NOTE: the — in this character class is DATA, not prose - it is one of the two
+// separators a heading may use. Do not include it in a punctuation sweep; replacing it
+// collapses the class to a hyphen and silently stops indexing em-dash headings.
 const HEADER_PATTERN = /^###[ \t]+([A-Z]{2,})-(\d+)[ \t]+[—-]/gm;
 
 interface RawMatch {

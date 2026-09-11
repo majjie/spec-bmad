@@ -191,6 +191,8 @@ const STRONG_CODE_PATTERN = /^([A-Z]{2,})-(\d+)$/;
 // Prefix match, for header-style `### UJ-1 - Verifying a completed stage` - the code sits
 // at the start of the heading's text, followed by the title (data-model.md). The separator
 // may be an em dash or a hyphen.
+// NOTE: the — here is DATA, not prose - one of the two accepted separators.
+// Never include it in a punctuation sweep (see prdIndex.ts).
 const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s[—-]/;
 
 interface PrefixTileProps {

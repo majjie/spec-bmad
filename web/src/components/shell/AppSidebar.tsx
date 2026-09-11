@@ -295,7 +295,7 @@ export default function AppSidebar({
                         return null;
                       }
                       const slugKey = expandKeyForSlug("requirements", group.key);
-                      // other only lives on _other group — named groups won't have other
+                      // other only lives on _other group - named groups won't have other
                       return (
                         <SlugNest
                           key={group.key}

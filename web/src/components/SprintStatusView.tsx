@@ -158,7 +158,7 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
     <StageFrame>
       <StageHeader
         title="Sprint status"
-        lede="Delivery tracking from sprint-status.yaml — epics, stories, and open action items."
+        lede="Delivery tracking from sprint-status.yaml - epics, stories, and open action items."
       />
 
       <StatStrip>

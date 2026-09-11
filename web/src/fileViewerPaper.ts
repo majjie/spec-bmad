@@ -1,5 +1,5 @@
 /**
- * Sizing for the file viewer Dialog paper — compact reading panel vs nearly
+ * Sizing for the file viewer Dialog paper - compact reading panel vs nearly
  * full-viewport expand (98%).
  */
 export function fileViewerPaperSize(expanded: boolean): {

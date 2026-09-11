@@ -71,7 +71,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Semantic — dark by default (instrumental console) */
+  /* Semantic - dark by default (instrumental console) */
   color-scheme: dark;
   --color-bg-canvas: var(--color-neutral-950);
   --color-bg-surface: var(--color-neutral-900);
@@ -130,7 +130,7 @@
   --header-height: 56px;
 }
 
-/* Light appearance — only semantic layer remapped (token-architect three-tier rule). */
+/* Light appearance - only semantic layer remapped (token-architect three-tier rule). */
 :root[data-color-scheme="light"] {
   color-scheme: light;
   --color-shadow: var(--color-shadow-warm);

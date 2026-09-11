@@ -1,6 +1,6 @@
 export const COLOR_SCHEME_STORAGE_KEY = "bmad-browser:color-scheme";
 
-/** User preference — `system` follows the OS until the user chooses explicitly. */
+/** User preference - `system` follows the OS until the user chooses explicitly. */
 export type ColorSchemePreference = "light" | "dark" | "system";
 
 /** Resolved appearance applied to the document and MUI theme. */

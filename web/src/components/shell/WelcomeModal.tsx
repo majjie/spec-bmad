@@ -91,7 +91,7 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           }}
         >
           A read-only map of one BMAD project folder. The header shows the project name when it is
-          known. The left nav is organised by document type — not by multiple products.
+          known. The left nav is organised by document type - not by multiple products.
         </Typography>
 
         <Box

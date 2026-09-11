@@ -51,6 +51,8 @@ function textOf(children: ReactNode): string {
 // Header-style match only, for `### AD-1 - Some decision` - architecture never detects
 // bullet-style codes at all (FR-005), so there is deliberately no `strong` override here,
 // unlike PrdDetailView.tsx's own anchor-rendering.
+// NOTE: the — here is DATA, not prose - one of the two accepted separators.
+// Never include it in a punctuation sweep (see prdIndex.ts).
 const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s[—-]/;
 
 interface PrefixTileProps {

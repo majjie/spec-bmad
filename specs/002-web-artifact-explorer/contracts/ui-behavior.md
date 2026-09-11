@@ -40,7 +40,7 @@ Principle V's UI-rendering carve-out (no automated component tests required).
   change.
 - An empty folder (zero entries returned) shows an empty-state message instead of an empty
   table (FR-013).
-- `size` is rendered as a hyphen ("-") for folder rows (research.md § 4), and a
+- `size` is rendered as an em dash ("—") for folder rows (research.md § 4), and a
   human-readable byte size for file rows.
 - `createdAt`/`updatedAt` are rendered as localized dates, not raw ISO strings.
 

@@ -62,7 +62,7 @@ interface NavRowProps {
 
 const DEPTH_PL: Record<0 | 1 | 2, number> = { 0: 2, 1: 3.5, 2: 5 };
 
-/** Full-bleed square nav row — no inset pills or curved side gaps. */
+/** Full-bleed square nav row - no inset pills or curved side gaps. */
 export function NavRow({
   label,
   secondary,

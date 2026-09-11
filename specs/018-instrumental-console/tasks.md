@@ -355,12 +355,33 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       corpus following T038. Step 1's "Requirements and Architecture hold this project's
       planning runs" is not wrong, but a reader of a multi-lineage corpus sees a level the
       tour never accounts for. Lowest priority of the three.
-- [ ] T040 Finish the punctuation sweep across the shell's own copy. Fourteen em dashes
-      remain in code added by this feature - including user-visible copy in
-      `web/src/components/shell/WelcomeModal.tsx` and a literal dash constant in
-      `web/src/components/shell/OverviewView.tsx` - so the sweep that rewrote the rest of the
-      repository never covered the code landing alongside it. Cosmetic, but it leaves the
-      codebase internally inconsistent.
+- [X] T040 **DONE during this retrospective.** Reconciled the punctuation left behind when
+      `ab69439` swept the rest of the repository but not the code landing alongside it.
+      An audit of the seventeen remaining em dashes found four categories needing **opposite**
+      treatment, which is why this was never a sweep:
+      1. **Load-bearing (3)** - the em dash inside the `[\u2014-]` character class in
+         `prdIndex.ts`, `PrdDetailView.tsx` and `ArchitectureDetailView.tsx` is *data*: one of
+         the two separators a heading may use. Replacing it collapses the class to a hyphen
+         and silently stops indexing em-dash headings - the exact regression `ab69439`
+         introduced. Verified by running both patterns against a two-heading document: the
+         swept form drops the em-dash heading entirely. **Left alone**, and each now carries a
+         comment saying so, so the trap is visible in the code rather than only in this task.
+         The `\u2014` escapes in `prdIndex.test.ts` remain the behavioural guard.
+      2. **Placeholder glyph (6)** - `"\u2014"` as the "no value" mark in `SprintStatusView.tsx`,
+         `Stage.tsx`, `OverviewView.tsx` and now `ContentsTable.tsx`. An em dash is the
+         conventional glyph for this; a hyphen reads as a stray minus. `ab69439` had converted
+         `ContentsTable`'s alone and then rewrote feature 002's contract to match, leaving one
+         semantic role rendering two different glyphs. **Standardised on the em dash**, and
+         002's contract reverted to describe it.
+      3. **Prose (2)** - `WelcomeModal.tsx` and `SprintStatusView.tsx`'s sprint lede. The only
+         two instances the original sweep was actually aiming at. **Converted to hyphens.**
+      4. **Code comments (7)** - invisible to users, zero risk. **Converted** for internal
+         consistency.
+      Deliberately **not** touched: the ten `\u2026` ellipses in "Loading..." strings, where a
+      single ellipsis character is correct typography, and the six curly-quote pairs in
+      `examples/`, which are sample BMAD artifacts - realistic fixtures are worth more than
+      uniform punctuation, since real documents contain smart quotes and these are what
+      exercise the renderer against them.
 - [ ] T041 Decide the fate of the Action Items tile removed during this redesign. Feature
       008 specified `web/src/components/ActionItemsTile.tsx`; it was deleted on this branch
       and its role absorbed into Overview's open-item count, but nothing in feature 008 or
