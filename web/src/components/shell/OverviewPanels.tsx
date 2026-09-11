@@ -71,8 +71,13 @@ export function OpenItems({ items, onOpenFile }: { items: ActionItem[]; onOpenFi
             {item.action ?? item.id}
           </Typography>
           {item.resolvedPath && (
-            <Button size="small" onClick={() => onOpenFile(item.resolvedPath!)}>
-              Open
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => onOpenFile(item.resolvedPath!)}
+              sx={{ flexShrink: 0 }}
+            >
+              Open file
             </Button>
           )}
         </ListRow>

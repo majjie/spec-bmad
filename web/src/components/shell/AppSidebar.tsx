@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
-import FlagOutlined from "@mui/icons-material/FlagOutlined";
 import FolderOutlined from "@mui/icons-material/FolderOutlined";
 import Inventory2Outlined from "@mui/icons-material/Inventory2Outlined";
 import SpaceDashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
@@ -10,11 +9,10 @@ import type { NavigatorTree, TabAvailability } from "../../api.js";
 import {
   buildProjectNav,
   expandForSelectionChange,
-  formatArtifactLeafLabel,
-  productNavSummary,
   projectKeyForSelection,
   seedExpandedIfNeeded,
   toggleExpandedKey,
+  type ProjectNavGroup,
   type ShellSelection,
 } from "../../shell.js";
 import { GroupLabel, NavRow, SectionLabel } from "./sidebarNav.js";
@@ -22,38 +20,61 @@ import { GroupLabel, NavRow, SectionLabel } from "./sidebarNav.js";
 interface AppSidebarProps {
   availability: TabAvailability | null;
   navigatorTree: NavigatorTree | null;
+  sprintProject: string | null;
   selection: ShellSelection;
   onSelect: (selection: ShellSelection) => void;
+}
+
+function projectSummary(project: ProjectNavGroup): string | undefined {
+  if (project.key === "_other") {
+    return "Unsorted folders";
+  }
+  const parts: string[] = [];
+  if (project.requirements.length > 0) {
+    parts.push(`${project.requirements.length} PRD${project.requirements.length === 1 ? "" : "s"}`);
+  }
+  if (project.architecture.length > 0) {
+    parts.push(
+      `${project.architecture.length} architecture${project.architecture.length === 1 ? "" : "s"}`,
+    );
+  }
+  if (project.hasSprint) {
+    parts.push("sprint");
+  }
+  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
 export default function AppSidebar({
   availability,
   navigatorTree,
+  sprintProject,
   selection,
   onSelect,
 }: AppSidebarProps) {
-  const products = useMemo(() => buildProjectNav(navigatorTree), [navigatorTree]);
+  const projects = useMemo(
+    () => buildProjectNav(navigatorTree, sprintProject),
+    [navigatorTree, sprintProject],
+  );
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const seededRef = useRef(false);
   const previousOwnerRef = useRef<string | undefined>(undefined);
-  const sprintAvailable = navigatorTree?.sprintStatusAvailable === true;
 
   useEffect(() => {
-    if (products.length === 0) {
+    if (projects.length === 0) {
       return;
     }
     setExpanded((prev) => {
-      const result = seedExpandedIfNeeded(prev, products, seededRef.current);
+      const result = seedExpandedIfNeeded(prev, projects, seededRef.current);
       seededRef.current = result.seeded;
       return result.expanded;
     });
-  }, [products]);
+  }, [projects]);
 
   useEffect(() => {
-    const nextKey = projectKeyForSelection(products, selection);
+    const nextKey = projectKeyForSelection(projects, selection);
     setExpanded((prev) => expandForSelectionChange(prev, previousOwnerRef.current, nextKey));
     previousOwnerRef.current = nextKey;
-  }, [products, selection]);
+  }, [projects, selection]);
 
   function isSelected(sel: ShellSelection): boolean {
     if (selection.kind !== sel.kind) {
@@ -94,20 +115,11 @@ export default function AppSidebar({
               tourId="nav-overview"
               icon={<SpaceDashboardOutlined fontSize="small" />}
             />
-            {sprintAvailable && (
-              <NavRow
-                label="Sprint status"
-                selected={selection.kind === "sprint"}
-                onClick={() => onSelect({ kind: "sprint" })}
-                tourId="nav-sprint"
-                icon={<FlagOutlined fontSize="small" />}
-              />
-            )}
           </List>
         </Box>
       )}
 
-      {showCurated && products.length > 0 && (
+      {showCurated && projects.length > 0 && (
         <Box
           sx={{
             mt: 1,
@@ -115,33 +127,34 @@ export default function AppSidebar({
             borderTop: "1px solid var(--color-border-subtle)",
           }}
         >
-          <SectionLabel>Products</SectionLabel>
+          <SectionLabel>Projects</SectionLabel>
           <List dense disablePadding>
-            {products.map((product) => {
-              const open = expanded.has(product.key);
-              const summary = productNavSummary(product);
-              const panelId = `product-panel-${product.key}`;
-              const headerId = `product-header-${product.key}`;
-              const ownsSelection = projectKeyForSelection([product], selection) === product.key;
+            {projects.map((project) => {
+              const open = expanded.has(project.key);
+              const summary = projectSummary(project);
+              const panelId = `project-panel-${project.key}`;
+              const headerId = `project-header-${project.key}`;
+              const ownsSelection = projectKeyForSelection([project], selection) === project.key;
               return (
                 <Box
-                  key={product.key}
+                  key={project.key}
                   sx={{
-                    mx: 0,
-                    mb: 0.25,
+                    mx: 1,
+                    mb: 0.75,
                     overflow: "hidden",
-                    borderRadius: 0,
-                    bgcolor: open ? "var(--color-bg-raised)" : "transparent",
-                    boxShadow: "none",
+                    borderRadius: "calc(var(--radius-nav-item) + var(--space-1))",
+                    bgcolor: open ? "var(--color-bg-subtle)" : "transparent",
+                    boxShadow: open ? "var(--shadow-sm)" : "none",
                     transition: "background-color var(--duration-fast) var(--ease-out)",
                   }}
                 >
                   <NavRow
                     id={headerId}
-                    label={product.title}
+                    flush
+                    label={project.title}
                     {...(summary ? { secondary: summary } : {})}
                     selected={!open && ownsSelection}
-                    onClick={() => setExpanded((prev) => toggleExpandedKey(prev, product.key))}
+                    onClick={() => setExpanded((prev) => toggleExpandedKey(prev, project.key))}
                     ariaExpanded={open}
                     ariaControls={panelId}
                   />
@@ -157,42 +170,60 @@ export default function AppSidebar({
                       dense
                       disablePadding
                       sx={{
-                        mb: 0.5,
-                        borderTop: "1px solid var(--color-border-subtle)",
+                        ml: 2.5,
+                        mr: 0.5,
+                        mb: 0.75,
+                        pl: 1,
+                        borderLeft: "1px solid var(--color-border-default)",
                       }}
                     >
-                      {product.requirements.length > 0 && (
+                      {project.requirements.length > 0 && (
                         <>
                           <GroupLabel>Requirements</GroupLabel>
-                          {product.requirements.map((leaf) => (
+                          {project.requirements.map((leaf) => (
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              label={formatArtifactLeafLabel(leaf, "prd")}
+                              flush
+                              label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "prd", path: leaf.path })}
                               onClick={() => onSelect({ kind: "prd", path: leaf.path })}
                             />
                           ))}
                         </>
                       )}
-                      {product.architecture.length > 0 && (
+                      {project.architecture.length > 0 && (
                         <>
                           <GroupLabel>Architecture</GroupLabel>
-                          {product.architecture.map((leaf) => (
+                          {project.architecture.map((leaf) => (
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              label={formatArtifactLeafLabel(leaf, "architecture")}
+                              flush
+                              label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "architecture", path: leaf.path })}
                               onClick={() => onSelect({ kind: "architecture", path: leaf.path })}
                             />
                           ))}
                         </>
                       )}
-                      {product.other.map((entry) => (
+                      {project.hasSprint && (
+                        <>
+                          <GroupLabel>Delivery</GroupLabel>
+                          <NavRow
+                            depth={1}
+                            flush
+                            label="Sprint status"
+                            selected={selection.kind === "sprint"}
+                            onClick={() => onSelect({ kind: "sprint" })}
+                          />
+                        </>
+                      )}
+                      {project.other.map((entry) => (
                         <NavRow
                           key={entry.path}
                           depth={1}
+                          flush
                           label={entry.folderName}
                           selected={isSelected({ kind: "prd", path: entry.path })}
                           onClick={() => onSelect({ kind: "prd", path: entry.path })}
