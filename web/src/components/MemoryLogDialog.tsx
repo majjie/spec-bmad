@@ -38,7 +38,9 @@ function MemlogSegmentView({
       sx={{
         all: "unset",
         cursor: "pointer",
-        color: "var(--color-accent)",
+        // Links use the stronger accent, not the plain one: on a light surface the 600-weight
+        // accent is legible as a label but marginal as a link against sand.
+        color: "var(--color-accent-strong)",
         textDecoration: "underline",
       }}
     >
@@ -47,9 +49,8 @@ function MemlogSegmentView({
   );
 }
 
-// FR-012/FR-013: alternating row background by index - the same candy-striping
-// convention SprintStatusView.tsx's StepRow already uses - with the category (when
-// present) broken into its own primary.light header, separate from the body text.
+// Alternating row background by index - same candy-striping convention SprintStatusView
+// StepRow uses - with the category (when present) broken into its own accent header.
 function MemlogEntryRow({
   entry,
   index,
@@ -62,7 +63,10 @@ function MemlogEntryRow({
   return (
     <Box sx={{ py: 0.5, px: 1, bgcolor: index % 2 === 0 ? "action.hover" : "transparent" }}>
       {entry.category !== null && (
-        <Typography variant="caption" color="primary.light" sx={{ display: "block", fontWeight: 600 }}>
+        <Typography
+          variant="caption"
+          sx={{ display: "block", fontWeight: 600, color: "var(--color-accent)" }}
+        >
           {entry.category}
         </Typography>
       )}
@@ -78,8 +82,8 @@ function MemlogEntryRow({
 /**
  * The memory log tile's bespoke dialog (feature 013) - structurally modeled on
  * FileViewerDialog.tsx's own shell (the corner controls as a sibling of the scrolling
- * content, never a descendant of it, research.md § 6) but rendering `.memlog.md`'s bullets
- * via parseMemlogEntries instead of passing the content through ReactMarkdown.
+ * content, never a descendant of it) but rendering `.memlog.md`'s bullets via
+ * parseMemlogEntries instead of ReactMarkdown.
  */
 export default function MemoryLogDialog({
   open,
@@ -106,6 +110,8 @@ export default function MemoryLogDialog({
           height: "calc(100% - 40px)",
           maxWidth: "none",
           maxHeight: "none",
+          bgcolor: "var(--color-bg-raised)",
+          backgroundImage: "none",
         },
       }}
     >
@@ -115,17 +121,25 @@ export default function MemoryLogDialog({
           top: 8,
           right: 8,
           zIndex: 10,
-          padding: "4px",
-          borderRadius: 1,
-          backgroundColor: "var(--color-scrim)",
           display: "flex",
           alignItems: "center",
           gap: 0.5,
+          px: 0.5,
+          py: 0.25,
+          borderRadius: "var(--radius-control)",
+          bgcolor: "var(--color-bg-surface)",
+          border: "1px solid var(--color-border-default)",
+          boxShadow: "var(--elevation-card)",
         }}
       >
         {hasPreamble && <FrontmatterInfoControl preamble={preamble} />}
-        <IconButton onClick={onClose} aria-label="Close" size="small" sx={{ color: "common.white" }}>
-          <CloseIcon />
+        <IconButton
+          onClick={onClose}
+          aria-label="Close"
+          size="small"
+          sx={{ color: "var(--color-text-muted)" }}
+        >
+          <CloseIcon fontSize="small" />
         </IconButton>
       </Box>
       <div style={{ overflow: "auto", height: "100%" }}>
@@ -140,7 +154,7 @@ export default function MemoryLogDialog({
           </Typography>
         )}
         {!error && content !== null && (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", pt: 5 }}>
             {entries.map((entry, index) => (
               <MemlogEntryRow key={index} entry={entry} index={index} onSelectReference={onSelectReference} />
             ))}

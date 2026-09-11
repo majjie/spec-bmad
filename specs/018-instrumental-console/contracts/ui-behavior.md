@@ -77,6 +77,8 @@ the existing tab identifiers, not a rename of them.
 - The epic currently in progress is expanded on load (FR-023).
 - Project metadata is collapsed behind a disclosure (FR-024).
 - The open action-item count treats any status other than `done` as open.
+- **Epics appear above action items.** Action items are a variable-length supplement; placed
+  first they push the view's actual subject below the fold (FR-026a).
 - Action items render as a **full-width section** at their natural height - not a fixed-height
   panel scrolling within itself, and not matched to the height of anything beside it
   (FR-025). This supersedes feature 008's FR-001, FR-002 and FR-003.
@@ -111,11 +113,12 @@ the existing tab identifiers, not a rename of them.
 ## Appearance, motion and accessibility
 
 - All colour and typography resolve through the semantic token layer. No component defines a
-  raw colour of its own (FR-027) - including the scrim behind a modal or the guided tour,
-  which is tokenised per appearance so a light page gets warm ink rather than the black that
-  suits a dark one.
-- Overlays that **block** and overlays that **teach** use different scrims: the tour's is
-  lighter, because the interface it is describing has to stay legible behind it.
+  colour of its own (FR-027), and none uses a value that is identical in both appearances
+  (FR-027a) - which covers raw literals and borrowed fixed palette entries alike.
+- **Transient surfaces obey this too**: tooltips and menus that list documents to jump to,
+  the scrim behind the guided tour, and floating control clusters inside a dialog. These are
+  where it is most often broken, because a fixed dark surface looks deliberate on a dark page
+  and only reveals itself as dark-on-dark text once a light appearance exists.
 - The first focusable element offers to skip to the main content (FR-028).
 - Header, navigation, and main regions are exposed as landmarks with accessible names.
 - The focused element is always visibly indicated, using the focus token (FR-030).
