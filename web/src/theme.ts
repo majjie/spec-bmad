@@ -111,7 +111,7 @@ const theme = createTheme({
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          borderRadius: "var(--radius-nav-item)",
+          borderRadius: 0,
         },
       },
     },
