@@ -170,7 +170,7 @@ renders as plain text, not a link.
   than an error or a blank pane.
 - **FR-005**: The tool MUST detect every heading-style requirement code in the
   architecture document - a level-3 heading beginning with two-or-more letters, a dash,
-  one-or-more digits, a space, and a hyphen (e.g. `### AD-1 - Some decision`) - recording
+  one-or-more digits, a space, and an em dash or hyphen (e.g. `### AD-1 - Some decision`) - recording
   each occurrence's location. Bullet-pointed codes (e.g. `**AD-1**`) MUST NOT be detected
   in an architecture document, even though PRD documents do detect that style.
 - **FR-006**: One small tile MUST appear per unique letter-prefix found among detected

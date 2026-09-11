@@ -44,16 +44,22 @@ export function resolveColorScheme(
   return preference;
 }
 
-export function readSystemColorScheme(
-  media: { matches: boolean } | null = typeof window !== "undefined"
-    ? window.matchMedia("(prefers-color-scheme: dark)")
-    : null,
-): ColorScheme {
+export function readSystemColorScheme(media: { matches: boolean } | null): ColorScheme {
   return media?.matches ? "dark" : "light";
 }
 
+/**
+ * The parts of an element this module writes to. Structural, not `HTMLElement`, so this
+ * module stays importable and testable without a DOM (constitution Principle IV); the
+ * caller supplies `document.documentElement`.
+ */
+export interface ColorSchemeRoot {
+  dataset: { [key: string]: string | undefined };
+  style: { colorScheme: string };
+}
+
 /** Apply the resolved scheme to `<html>` for CSS semantic tokens (and native `color-scheme`). */
-export function applyColorSchemeToDocument(scheme: ColorScheme, root: HTMLElement = document.documentElement): void {
+export function applyColorSchemeToDocument(scheme: ColorScheme, root: ColorSchemeRoot): void {
   root.dataset.colorScheme = scheme;
   root.style.colorScheme = scheme;
 }

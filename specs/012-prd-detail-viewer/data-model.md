@@ -27,7 +27,7 @@ test-first):
 1. Scan the raw, frontmatter-stripped Markdown text left to right for both patterns:
    - Bullet style: `**<2+ letters>-<1+ digits>**`
    - Header style: a level-3 heading (`###`) starting with `<2+ letters>-<1+ digits>`,
-     followed by a space and a hyphen (`-`)
+     followed by a space and an em dash (`—`) or a hyphen (`-`)
 2. For each match, in the order found, construct a `RequirementCodeReference` with the
    next sequential `id`.
 3. Return the full ordered array - this is the single source of truth both for the

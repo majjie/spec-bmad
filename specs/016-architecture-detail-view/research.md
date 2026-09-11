@@ -17,7 +17,7 @@ copies drifting apart over time for no benefit, since the shape of a header-styl
 inspection of the reference project's real
 `_bmad-output/planning-artifacts/architecture/architecture-bmad-2026-08-28/
 ARCHITECTURE-SPINE.md`: `### AD-1 -` through `### AD-19 -`, some with a trailing bracketed
-tag like `[ADOPTED]` after the hyphen text - harmless, since `HEADER_PATTERN` only anchors
+tag like `[ADOPTED]` after the separator text - harmless, since `HEADER_PATTERN` only anchors
 the line's start). `groupByPrefix` needs no change at all - it operates on whatever
 reference array it's handed, agnostic to how that array was filtered.
 

@@ -94,7 +94,7 @@ export default function AppHeader({
               size="small"
               data-tour="refresh"
               sx={{
-                color: refreshFailed ? "error.main" : "inherit",
+                color: refreshFailed ? "var(--color-status-error)" : "inherit",
                 "@keyframes spin": {
                   from: { transform: "rotate(0deg)" },
                   to: { transform: "rotate(360deg)" },

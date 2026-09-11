@@ -2,12 +2,15 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   COLOR_SCHEME_STORAGE_KEY,
+  applyColorSchemeToDocument,
   clearColorSchemePreference,
   nextColorSchemePreference,
   readColorSchemePreference,
+  readSystemColorScheme,
   resolveColorScheme,
   writeColorSchemePreference,
   type ColorScheme,
+  type ColorSchemeRoot,
 } from "../../../web/src/colorScheme.js";
 
 function withLocalStorage(run: (store: Map<string, string>) => void): void {
@@ -77,4 +80,24 @@ test("nextColorSchemePreference flips the resolved appearance to the other mode"
   assert.equal(nextColorSchemePreference("light", "dark"), "dark");
   assert.equal(nextColorSchemePreference("system", "dark"), "light");
   assert.equal(nextColorSchemePreference("system", "light"), "dark");
+});
+
+test("readSystemColorScheme reports dark only when the media query matches", () => {
+  assert.equal(readSystemColorScheme({ matches: true }), "dark");
+  assert.equal(readSystemColorScheme({ matches: false }), "light");
+});
+
+test("readSystemColorScheme falls back to light with no media query available", () => {
+  assert.equal(readSystemColorScheme(null), "light");
+});
+
+test("applyColorSchemeToDocument stamps both the data attribute and native color-scheme", () => {
+  const root: ColorSchemeRoot = { dataset: {}, style: { colorScheme: "" } };
+  applyColorSchemeToDocument("dark", root);
+  assert.equal(root.dataset["colorScheme"], "dark");
+  assert.equal(root.style.colorScheme, "dark");
+
+  applyColorSchemeToDocument("light", root);
+  assert.equal(root.dataset["colorScheme"], "light");
+  assert.equal(root.style.colorScheme, "light");
 });

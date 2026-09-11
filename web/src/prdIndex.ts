@@ -21,10 +21,11 @@ export const REQUIREMENT_CODE_PATTERN = /\b[A-Z]{2,}-\d+\b/g;
 
 // Bullet style: two-or-more letters, a dash, one-or-more digits, wrapped in **...** (e.g.
 // `**FR-25**`). Header style: a level-3 heading starting with the same code shape,
-// followed by a space and a hyphen (e.g. `### UJ-1 - Verifying a completed stage`).
+// followed by a space and an em dash or hyphen (e.g. `### UJ-1 - Verifying a completed
+// stage`); both separators are accepted, since BMAD documents use either.
 // Both require the letter portion to be uppercase (Assumptions, spec.md).
 const BULLET_PATTERN = /\*\*([A-Z]{2,})-(\d+)\*\*/g;
-const HEADER_PATTERN = /^###[ \t]+([A-Z]{2,})-(\d+)[ \t]+-/gm;
+const HEADER_PATTERN = /^###[ \t]+([A-Z]{2,})-(\d+)[ \t]+[—-]/gm;
 
 interface RawMatch {
   index: number;

@@ -38,7 +38,7 @@ function MemlogSegmentView({
       sx={{
         all: "unset",
         cursor: "pointer",
-        color: "info.light",
+        color: "var(--color-accent)",
         textDecoration: "underline",
       }}
     >

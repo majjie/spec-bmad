@@ -23,6 +23,26 @@ test("buildRequirementCodeIndex() detects a header-style code", () => {
   assert.equal(refs[0]?.style, "header");
 });
 
+test("buildRequirementCodeIndex() detects a header-style code separated by an em dash", () => {
+  const content = "### UJ-1 \u2014 Verifying a completed stage\n\nSome body text.\n";
+  const refs = buildRequirementCodeIndex(content);
+  assert.equal(refs.length, 1);
+  assert.equal(refs[0]?.code, "UJ-1");
+  assert.equal(refs[0]?.prefix, "UJ");
+  assert.equal(refs[0]?.number, 1);
+  assert.equal(refs[0]?.style, "header");
+});
+
+test("buildRequirementCodeIndex() detects header-style codes under either separator in one document", () => {
+  const content = ["### FR-1 \u2014 em dash separated", "", "### FR-2 - hyphen separated"].join("\n");
+  const refs = buildRequirementCodeIndex(content);
+  assert.deepEqual(
+    refs.map((ref) => ref.code),
+    ["FR-1", "FR-2"],
+  );
+  assert.ok(refs.every((ref) => ref.style === "header"));
+});
+
 test("buildRequirementCodeIndex() counts a duplicated code as two distinct references", () => {
   const content = "**FR-25** First occurrence.\n\nSome text in between.\n\n**FR-25** Second occurrence.\n";
   const refs = buildRequirementCodeIndex(content);

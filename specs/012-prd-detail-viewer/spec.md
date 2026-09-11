@@ -25,7 +25,7 @@ describe heading requirements - functional requirements, non-functional requirem
 user-journeys etc, in two flavours. Bullet-pointed requirements follow the pattern: two
 stars, two or more letters, a dash, one or more digits, two stars (e.g. '**FR-25** Documents
 are navigable...'). Headered requirements follow the pattern: three hashes, two or more
-letters, a dash, one or more digits, a space, a hyphen (e.g. '### UJ-1 - Verifying a
+letters, a dash, one or more digits, a space, an em dash or hyphen (e.g. '### UJ-1 - Verifying a
 completed stage...'). We're interested in just the 'UJ-1' or 'FR-25' names of these
 requirements. To the right hand side of the document, a column of small tiles will list
 the unique letter portion of the requirement codes (e.g. FR, UJ, NFR). Hovering over these
@@ -214,7 +214,7 @@ none of them do anything when selected.
   document.
 - **FR-008**: The tool MUST detect every header-style requirement code in the PRD's
   content - a level-3 heading beginning with two-or-more letters, a dash, one-or-more
-  digits, a space, and a hyphen (e.g. `### UJ-1 - Verifying a completed stage`) -
+  digits, a space, and an em dash or hyphen (e.g. `### UJ-1 - Verifying a completed stage`) -
   recording each occurrence's location in the document.
 - **FR-009**: One small tile MUST appear per unique letter-prefix found across both
   detected code styles (e.g. "FR", "UJ", "NFR") - not one tile per individual code, and no

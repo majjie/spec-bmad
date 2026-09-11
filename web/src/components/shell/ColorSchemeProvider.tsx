@@ -39,12 +39,14 @@ export function useColorScheme(): ColorSchemeContextValue {
 
 export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPreference] = useState<ColorSchemePreference>(() => readColorSchemePreference());
-  const [systemScheme, setSystemScheme] = useState<ColorScheme>(() => readSystemColorScheme());
+  const [systemScheme, setSystemScheme] = useState<ColorScheme>(() =>
+    readSystemColorScheme(window.matchMedia("(prefers-color-scheme: dark)")),
+  );
 
   const scheme = resolveColorScheme(preference, systemScheme);
 
   useEffect(() => {
-    applyColorSchemeToDocument(scheme);
+    applyColorSchemeToDocument(scheme, document.documentElement);
   }, [scheme]);
 
   useEffect(() => {

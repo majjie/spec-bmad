@@ -224,3 +224,5 @@ Features shipped so far:
 | 016 | [Architecture detail view](specs/016-architecture-detail-view/spec.md) |
 | 017 | [Markdown render polish](specs/017-markdown-render-polish/spec.md) |
 | 018 | [Instrumental console redesign](specs/018-instrumental-console/spec.md) |
+| 019 | [Light and dark appearance](specs/019-appearance-scheme/spec.md) |
+| 020 | [File viewer as a reading surface](specs/020-file-viewer-reader/spec.md) |
