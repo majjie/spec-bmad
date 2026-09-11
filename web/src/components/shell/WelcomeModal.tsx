@@ -15,16 +15,20 @@ interface WelcomeModalProps {
 
 const GLOSSARY = [
   {
-    term: "Projects",
-    detail: "Named product lineages from your BMAD folders (for example Harbor). Expand one to see its documents.",
+    term: "Products",
+    detail: "Named lineages from your BMAD folders (for example Harbor). Expand one to see its documents.",
   },
   {
     term: "Requirements",
-    detail: "PRDs - what the organisation decided to build, grouped by date (newest first).",
+    detail: "PRDs — what the organisation decided to build, grouped by date (newest first).",
   },
   {
-    term: "Architecture & Sprint",
-    detail: "The technical spine for that product, plus delivery status from sprint-status.yaml when present.",
+    term: "Architecture",
+    detail: "The technical spine for that product.",
+  },
+  {
+    term: "Sprint status",
+    detail: "Workspace delivery from sprint-status.yaml. It lives under Workspace, not inside a product.",
   },
 ];
 
@@ -70,8 +74,8 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           </Typography>
         </Box>
         <Typography variant="body1" sx={{ mb: 2.5, textWrap: "pretty", maxWidth: "48ch" }}>
-          A read-only map of this workspace&apos;s BMAD artifacts. Projects in the left nav are
-          the products BMAD has been planning - not this viewer&apos;s brand.
+          A read-only map of this workspace&apos;s BMAD artifacts. Products in the left nav are
+          what BMAD has been planning — not this viewer&apos;s brand.
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2.5 }}>
           {GLOSSARY.map((row) => (
@@ -86,12 +90,12 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           ))}
         </Box>
         <Typography variant="caption" color="text.secondary">
-          This viewer never writes, mutates, or deletes anything in your project.
+          This viewer never writes, mutates, or deletes anything in this folder.
         </Typography>
       </DialogContent>
       <DialogActions sx={{ px: 3.5, pb: 3, gap: 1 }}>
         <Button onClick={onSkip} color="inherit">
-          Skip, take me to the project
+          Skip, take me to the workspace
         </Button>
         <Button ref={startRef} variant="contained" onClick={onStartTour} disableElevation>
           Start the tour

@@ -11,3 +11,4 @@
 - Removed curved inset left-nav selection: full-bleed square selected rows, no floating pill margins or accent side-border.
 - Added horizontal padding to ListRow (and Overview project captions) so date/Latest labels aren’t flush to the row highlight.
 - Added a header light/dark mode switcher with persisted preference, light semantic tokens, and scheme-aware syntax highlighting.
+- Aligned IA to Workspace / Products / Folders: Sprint sits under Workspace, Overview is product-first, and nav leaves use document dates instead of ISO.

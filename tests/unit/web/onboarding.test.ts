@@ -50,6 +50,7 @@ test("read/write onboarding state round-trips via localStorage when available", 
   }
 });
 
-test("TOUR_STEPS mention projects accordion orientation", () => {
-  assert.ok(TOUR_STEPS.some((s) => /project/i.test(s.body)));
+test("TOUR_STEPS mention products accordion orientation", () => {
+  assert.ok(TOUR_STEPS.some((s) => /product/i.test(`${s.title} ${s.body}`)));
+  assert.ok(!TOUR_STEPS.some((s) => /sprint status - the three/i.test(s.body)));
 });

@@ -1,8 +1,8 @@
 import type { NavigatorTree, PrdDateEntry, PrdNonConformingEntry } from "./api.js";
 
 /**
- * UI navigation sections (feature 018/019). Curated docs open from the project accordion;
- * method/generated remain folder explorers.
+ * UI navigation sections (feature 018/019). Curated docs open from the product accordion;
+ * method/generated remain folder explorers. Sprint is workspace-scoped.
  */
 export type ShellSection =
   | "overview"
@@ -34,9 +34,51 @@ export interface ProjectNavGroup {
   title: string;
   requirements: ProjectNavLeaf[];
   architecture: ProjectNavLeaf[];
-  /** Whether workspace sprint-status belongs under this project */
-  hasSprint: boolean;
   other: PrdNonConformingEntry[];
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** ISO `YYYY-MM-DD` → `1 Sep 2026`; anything else is returned unchanged. */
+export function formatRunDate(isoDate: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate);
+  if (!match) {
+    return isoDate;
+  }
+  const month = MONTHS[Number(match[2]) - 1];
+  if (!month) {
+    return isoDate;
+  }
+  return `${Number(match[3])} ${month} ${match[1]}`;
+}
+
+export function formatArtifactLeafLabel(
+  leaf: Pick<ProjectNavLeaf, "date" | "folderName" | "isLatest">,
+  kind: "prd" | "architecture",
+): string {
+  const date = leaf.date ? formatRunDate(leaf.date) : leaf.folderName;
+  if (!leaf.isLatest) {
+    return date;
+  }
+  return kind === "prd" ? `${date} · latest PRD` : `${date} · latest architecture`;
+}
+
+export function productNavSummary(
+  product: Pick<ProjectNavGroup, "key" | "requirements" | "architecture">,
+): string | undefined {
+  if (product.key === "_other") {
+    return "Unsorted folders";
+  }
+  const parts: string[] = [];
+  if (product.requirements.length > 0) {
+    const n = product.requirements.length;
+    parts.push(`${n} PRD${n === 1 ? "" : "s"}`);
+  }
+  if (product.architecture.length > 0) {
+    const n = product.architecture.length;
+    parts.push(`${n} architecture${n === 1 ? "" : "s"}`);
+  }
+  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
 /** Strip conventional BMAD folder prefixes for human sidebar/tree labels. */
@@ -69,15 +111,11 @@ function toLeaves(dates: PrdDateEntry[]): ProjectNavLeaf[] {
 }
 
 /**
- * Merge PRD + architecture groupings into one project accordion model.
- * `prd-harbor` and `architecture-harbor` become a single "Harbor" project.
- * Sprint attaches to the project whose key matches `sprintProject` (case-insensitive),
- * otherwise to the first project when a sprint file exists.
+ * Merge PRD + architecture groupings into one product accordion model.
+ * `prd-harbor` and `architecture-harbor` become a single "Harbor" product.
+ * Sprint is workspace-scoped and is not attached here.
  */
-export function buildProjectNav(
-  tree: NavigatorTree | null,
-  sprintProject: string | null,
-): ProjectNavGroup[] {
+export function buildProjectNav(tree: NavigatorTree | null): ProjectNavGroup[] {
   if (!tree) {
     return [];
   }
@@ -92,7 +130,6 @@ export function buildProjectNav(
         title: titleCaseProject(key),
         requirements: [],
         architecture: [],
-        hasSprint: false,
         other: [],
       };
       map.set(key, group);
@@ -140,15 +177,6 @@ export function buildProjectNav(
     return a.title.localeCompare(b.title);
   });
 
-  if (tree.sprintStatusAvailable) {
-    const sprintKey = sprintProject ? normalizeProjectKey(sprintProject) : null;
-    const match = sprintKey ? groups.find((g) => g.key === sprintKey) : undefined;
-    const target = match ?? groups.find((g) => g.key !== "_other") ?? groups[0];
-    if (target) {
-      target.hasSprint = true;
-    }
-  }
-
   return groups;
 }
 
@@ -172,25 +200,15 @@ export function countOpenActionItems(items: { status: string | null }[]): number
   return items.filter((item) => item.status !== "done").length;
 }
 
-export interface ProjectCoverageRow {
-  key: string;
-  title: string;
-  requirementsCount: number;
-  latestRequirementDate: string;
-  architectureCount: number;
-  latestArchitectureDate: string;
-  hasSprint: boolean;
-}
-
-/** First project to seed open - sprint owner if present, otherwise the first group. */
+/** First named product to seed open — skip the unsorted bucket. */
 export function initialExpandedProjectKey(
-  projects: ReadonlyArray<Pick<ProjectNavGroup, "key" | "hasSprint">>,
+  projects: ReadonlyArray<Pick<ProjectNavGroup, "key">>,
 ): string | null {
   if (projects.length === 0) {
     return null;
   }
-  const withSprint = projects.find((project) => project.hasSprint);
-  return (withSprint ?? projects[0]!).key;
+  const named = projects.find((project) => project.key !== "_other");
+  return (named ?? projects[0]!).key;
 }
 
 export function toggleExpandedKey(expanded: ReadonlySet<string>, key: string): Set<string> {
@@ -215,14 +233,11 @@ export function projectKeyForSelection(
         project.other.some((entry) => entry.path === selection.path),
     )?.key;
   }
-  if (selection.kind === "sprint") {
-    return projects.find((project) => project.hasSprint)?.key;
-  }
   return undefined;
 }
 
 /**
- * Open the project that owns a newly chosen selection. Passing `undefined` leaves
+ * Open the product that owns a newly chosen selection. Passing `undefined` leaves
  * the set unchanged so a user collapse is not re-seeded.
  */
 export function ensureExpandedForSelection(
@@ -238,7 +253,7 @@ export function ensureExpandedForSelection(
 }
 
 /**
- * Expand only when the selection moves to a different project. Collapsing the
+ * Expand only when the selection moves to a different product. Collapsing the
  * accordion for the current selection must not bounce it back open.
  */
 export function expandForSelectionChange(
@@ -255,7 +270,7 @@ export function expandForSelectionChange(
 /** Seed the first open accordion once. Later empty sets are a user collapse. */
 export function seedExpandedIfNeeded(
   expanded: ReadonlySet<string>,
-  projects: ReadonlyArray<Pick<ProjectNavGroup, "key" | "hasSprint">>,
+  projects: ReadonlyArray<Pick<ProjectNavGroup, "key">>,
   seeded: boolean,
 ): { expanded: Set<string>; seeded: boolean } {
   if (seeded) {
@@ -266,19 +281,4 @@ export function seedExpandedIfNeeded(
     return { expanded: new Set(expanded), seeded: false };
   }
   return { expanded: new Set([key]), seeded: true };
-}
-
-/** Named products only - unsorted folders stay out of the overview scan. */
-export function buildProjectCoverage(groups: ProjectNavGroup[]): ProjectCoverageRow[] {
-  return groups
-    .filter((group) => group.key !== "_other")
-    .map((group) => ({
-      key: group.key,
-      title: group.title,
-      requirementsCount: group.requirements.length,
-      latestRequirementDate: group.requirements[0]?.date ?? "",
-      architectureCount: group.architecture.length,
-      latestArchitectureDate: group.architecture[0]?.date ?? "",
-      hasSprint: group.hasSprint,
-    }));
 }

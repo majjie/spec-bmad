@@ -412,7 +412,6 @@ export default function App() {
         <AppSidebar
           availability={availability}
           navigatorTree={navigatorTree}
-          sprintProject={sprintStatus?.summary.project ?? null}
           selection={selection}
           onSelect={(next) => applySelection(next)}
         />

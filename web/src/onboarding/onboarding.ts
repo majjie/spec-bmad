@@ -14,26 +14,26 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "sidebar",
     anchor: "sidebar",
-    title: "Projects live here",
-    body: "Each project is an accordion. Expand one to open its Requirements (PRDs), Architecture spines, and Sprint status - the three document types BMAD produces.",
+    title: "Products live here",
+    body: "Each product is an accordion. Expand one to open its Requirements and Architecture. Sprint status sits under Workspace when this folder has a sprint-status.yaml.",
   },
   {
     id: "overview",
     anchor: "nav-overview",
     title: "Start on Overview",
-    body: "Overview summarises what is in progress across this workspace when you do not know where to click yet.",
+    body: "Overview summarises products and workspace delivery when you do not know where to click yet.",
   },
   {
     id: "stage",
     anchor: "main-stage",
     title: "Documents open here",
-    body: "Selecting a PRD date, architecture run, or Sprint status fills this stage. Method files and Generated files are the raw folders underneath.",
+    body: "Selecting a PRD, architecture run, or Sprint status fills this stage. Method files and Generated files are the raw folders underneath.",
   },
   {
     id: "refresh",
     anchor: "refresh",
     title: "Reload from disk",
-    body: "BMAD workflows write files on disk. Reload refreshes the tree without restarting. This viewer never writes to your project.",
+    body: "BMAD workflows write files on disk. Reload refreshes the tree without restarting. This viewer never writes to this folder.",
   },
   {
     id: "help",
