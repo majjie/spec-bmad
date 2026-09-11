@@ -35,10 +35,10 @@
   --space-6: 24px;
   --space-8: 32px;
 
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
   --color-shadow: #05070a;
@@ -79,11 +79,11 @@
 
   --color-focus-ring: var(--color-amber-400);
 
-  --radius-control: 2px;
-  --radius-nav-item: 0;
-  --radius-card: 2px;
-  --radius-overlay: 2px;
-  --button-radius: 2px;
+  --radius-control: var(--radius-sm);
+  --radius-nav-item: var(--radius-sm);
+  --radius-card: var(--radius-lg);
+  --radius-overlay: var(--radius-xl);
+  --button-radius: var(--radius-full);
 
   --shadow-sm:
     0 1px 2px color-mix(in srgb, var(--color-shadow) 45%, transparent),
@@ -98,7 +98,7 @@
   --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
   --elevation-card: var(--shadow-sm);
   --elevation-overlay: var(--shadow-lg);
-  --elevation-nav-inset: none;
+  --elevation-nav-inset: inset 3px 0 0 var(--color-accent);
 
   --sidebar-width: 268px;
   --header-height: 56px;
