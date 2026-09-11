@@ -45,6 +45,14 @@ test("brand mark uses the brand token for its spine", () => {
   assert.doesNotMatch(mark, /fill="var\(--color-accent\)"/);
 });
 
+test("buttons keep generous inline padding so pill hover states aren’t cramped", () => {
+  assert.match(tokens, /--button-padding-inline-sm:\s*var\(--space-4\)/);
+  assert.match(tokens, /--button-padding-inline-md:\s*var\(--space-5\)/);
+  const theme = readFileSync(new URL("../../../web/src/theme.ts", import.meta.url), "utf8");
+  assert.match(theme, /textSizeSmall:[\s\S]*?paddingInline:\s*"var\(--button-padding-inline-sm\)"/);
+  assert.match(theme, /outlinedSizeSmall:[\s\S]*?paddingInline:\s*"var\(--button-padding-inline-sm\)"/);
+});
+
 test("light theme defines soft, layered elevation", () => {
   assert.match(
     lightTheme,

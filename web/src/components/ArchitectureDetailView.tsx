@@ -78,9 +78,9 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
               sx={{
                 all: "unset",
                 cursor: "pointer",
-                px: 0.5,
-                py: 0.25,
-                borderRadius: 0.5,
+                px: "var(--space-2)",
+                py: "var(--space-1)",
+                borderRadius: "var(--radius-control)",
                 "&:hover": { bgcolor: "action.hover" },
               }}
             >
@@ -189,9 +189,9 @@ function ReviewsTile({
               sx={{
                 all: "unset",
                 cursor: "pointer",
-                px: 0.5,
-                py: 0.25,
-                borderRadius: 0.5,
+                px: "var(--space-2)",
+                py: "var(--space-1)",
+                borderRadius: "var(--radius-control)",
                 "&:hover": { bgcolor: "action.hover" },
               }}
             >

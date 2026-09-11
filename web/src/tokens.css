@@ -111,6 +111,13 @@
   --radius-card: var(--radius-lg);
   --radius-overlay: var(--radius-xl);
   --button-radius: var(--radius-full);
+  /* Pill buttons need generous inline padding so hover fill doesn’t crowd the label */
+  --button-padding-inline-sm: var(--space-4);
+  --button-padding-block-sm: var(--space-1);
+  --button-padding-inline-md: var(--space-5);
+  --button-padding-block-md: var(--space-2);
+  --button-padding-inline-lg: var(--space-6);
+  --button-padding-block-lg: var(--space-3);
 
   --shadow-sm:
     0 1px 2px color-mix(in srgb, var(--color-shadow) 45%, transparent),

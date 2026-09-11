@@ -174,7 +174,7 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
           color="inherit"
           onClick={() => setDetailsOpen((value) => !value)}
           endIcon={detailsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          sx={{ color: "var(--color-text-muted)", px: "var(--space-3)", minWidth: 0 }}
+          sx={{ color: "var(--color-text-muted)", minWidth: 0 }}
         >
           Project details
         </Button>
