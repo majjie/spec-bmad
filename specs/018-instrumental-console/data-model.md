@@ -156,10 +156,21 @@ stage, reloading from disk, and Help. They are **data, not markup**, so their co
 are testable without rendering - which is what lets `onboarding.test.ts` assert that every
 step's anchor is non-empty and that the replay affordance is described.
 
-**Anchor contract**: a step whose `anchor` matches no rendered element must not strand the
-tour. This is the config's one real coupling to the DOM, and the reason the anchor is a
-matched attribute rather than a CSS selector: an attribute is greppable from the component
+**Anchor contract**: a step whose `anchor` matches no rendered element is **dropped from the
+tour**, by `resolvableTourSteps(steps, isAnchorPresent)`. Anchors genuinely do go missing -
+`nav-overview` lives inside the sidebar's curated section, which is absent on a project with
+`_bmad` but no `_bmad-output` - and showing an unanchored step that describes something the
+reader cannot see is worse than showing one step fewer. Step numbering follows the filtered
+list. If **no** anchor resolves, every step is returned rather than none, so Help never
+becomes a control that silently does nothing.
+
+The presence test is injected, keeping this module DOM-free and the rule unit-testable; the
+anchor is a matched attribute rather than a CSS selector so it is greppable from the component
 that owns it.
+
+**Vocabulary**: the sidebar section is *Requirements*; the documents inside it are *PRDs*,
+which is why a leaf annotates as "latest PRD". The tour is where a reader learns those are the
+same thing, so step 1 names both explicitly - a test pins that bridge.
 
 ---
 

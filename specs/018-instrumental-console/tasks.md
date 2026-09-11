@@ -308,10 +308,53 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       other check. It surfaced only when T038's fixture made a nest render for the first time
       - which is the argument for T038 in miniature, and the reason a demo corpus that covers
       its own requirements is worth more than the fixtures it costs.
-- [ ] T039 Reconcile the guided tour's copy with the delivered information architecture in
-      `web/src/onboarding/onboarding.ts`. The sidebar step still describes sprint status as
-      sitting "under Workspace", wording that dates from an information architecture this
-      branch replaced. Verify every step's description against `contracts/ui-behavior.md`.
+- [ ] T039 Reconcile the guided tour in `web/src/onboarding/onboarding.ts` with the
+      delivered information architecture.
+      **Correcting this task's original claim**: it asserted that the sidebar step's reference
+      to Sprint status sitting "under Workspace" was wording left over from a replaced
+      information architecture. That is **wrong**. `Workspace` is the live section label in
+      `AppSidebar.tsx`, alongside `Documents` and `Folders`. What `b60b2d4` replaced was the
+      *contents* of those sections - project-first became artifact-type-first - not the
+      section labels themselves, which survived from `0af3ee2`. All five tour anchors also
+      resolve to real `data-tour` attributes. The step copy is accurate as written.
+      The verification the task called for did surface three genuine issues instead:
+- [X] T039a **DONE during this retrospective.** Step 2 anchored to an element absent in a
+      real, and specifically first-run, configuration. `nav-overview` lives inside the
+      `showCurated` branch of `AppSidebar.tsx`, which is false when a project has `_bmad` but
+      no `_bmad-output` - verified against a running server, where `/api/tabs` returns
+      `navigator: false` for such a project, so the Workspace section and its anchor are not
+      rendered at all. The tour did not strand (`measureAnchor` returns null and
+      `popoverPosition` falls back to a fixed offset) but step 2 showed unanchored, with no
+      highlight, describing an Overview item that was neither visible nor present. The people
+      who hit this are those pointing the tool at a fresh BMAD install - exactly when the
+      welcome fires and offers the tour.
+      Fixed by `resolvableTourSteps` in `web/src/onboarding/onboarding.ts`: a pure filter that
+      takes the anchor-presence test by injection, so it stays DOM-free and unit-testable
+      (Principle IV), with `GuidedTour.tsx` supplying the DOM query and recomputing the step
+      list each time the tour opens. Step numbering, the step counter and the dialog's
+      accessible name all follow the filtered list, so a four-step tour reads "1 / 4".
+      If nothing resolves at all, every step is returned rather than none - a tour that shows
+      imperfectly beats a Help button that silently does nothing. Three unit tests cover the
+      filter.
+- [X] T039b **DONE during this retrospective. Decision taken: "PRD" stays the document term.**
+      The tour contradicted itself - step 1 said "Requirements and Architecture", step 3 said
+      "Selecting a PRD" - while the sidebar section is labelled **Requirements**, so a
+      newcomer following step 3 hunted for an entry that does not exist.
+      The vocabularies are not in fact in conflict once stated: **Requirements** is the
+      section, **PRD** is the document type inside it, which is why a leaf reads
+      "1 Sep 2026 · latest PRD" and a lineage row reads "2 PRDs". `formatArtifactLeafLabel`
+      and `slugNavSummary` are therefore unchanged. What was missing was anywhere a reader
+      learns the two words go together. Step 1 now says "Requirements holds this project's
+      PRDs; Architecture holds its architecture runs", which makes step 3's "PRD" land and
+      matches what the sidebar actually shows. A unit test pins the bridge so a future copy
+      edit cannot quietly drop it.
+      The onboarding storage key is deliberately **not** bumped: the key versions the
+      persisted shape, not the copy, and re-onboarding every user for a wording change would
+      be a poor trade.
+- [ ] T039c The tour does not mention per-lineage nesting, which now renders in the demo
+      corpus following T038. Step 1's "Requirements and Architecture hold this project's
+      planning runs" is not wrong, but a reader of a multi-lineage corpus sees a level the
+      tour never accounts for. Lowest priority of the three.
 - [ ] T040 Finish the punctuation sweep across the shell's own copy. Fourteen em dashes
       remain in code added by this feature - including user-visible copy in
       `web/src/components/shell/WelcomeModal.tsx` and a literal dash constant in

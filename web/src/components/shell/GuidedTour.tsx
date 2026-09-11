@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { TOUR_STEPS, type TourStep } from "../../onboarding/onboarding.js";
+import { TOUR_STEPS, resolvableTourSteps, type TourStep } from "../../onboarding/onboarding.js";
 
 interface GuidedTourProps {
   open: boolean;
@@ -47,9 +47,21 @@ function popoverPosition(rect: AnchorRect | null, stepIndex: number): { top: num
 
 export default function GuidedTour({ open, onClose }: GuidedTourProps) {
   const [index, setIndex] = useState(0);
+  const [steps, setSteps] = useState<TourStep[]>(TOUR_STEPS);
   const [rect, setRect] = useState<AnchorRect | null>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const step: TourStep | undefined = TOUR_STEPS[index];
+  const step: TourStep | undefined = steps[index];
+
+  // Decide the step list against the page as it actually is, each time the tour opens -
+  // the curated sidebar section is absent on a project with no `_bmad-output`, taking the
+  // Overview anchor with it.
+  useLayoutEffect(() => {
+    if (!open) {
+      return;
+    }
+    setSteps(resolvableTourSteps(TOUR_STEPS, (anchor) => measureAnchor(anchor) !== null));
+    setIndex(0);
+  }, [open]);
 
   const refreshRect = useCallback(() => {
     if (!step) {
@@ -86,24 +98,18 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
     };
   }, [open, onClose, refreshRect]);
 
-  useEffect(() => {
-    if (open) {
-      setIndex(0);
-    }
-  }, [open]);
-
   if (!open || !step) {
     return null;
   }
 
   const pos = popoverPosition(rect, index);
-  const isLast = index >= TOUR_STEPS.length - 1;
+  const isLast = index >= steps.length - 1;
 
   return (
     <Box
       role="dialog"
       aria-modal="true"
-      aria-label={`Guided tour step ${index + 1} of ${TOUR_STEPS.length}`}
+      aria-label={`Guided tour step ${index + 1} of ${steps.length}`}
       sx={{ position: "fixed", inset: 0, zIndex: 1400, pointerEvents: "none" }}
     >
       <Box
@@ -153,7 +159,7 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
         }}
       >
         <Typography variant="caption" sx={{ color: "var(--color-text-subtle)" }}>
-          {index + 1} / {TOUR_STEPS.length}
+          {index + 1} / {steps.length}
         </Typography>
         <Typography variant="subtitle1" sx={{ mt: 0.5, mb: 1, fontWeight: 650 }}>
           {step.title}

@@ -15,7 +15,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar",
     anchor: "sidebar",
     title: "Documents live here",
-    body: "Requirements and Architecture hold this project's planning runs. Sprint status sits under Workspace when sprint-status.yaml is present.",
+    body: "Requirements holds this project's PRDs; Architecture holds its architecture runs. Sprint status sits under Workspace when sprint-status.yaml is present.",
   },
   {
     id: "overview",
@@ -42,6 +42,29 @@ export const TOUR_STEPS: TourStep[] = [
     body: "Use Help in the header to run this tour again - including after you skip it.",
   },
 ];
+
+/**
+ * The steps worth showing, given which anchors are actually on the page.
+ *
+ * A step whose anchor is missing would otherwise render unanchored - no highlight, a
+ * fallback position - while describing something the reader cannot see. That is a real
+ * configuration, not a hypothetical: `nav-overview` lives inside the sidebar's curated
+ * section, which is absent when a project has `_bmad` but no `_bmad-output`, and that is
+ * exactly when a first-run visitor is offered the tour.
+ *
+ * DOM-free by injection: the caller supplies the presence test.
+ *
+ * If nothing resolves at all, every step is returned rather than none - a tour that shows
+ * imperfectly beats a Help button that silently does nothing. In practice the header
+ * anchors always exist, so this fallback is defensive only.
+ */
+export function resolvableTourSteps(
+  steps: ReadonlyArray<TourStep>,
+  isAnchorPresent: (anchor: string) => boolean,
+): TourStep[] {
+  const resolvable = steps.filter((step) => isAnchorPresent(step.anchor));
+  return resolvable.length > 0 ? resolvable : [...steps];
+}
 
 export function readOnboardingState(): OnboardingState {
   try {

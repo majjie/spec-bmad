@@ -87,6 +87,12 @@ the existing tab identifiers, not a rename of them.
 - Either choice is remembered; the welcome does not reappear on a later load (FR-015, SC-003).
 - The tour highlights the element each step describes, and is exitable at every step by a
   single action including Escape (FR-017, SC-004).
+- A step whose anchor is not on the page is **omitted**, and the step count follows the steps
+  actually shown. This is not hypothetical: the Overview anchor is absent on a project with
+  method files but no generated artifacts, which is a first-run configuration. A step is never
+  shown floating with no highlight, describing something the reader cannot see.
+- Tour copy names both the section (*Requirements*) and the documents inside it (*PRDs*), since
+  the sidebar labels the section and the run leaves annotate the document type.
 - Help starts the tour from its first step, and never re-presents the welcome (FR-018).
 - If preference storage throws or is blocked, the application still loads and simply shows the
   welcome again (FR-020).

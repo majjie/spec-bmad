@@ -40,6 +40,8 @@ Open the printed `127.0.0.1` URL.
 | A6 | Step through the tour | Each step highlights the element it describes - navigation, Overview, the stage, reload, Help |
 | A7 | Press Escape mid-tour | The tour exits immediately (FR-017, SC-004) |
 | A8 | Re-open Help, then dismiss via the tour's own skip control | Exits the same way - one action, from any step |
+| A9 | Read step 1, then look at the sidebar | It names both *Requirements* (the section) and *PRDs* (what is inside it), matching the "latest PRD" annotation on a run |
+| A10 | Point the CLI at a project with `_bmad` but no `_bmad-output` and start the tour | The Overview step is **omitted** - that anchor is not on the page in this configuration - and the counter reads one fewer. No step floats unanchored (T039a) |
 
 ## B. Orientation on first paint (US1)
 
