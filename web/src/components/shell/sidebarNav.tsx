@@ -92,7 +92,7 @@ export function NavRow({
         px: 2,
         pl: depth === 1 ? 3.5 : 2,
         minHeight: isProject ? 44 : 40,
-        borderRadius: 0,
+        borderRadius: "var(--radius-nav-item)",
         alignItems: secondary ? "flex-start" : "center",
         color: selected ? "var(--color-text-default)" : "var(--color-text-muted)",
         "&:hover": {
@@ -100,9 +100,9 @@ export function NavRow({
           color: "var(--color-text-default)",
         },
         "&.Mui-selected": {
-          bgcolor: "var(--color-bg-subtle)",
+          bgcolor: "var(--color-accent-muted)",
           color: "var(--color-text-default)",
-          boxShadow: "none",
+          boxShadow: depth === 1 || !isProject ? "var(--elevation-nav-inset)" : "none",
         },
         "&.Mui-selected:hover": {
           bgcolor: "var(--color-bg-hover)",
