@@ -4,10 +4,14 @@ import {
   buildProjectCoverage,
   buildProjectNav,
   countOpenActionItems,
+  ensureExpandedForSelection,
   formatStatusLabel,
   humanizeProjectSlug,
+  initialExpandedProjectKey,
   normalizeProjectKey,
+  projectKeyForSelection,
   titleCaseProject,
+  toggleExpandedKey,
 } from "../../../web/src/shell.js";
 import type { NavigatorTree } from "../../../web/src/api.js";
 
@@ -135,4 +139,52 @@ test("buildProjectCoverage skips unsorted folders and uses newest dates", () => 
   assert.equal(rows[0]?.architectureCount, 1);
   assert.equal(rows[0]?.latestArchitectureDate, "2026-09-02");
   assert.equal(rows[0]?.hasSprint, true);
+});
+
+test("initialExpandedProjectKey prefers the sprint project then the first project", () => {
+  assert.equal(initialExpandedProjectKey([]), null);
+  assert.equal(
+    initialExpandedProjectKey([
+      { key: "lumen", hasSprint: false },
+      { key: "harbor", hasSprint: true },
+    ]),
+    "harbor",
+  );
+  assert.equal(initialExpandedProjectKey([{ key: "lumen", hasSprint: false }]), "lumen");
+});
+
+test("toggleExpandedKey closes an open accordion and does not re-seed an empty set", () => {
+  const closed = toggleExpandedKey(new Set(["harbor"]), "harbor");
+  assert.equal(closed.has("harbor"), false);
+  assert.equal(closed.size, 0);
+  const opened = toggleExpandedKey(closed, "harbor");
+  assert.equal(opened.has("harbor"), true);
+});
+
+test("ensureExpandedForSelection opens the owning project once, without reopening after collapse", () => {
+  const tree: NavigatorTree = {
+    prd: {
+      projects: [
+        {
+          project: "prd-harbor",
+          dates: [{ date: "2026-09-01", folderName: "prd-harbor-2026-09-01", path: "/p/prd" }],
+        },
+      ],
+      nonConforming: [],
+    },
+    architecture: { projects: [], nonConforming: [] },
+    sprintStatusAvailable: true,
+  };
+  const projects = buildProjectNav(tree, "harbor");
+  assert.equal(projectKeyForSelection(projects, { kind: "prd", path: "/p/prd" }), "harbor");
+  assert.equal(projectKeyForSelection(projects, { kind: "sprint" }), "harbor");
+  assert.equal(projectKeyForSelection(projects, { kind: "overview" }), undefined);
+
+  const opened = ensureExpandedForSelection(new Set(), "harbor");
+  assert.equal(opened.has("harbor"), true);
+
+  const userCollapsed = toggleExpandedKey(opened, "harbor");
+  assert.equal(userCollapsed.size, 0);
+  const unchanged = ensureExpandedForSelection(userCollapsed, undefined);
+  assert.equal(unchanged.size, 0);
 });

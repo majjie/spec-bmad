@@ -1,10 +1,16 @@
-import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import type { ActionItem, NavigatorTree, SprintStatusResult } from "../../api.js";
-import { buildProjectNav, titleCaseProject, type ShellSelection } from "../../shell.js";
+import type { NavigatorTree, SprintStatusResult } from "../../api.js";
+import {
+  buildProjectCoverage,
+  buildProjectNav,
+  countOpenActionItems,
+  titleCaseProject,
+  type ShellSelection,
+} from "../../shell.js";
+import { CoverageTable, LeafList, OpenItems, Panel, Stat } from "./OverviewPanels.js";
 
 interface OverviewViewProps {
   tree: NavigatorTree | null;
@@ -13,6 +19,9 @@ interface OverviewViewProps {
   onOpenSelection: (selection: ShellSelection) => void;
   onOpenFile: (path: string) => void;
 }
+
+const OVERVIEW_LEDE =
+  "A read-only map of this project's BMAD artifacts — what was decided, the technical spine, and what is in progress.";
 
 function latestLeaf(tree: NavigatorTree | null, kind: "prd" | "architecture") {
   const grouping = tree?.[kind] ?? null;
@@ -32,78 +41,6 @@ function latestLeaf(tree: NavigatorTree | null, kind: "prd" | "architecture") {
   return null;
 }
 
-function Card({
-  title,
-  subtitle,
-  children,
-  action,
-}: {
-  title: string;
-  subtitle?: string;
-  children: ReactNode;
-  action?: ReactNode;
-}) {
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 2.5,
-        borderRadius: "2px",
-        bgcolor: "var(--color-bg-raised)",
-      }}
-    >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1.5 }}>
-        <Box>
-          <Typography variant="overline" sx={{ color: "var(--color-accent)" }}>
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography variant="body2" color="text.secondary">
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
-        {action}
-      </Box>
-      {children}
-    </Paper>
-  );
-}
-
-function OpenItems({ items, onOpenFile }: { items: ActionItem[]; onOpenFile: (path: string) => void }) {
-  const open = items.filter((i) => i.status !== "done");
-  if (open.length === 0) {
-    return (
-      <Typography variant="body2" color="text.secondary">
-        No open action items.
-      </Typography>
-    );
-  }
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      {open.slice(0, 5).map((item) => (
-        <Box
-          key={item.id}
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 2,
-            py: 0.75,
-            borderBottom: "1px solid var(--color-border-subtle)",
-          }}
-        >
-          <Typography variant="body2">{item.action ?? item.id}</Typography>
-          {item.resolvedPath && (
-            <Button size="small" onClick={() => onOpenFile(item.resolvedPath!)}>
-              Open
-            </Button>
-          )}
-        </Box>
-      ))}
-    </Box>
-  );
-}
-
 export default function OverviewView({
   tree,
   sprintStatus,
@@ -115,85 +52,93 @@ export default function OverviewView({
   const latestArch = latestLeaf(tree, "architecture");
   const hasSprint = tree?.sprintStatusAvailable === true;
   const projects = buildProjectNav(tree, sprintStatus?.summary.project ?? null);
+  const namedProjects = projects.filter((project) => project.key !== "_other");
+  const coverage = buildProjectCoverage(projects);
+  const openCount = countOpenActionItems(sprintStatus?.actionItems ?? []);
+  const dash = "—";
 
   return (
-    <Box sx={{ p: 3, maxWidth: 960, display: "flex", flexDirection: "column", gap: 2.5 }}>
+    <Box
+      sx={{
+        p: "var(--space-6)",
+        width: "100%",
+        maxWidth: "none",
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--space-5)",
+      }}
+    >
       <Box>
-        <Typography variant="h5" sx={{ fontWeight: 650, letterSpacing: "-0.02em", mb: 0.5, textWrap: "balance" }}>
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 650, letterSpacing: "-0.02em", mb: 0.5 }}>
           Workspace overview
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: "62ch", textWrap: "pretty" }}>
-          Projects in the left nav are BMAD product lineages from your folders (names like{" "}
-          <Box component="span" sx={{ fontFamily: "var(--font-mono)", fontSize: "0.85em" }}>
-            Harbor
-          </Box>{" "}
-          come from <code>prd-harbor-…</code> / sprint metadata — not this app&apos;s brand). Expand a
-          project to open its Requirements, Architecture, and Sprint.
+        <Typography variant="body2" color="text.secondary" title={OVERVIEW_LEDE} sx={{ whiteSpace: "nowrap" }}>
+          {OVERVIEW_LEDE}
         </Typography>
-        {projects.length > 0 && (
-          <Typography variant="body2" sx={{ mt: 1.25, color: "var(--color-text-muted)" }}>
-            In this workspace:{" "}
-            {projects
-              .filter((p) => p.key !== "_other")
-              .map((p) => p.title)
-              .join(", ") || "unsorted folders only"}
-            .
-          </Typography>
-        )}
       </Box>
 
-      {hasSprint ? (
-        <Card
-          title="Sprint"
-          subtitle="What engineering is tracking right now"
-          action={
-            <Button size="small" variant="outlined" onClick={() => onOpenSelection({ kind: "sprint" })}>
-              Open Sprint
-            </Button>
+      <Paper
+        variant="outlined"
+        component="dl"
+        sx={{
+          m: 0,
+          display: "grid",
+          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+          bgcolor: "var(--color-bg-raised)",
+          borderRadius: "2px",
+          overflow: "hidden",
+          "& > *:not(:last-child)": {
+            borderRight: "1px solid var(--color-border-subtle)",
+          },
+          "@media (max-width: 1100px)": {
+            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          },
+          "@media (max-width: 720px)": {
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          },
+        }}
+      >
+        <Stat
+          label="Products"
+          value={namedProjects.length > 0 ? namedProjects.map((p) => p.title).join(", ") : dash}
+        />
+        <Stat
+          label="Latest requirements"
+          value={
+            latestPrd
+              ? `${titleCaseProject(latestPrd.project)}${latestPrd.entry.date ? ` · ${latestPrd.entry.date}` : ""}`
+              : dash
           }
-        >
-          {sprintStatusError && (
-            <Typography variant="body2" color="error">
-              {sprintStatusError}
-            </Typography>
-          )}
-          {!sprintStatusError && sprintStatus === null && (
-            <Typography variant="body2" color="text.secondary">
-              Loading sprint status…
-            </Typography>
-          )}
-          {sprintStatus && (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Box>
-                <Typography variant="caption" sx={{ color: "var(--color-label)" }}>
-                  Active epic
-                </Typography>
-                <Typography variant="h6" sx={{ color: "var(--color-accent)", fontFamily: "var(--font-mono)" }}>
-                  {sprintStatus.summary.activeEpic}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  Open action items
-                </Typography>
-                <OpenItems items={sprintStatus.actionItems} onOpenFile={onOpenFile} />
-              </Box>
-            </Box>
-          )}
-        </Card>
-      ) : (
-        <Card title="Sprint">
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-            No sprint-status.yaml in this workspace — open a project&apos;s latest Requirements run
-            from the left nav.
-          </Typography>
-        </Card>
-      )}
+        />
+        <Stat
+          label="Latest architecture"
+          value={
+            latestArch
+              ? `${titleCaseProject(latestArch.project)}${latestArch.entry.date ? ` · ${latestArch.entry.date}` : ""}`
+              : dash
+          }
+        />
+        <Stat label="Active epic" value={hasSprint && sprintStatus ? sprintStatus.summary.activeEpic : dash} />
+        <Stat label="Open action items" value={hasSprint && sprintStatus ? String(openCount) : dash} />
+      </Paper>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-        <Card
-          title="Latest requirements"
-          subtitle="Most recent PRD run"
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr) minmax(280px, 1.25fr)",
+          gap: "var(--space-4)",
+          alignItems: "stretch",
+          "@media (max-width: 1100px)": {
+            gridTemplateColumns: "1fr 1fr",
+          },
+          "@media (max-width: 720px)": {
+            gridTemplateColumns: "1fr",
+          },
+        }}
+      >
+        <Panel
+          title="Requirements"
+          subtitle="What was decided"
           action={
             latestPrd ? (
               <Button
@@ -206,22 +151,16 @@ export default function OverviewView({
             ) : undefined
           }
         >
-          {latestPrd ? (
-            <Typography variant="body2">
-              <Box component="span" sx={{ fontWeight: 600 }}>
-                {titleCaseProject(latestPrd.project)}
-              </Box>
-              {latestPrd.entry.date ? ` · ${latestPrd.entry.date}` : ""}
-            </Typography>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              No PRD folders found under planning-artifacts/prds.
-            </Typography>
-          )}
-        </Card>
-        <Card
-          title="Latest architecture"
-          subtitle="Most recent spine"
+          <LeafList
+            projects={namedProjects}
+            kind="requirements"
+            empty="No PRD folders found under planning-artifacts/prds."
+            onOpen={(leaf) => onOpenSelection({ kind: "prd", path: leaf.path })}
+          />
+        </Panel>
+        <Panel
+          title="Architecture"
+          subtitle="The technical spine"
           action={
             latestArch ? (
               <Button
@@ -234,20 +173,65 @@ export default function OverviewView({
             ) : undefined
           }
         >
-          {latestArch ? (
-            <Typography variant="body2">
-              <Box component="span" sx={{ fontWeight: 600 }}>
-                {titleCaseProject(latestArch.project)}
-              </Box>
-              {latestArch.entry.date ? ` · ${latestArch.entry.date}` : ""}
-            </Typography>
+          <LeafList
+            projects={namedProjects}
+            kind="architecture"
+            empty="No architecture folders found yet."
+            onOpen={(leaf) => onOpenSelection({ kind: "architecture", path: leaf.path })}
+          />
+        </Panel>
+        <Panel
+          title="Sprint"
+          subtitle="What is in progress"
+          action={
+            hasSprint ? (
+              <Button size="small" variant="outlined" onClick={() => onOpenSelection({ kind: "sprint" })}>
+                Open sprint
+              </Button>
+            ) : undefined
+          }
+        >
+          {hasSprint ? (
+            <>
+              {sprintStatusError && (
+                <Typography variant="body2" color="error" sx={{ mb: 1.5 }}>
+                  {sprintStatusError}
+                </Typography>
+              )}
+              {!sprintStatusError && sprintStatus === null && (
+                <Typography variant="body2" color="text.secondary">
+                  Loading sprint status…
+                </Typography>
+              )}
+              {sprintStatus && (
+                <Box sx={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: "var(--color-label)" }}>
+                      Active epic
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: "var(--color-accent)", fontFamily: "var(--font-mono)" }}>
+                      {sprintStatus.summary.activeEpic}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ mb: 0.75 }}>
+                      Open action items
+                    </Typography>
+                    <OpenItems items={sprintStatus.actionItems} onOpenFile={onOpenFile} />
+                  </Box>
+                </Box>
+              )}
+            </>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No architecture folders found yet.
+              No sprint-status.yaml in this workspace — open a product&apos;s latest Requirements run from the left
+              nav.
             </Typography>
           )}
-        </Card>
+        </Panel>
       </Box>
+
+      <CoverageTable rows={coverage} />
     </Box>
   );
 }

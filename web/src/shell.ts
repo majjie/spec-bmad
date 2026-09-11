@@ -166,3 +166,88 @@ export function formatStatusLabel(status: string): string {
       return status;
   }
 }
+
+/** Action items still open — anything other than exactly "done". */
+export function countOpenActionItems(items: { status: string | null }[]): number {
+  return items.filter((item) => item.status !== "done").length;
+}
+
+export interface ProjectCoverageRow {
+  key: string;
+  title: string;
+  requirementsCount: number;
+  latestRequirementDate: string;
+  architectureCount: number;
+  latestArchitectureDate: string;
+  hasSprint: boolean;
+}
+
+/** First project to seed open — sprint owner if present, otherwise the first group. */
+export function initialExpandedProjectKey(
+  projects: ReadonlyArray<Pick<ProjectNavGroup, "key" | "hasSprint">>,
+): string | null {
+  if (projects.length === 0) {
+    return null;
+  }
+  const withSprint = projects.find((project) => project.hasSprint);
+  return (withSprint ?? projects[0]!).key;
+}
+
+export function toggleExpandedKey(expanded: ReadonlySet<string>, key: string): Set<string> {
+  const next = new Set(expanded);
+  if (next.has(key)) {
+    next.delete(key);
+  } else {
+    next.add(key);
+  }
+  return next;
+}
+
+export function projectKeyForSelection(
+  projects: ReadonlyArray<ProjectNavGroup>,
+  selection: ShellSelection,
+): string | undefined {
+  if (selection.kind === "prd" || selection.kind === "architecture") {
+    return projects.find(
+      (project) =>
+        project.requirements.some((leaf) => leaf.path === selection.path) ||
+        project.architecture.some((leaf) => leaf.path === selection.path) ||
+        project.other.some((entry) => entry.path === selection.path),
+    )?.key;
+  }
+  if (selection.kind === "sprint") {
+    return projects.find((project) => project.hasSprint)?.key;
+  }
+  return undefined;
+}
+
+/**
+ * Open the project that owns a newly chosen selection. Passing `undefined` leaves
+ * the set unchanged so a user collapse is not re-seeded.
+ */
+export function ensureExpandedForSelection(
+  expanded: ReadonlySet<string>,
+  key: string | undefined,
+): Set<string> {
+  if (!key || expanded.has(key)) {
+    return new Set(expanded);
+  }
+  const next = new Set(expanded);
+  next.add(key);
+  return next;
+}
+
+/** Named products only — unsorted folders stay out of the overview scan. */
+export function buildProjectCoverage(groups: ProjectNavGroup[]): ProjectCoverageRow[] {
+  return groups
+    .filter((group) => group.key !== "_other")
+    .map((group) => ({
+      key: group.key,
+      title: group.title,
+      requirementsCount: group.requirements.length,
+      latestRequirementDate: group.requirements[0]?.date ?? "",
+      architectureCount: group.architecture.length,
+      latestArchitectureDate: group.architecture[0]?.date ?? "",
+      hasSprint: group.hasSprint,
+    }));
+}
