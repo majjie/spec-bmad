@@ -105,7 +105,7 @@ library-rendered chrome and hand-written styling resolve to one source of truth.
 by ad-hoc values and by borrowed semantic slots from the component library's default palette
 (using an "info" or "warning" colour to mean "label" or "value"). Those choices are invisible
 to search, impossible to retarget, and wrong the moment the palette changes. Naming roles
-makes FR-025 checkable - a review can grep for a raw colour in a component and find it.
+makes FR-027 checkable - a review can grep for a raw colour in a component and find it.
 
 Restricting components to the semantic tier is what makes a second appearance possible by
 remapping one layer (feature 019) rather than auditing every component.

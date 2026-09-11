@@ -59,7 +59,7 @@
 - Scope bounding was the other area needing care, because the branch under reconstruction
   delivered three separable features at once. The colour-scheme switcher and the
   file-viewer rework are explicitly assigned to features 019 and 020 in Assumptions, and
-  no FR here depends on either. FR-025 is deliberately written to require only that a
+  no FR here depends on either. FR-027 is deliberately written to require only that a
   token system exist and be *capable* of more than one appearance - the second appearance
   itself is 019's requirement, not this feature's.
 

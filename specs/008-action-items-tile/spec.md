@@ -4,7 +4,35 @@
 
 **Created**: 2026-09-08
 
-**Status**: Draft
+**Status**: Partially superseded by [feature 018](../018-instrumental-console/spec.md) (2026-09-11)
+
+> **Amendment - 2026-09-11.** Feature 018 restructured the Sprint Status view and, in doing
+> so, changed how this feature's action items are *presented*. The change is deliberate and
+> the current behavior is the intended one; this note records it rather than leaving 008
+> describing an interface that no longer exists.
+>
+> **Superseded - no longer in force:**
+>
+> - **FR-001** - action items are no longer a tile beside the Summary tile. They are a
+>   full-width "Action items" section in the restructured stage.
+> - **FR-002, FR-003** - the matched-height, internally-scrolling container is gone. The
+>   section renders at its natural height, so nothing scrolls within it and the Summary tile
+>   no longer constrains it.
+> - **FR-014** - alternating "candy stripe" row shading is replaced by the divider-separated
+>   list treatment feature 018 uses throughout, so action items match every other list in the
+>   application.
+>
+> **Still in force, unchanged:** FR-004 through FR-013. Every per-item affordance this
+> feature specified survives - the two-line block, the owner-type icon, the read-only
+> tick-box, the jump icon and its raw-`ref` tooltip, omission of missing properties, the
+> non-`done`-before-`done` ordering, opening the referenced file, the unreadable-file error,
+> the empty state, and the rule that nothing but the jump icon is interactive.
+>
+> **Unchanged entirely:** this feature's derivation layer (`src/navigator/action-items.ts`
+> and its tests) is untouched and still feeds the view.
+>
+> **Added by 018:** the Overview also surfaces open action items with a direct open
+> affordance, and a count of them. That is 018's requirement, not an extension of this one.
 
 **Input**: User description: "I would like an extra tile on the navigator -> sprint status
 pane. It will be an action items tile. It will sit to the right of the summary tile and be

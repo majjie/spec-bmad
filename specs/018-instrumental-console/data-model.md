@@ -205,4 +205,4 @@ Three tiers, with a hard rule that **components reference the semantic tier only
 
 The semantic tier is the seam feature 019 remaps to produce a second appearance; nothing in
 this feature should require a component edit to support one. A reduced-motion block neutralises
-the duration tokens at the source, so honouring FR-029 is not each component's job.
+the duration tokens at the source, so honouring FR-031 is not each component's job.

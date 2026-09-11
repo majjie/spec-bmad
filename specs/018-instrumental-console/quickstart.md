@@ -74,15 +74,20 @@ Open the printed `127.0.0.1` URL.
 | D3 | Apply a greyscale filter in devtools | Every status remains distinguishable (SC-005) |
 | D4 | Look for project metadata | Collapsed behind a disclosure, not competing with status (FR-024) |
 | D5 | Cross-check the open action-item count | Matches the number of items whose status is not `done` |
+| D6 | Look at the Action items section | Full width, at its natural height - it does **not** scroll within itself, and is not height-matched to a neighbour (FR-025, superseding feature 008's FR-001-003) |
+| D7 | Inspect one action item | Owner indication, completion indication, and a jump control whose accessible name is the raw reference; properties the item does not declare are absent, not blank |
+| D8 | Activate a jump control | The referenced document opens in the file viewer |
+| D9 | Check the row treatment | Divider-separated, not alternately shaded - superseding feature 008's FR-014 |
+| D10 | Return to Overview | The outstanding items are listed there too, each with a direct open affordance (FR-026) |
 
 ## E. Accessibility and motion (US5)
 
 | # | Step | Expected |
 |---|---|---|
-| E1 | Load the page and press Tab once | A control offering to skip to the main content (FR-026, SC-007) |
-| E2 | Tab through the entire interface | Every navigation destination and header control is reachable and operable; focus is always visibly indicated (FR-028) |
-| E3 | Hover or focus each header icon control | A text name appears, and is exposed to assistive technology (FR-027) |
-| E4 | Enable "reduce motion" at the OS level, reload, replay the tour | No animated transitions; the reload indicator does not spin (FR-029) |
+| E1 | Load the page and press Tab once | A control offering to skip to the main content (FR-028, SC-007) |
+| E2 | Tab through the entire interface | Every navigation destination and header control is reachable and operable; focus is always visibly indicated (FR-030) |
+| E3 | Hover or focus each header icon control | A text name appears, and is exposed to assistive technology (FR-029) |
+| E4 | Enable "reduce motion" at the OS level, reload, replay the tour | No animated transitions; the reload indicator does not spin (FR-031) |
 | E5 | Run a contrast check over body text and focus rings | Meets WCAG 2.1 AA (SC-006) |
 
 ## F. Degraded and empty corpora

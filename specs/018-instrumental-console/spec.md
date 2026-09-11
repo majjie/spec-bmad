@@ -247,19 +247,28 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 - **FR-022**: Status labels MUST read as human phrases rather than raw stored values.
 - **FR-023**: The epic that is currently in progress MUST be expanded when the view loads.
 - **FR-024**: Project metadata MUST be collapsed behind a disclosure by default.
+- **FR-025**: Action items MUST be presented as a full-width section of the sprint view,
+  rendered at their natural height, rather than as a fixed-height panel that scrolls within
+  itself. Every per-item affordance established by feature 008 MUST be preserved: the owner
+  indication, the completion indication, the jump to the referenced document, omission of
+  properties a given item does not declare, and outstanding items ordered before completed
+  ones.
+- **FR-026**: Overview MUST additionally surface the outstanding action items with a direct
+  affordance to open the document each one references, so the most common reason to visit
+  sprint status is answerable without leaving Overview.
 
 #### Visual system and accessibility
 
-- **FR-025**: All colour and typography MUST derive from a single named design-token system
+- **FR-027**: All colour and typography MUST derive from a single named design-token system
   rather than one-off values chosen per component, so appearance stays consistent and can be
   retargeted in one place.
-- **FR-026**: The interface MUST provide a control that moves keyboard focus directly to the
+- **FR-028**: The interface MUST provide a control that moves keyboard focus directly to the
   main content, and MUST expose navigation, header, and main regions as identifiable
   landmarks.
-- **FR-027**: Every icon-only control MUST have a text name available to assistive technology
+- **FR-029**: Every icon-only control MUST have a text name available to assistive technology
   and revealed on hover or focus.
-- **FR-028**: The element holding keyboard focus MUST always be visibly indicated.
-- **FR-029**: When the user's system requests reduced motion, transitions and looping
+- **FR-030**: The element holding keyboard focus MUST always be visibly indicated.
+- **FR-031**: When the user's system requests reduced motion, transitions and looping
   animations MUST be suppressed.
 
 ### Key Entities
@@ -318,3 +327,9 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
   (feature 020).
 - Existing artifact-reading behavior established by features 001-017 is unchanged; this
   feature restructures presentation only and introduces no new way of reading the project.
+- **This feature partially supersedes [feature 008](../008-action-items-tile/spec.md).**
+  Restructuring the sprint view replaced that feature's fixed-height tile with a full-width
+  section (FR-025), which retires its FR-001, FR-002, FR-003 and FR-014. Its remaining
+  requirements and its whole derivation layer are untouched, and no capability is lost - the
+  per-item affordances all survive, and Overview adds a second route to them (FR-026). The
+  amendment is recorded in 008's own spec so a reader of either finds the other.

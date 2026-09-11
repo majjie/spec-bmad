@@ -45,7 +45,7 @@ component rendering is manually verified per `quickstart.md`.
 001-017 already do. Navigation derivation runs over an already-fetched tree and is O(runs).
 
 **Constraints**: Must degrade gracefully when preference storage is refused (FR-020), must
-honour `prefers-reduced-motion` (FR-029), and must not regress WCAG AA contrast (SC-006).
+honour `prefers-reduced-motion` (FR-031), and must not regress WCAG AA contrast (SC-006).
 
 **Scale/Scope**: Same corpus scale as prior features - tens of document runs, one project
 directory per session.

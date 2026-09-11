@@ -18,7 +18,7 @@ the existing tab identifiers, not a rename of them.
   otherwise the sole named project lineage. When neither resolves (a multi-project corpus with
   no sprint data) the project name is **omitted**, never shown as a placeholder or a guess.
 - Carries three icon controls: Help, appearance, and reload. Every one has a text name exposed
-  to assistive technology and revealed on hover or focus (FR-027).
+  to assistive technology and revealed on hover or focus (FR-029).
 - The reload control's name states that it re-reads from disk (FR-019), and reports its
   in-progress state while reloading.
 
@@ -77,6 +77,17 @@ the existing tab identifiers, not a rename of them.
 - The epic currently in progress is expanded on load (FR-023).
 - Project metadata is collapsed behind a disclosure (FR-024).
 - The open action-item count treats any status other than `done` as open.
+- Action items render as a **full-width section** at their natural height - not a fixed-height
+  panel scrolling within itself, and not matched to the height of anything beside it
+  (FR-025). This supersedes feature 008's FR-001, FR-002 and FR-003.
+- Each item keeps every affordance feature 008 established: owner indication, completion
+  indication, the jump to its referenced document with the raw reference as the control's
+  name, omission of properties the item does not declare, and outstanding items ordered
+  before completed ones. Nothing but the jump control is interactive.
+- Rows are separated by dividers, the list treatment used throughout this feature, rather
+  than by alternating background shading. This supersedes feature 008's FR-014.
+- Overview additionally lists the outstanding items with a direct affordance to open each
+  one's referenced document (FR-026).
 
 ## Onboarding
 
@@ -100,12 +111,12 @@ the existing tab identifiers, not a rename of them.
 ## Appearance, motion and accessibility
 
 - All colour and typography resolve through the semantic token layer. No component defines a
-  raw colour of its own (FR-025).
-- The first focusable element offers to skip to the main content (FR-026).
+  raw colour of its own (FR-027).
+- The first focusable element offers to skip to the main content (FR-028).
 - Header, navigation, and main regions are exposed as landmarks with accessible names.
-- The focused element is always visibly indicated, using the focus token (FR-028).
+- The focused element is always visibly indicated, using the focus token (FR-030).
 - When the system requests reduced motion, transitions and looping animation are suppressed -
-  including the tour's highlight and the reload control's activity indicator (FR-029).
+  including the tour's highlight and the reload control's activity indicator (FR-031).
 
 ## Explicitly unchanged
 

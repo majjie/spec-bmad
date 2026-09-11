@@ -61,10 +61,10 @@ Single project with a bundled web frontend (per plan.md): frontend code lives un
       naming roles (`--color-bg-*`, `--color-border-*`, `--color-text-*`, `--color-accent*`,
       `--color-status-*`, `--color-focus-ring`, plus spacing, radius, duration and easing).
       Include the `prefers-reduced-motion` block that neutralises the duration tokens at
-      source, so FR-029 is not each component's job.
+      source, so FR-031 is not each component's job.
 - [X] T003 Map the semantic tier into the MUI theme in `web/src/theme.ts` via
       `createAppTheme(mode)`, so library chrome and hand-written `sx` resolve to one source
-      of truth (FR-025).
+      of truth (FR-027).
 - [X] T004 Import `tokens.css` from `web/src/main.tsx` so the layer is present before first
       paint.
 - [X] T005 Create the DOM-free shell derivation module `web/src/shell.ts` with the
@@ -108,7 +108,7 @@ knowledge (quickstart.md § B).
 - [X] T012 [US1] Create `web/src/components/shell/AppHeader.tsx`: product identity, the
       detected project name when resolvable, and the Help / appearance / reload icon
       controls, each with a tooltip and an accessible name; the reload control's name states
-      that it re-reads from disk (FR-001, FR-019, FR-027).
+      that it re-reads from disk (FR-001, FR-019, FR-029).
 - [X] T013 [US1] Create `web/src/components/shell/sidebarNav.tsx` with the shared row and
       label presentation - full-bleed selection, depth-based indentation, and the
       `aria-expanded` accordion affordance. Presentation only; no decisions about *what* to
@@ -236,25 +236,25 @@ runs labelled and the accordion state machine respecting the user's collapses.
 
 - [X] T034 [US5] Add the skip-to-main-content control and expose header, navigation and main
       as landmarks with accessible names in `web/src/App.tsx` and the shell components
-      (FR-026).
+      (FR-028).
 - [X] T035 [US5] Ensure every icon-only control has a tooltip and an accessible name
-      (FR-027), and that focus-visible styling uses the focus token throughout (FR-028).
+      (FR-029), and that focus-visible styling uses the focus token throughout (FR-030).
 - [X] T036 [P] [US5] Move the remaining ad-hoc colours in
       `web/src/components/FrontmatterInfoControl.tsx`, `NavigatorDetailPane.tsx`,
       `NavigatorTree.tsx`, `NavigatorView.tsx`, `PrdDetailView.tsx` and
       `ArchitectureDetailView.tsx` onto semantic tokens - in particular the label/value pairs
       that were borrowing the component library's `info`/`warning` slots to mean something
-      they do not (FR-025).
+      they do not (FR-027).
 - [X] T036a [US5] **Completed during this retrospective, not in the original delivery.** The
-      cross-artifact analysis found T036 had missed two call sites, so FR-025 was not actually
+      cross-artifact analysis found T036 had missed two call sites, so FR-027 was not actually
       satisfied when it was marked done: `web/src/components/MemoryLogDialog.tsx` still used
-      `info.light` to mean "this is a link" - the exact borrowed-slot anti-pattern FR-025
+      `info.light` to mean "this is a link" - the exact borrowed-slot anti-pattern FR-027
       names - and `web/src/components/shell/AppHeader.tsx` used `error.main` for the reload
       control's failure state while `--color-status-error` already existed. Both now resolve
       through semantic tokens; a search for raw colour literals and borrowed palette slots
       across `web/src/components/` and `App.tsx` returns zero results.
       **Note the visible change**: the memory-log reference link was a pale blue and is now
-      the accent colour, which is the appearance FR-025 intends but is a deliberate visual
+      the accent colour, which is the appearance FR-027 intends but is a deliberate visual
       difference worth confirming in `quickstart.md`.
 
 **Checkpoint**: The console is usable by keyboard, in greyscale, and with motion disabled.
@@ -308,8 +308,9 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       other check. It surfaced only when T038's fixture made a nest render for the first time
       - which is the argument for T038 in miniature, and the reason a demo corpus that covers
       its own requirements is worth more than the fixtures it costs.
-- [ ] T039 Reconcile the guided tour in `web/src/onboarding/onboarding.ts` with the
-      delivered information architecture.
+- [X] T039 Reconcile the guided tour in `web/src/onboarding/onboarding.ts` with the
+      delivered information architecture. The reconciliation itself is done; what it found is
+      tracked as T039a-c below, of which only T039c remains.
       **Correcting this task's original claim**: it asserted that the sidebar step's reference
       to Sprint status sitting "under Workspace" was wording left over from a replaced
       information architecture. That is **wrong**. `Workspace` is the live section label in
@@ -382,11 +383,30 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       `examples/`, which are sample BMAD artifacts - realistic fixtures are worth more than
       uniform punctuation, since real documents contain smart quotes and these are what
       exercise the renderer against them.
-- [ ] T041 Decide the fate of the Action Items tile removed during this redesign. Feature
-      008 specified `web/src/components/ActionItemsTile.tsx`; it was deleted on this branch
-      and its role absorbed into Overview's open-item count, but nothing in feature 008 or
-      this feature authorises retiring it. Either amend feature 008 to record it as
-      superseded, or restore it. **Requires a decision, not just implementation.**
+- [X] T041 **DONE during this retrospective. Decision taken: the current behavior is the
+      intended one, recorded as a conscious supersession rather than reverted.**
+      The audit that raised this described `ActionItemsTile.tsx` as "deleted, its role
+      absorbed into Overview's open-item count". **That was an overstatement and is corrected
+      here**: no capability was lost. Sprint status still renders every action item, in a
+      full-width "Action items" section, with the owner indication, completion indication,
+      jump-to-document control, missing-property omission and outstanding-before-completed
+      ordering that feature 008 specified. The ordering is still enforced in
+      `src/navigator/action-items.ts`, which carries an explicit `FR-009` comment, and that
+      whole derivation layer plus its tests is untouched. What changed is presentation only.
+      What feature 008 genuinely loses: **FR-001** (a tile beside the Summary tile),
+      **FR-002** and **FR-003** (matched height and internal scrolling - the section now
+      renders at its natural height), and **FR-014** (candy-stripe shading, replaced by the
+      divider-separated list treatment this feature uses everywhere). **FR-004 to FR-013
+      remain in force.**
+      Recorded in both directions, which is the point: 018 claims the change in **FR-025**
+      and **FR-026** and states the relationship in its Assumptions, while 008 carries a
+      dated amendment naming exactly which of its requirements are retired and which still
+      stand. That is deliberately the opposite of how `ab69439` handled a conflict between
+      code and an approved spec - it silently rewrote the spec to match the code, with no
+      note that anything had changed. An amendment a reader can find, from either document,
+      is the difference between a decision and a cover-up.
+      Adding FR-025 and FR-026 mid-sequence renumbered the five requirements that followed;
+      every cross-reference in this feature's other artifacts was remapped in the same change.
 
 ---
 
