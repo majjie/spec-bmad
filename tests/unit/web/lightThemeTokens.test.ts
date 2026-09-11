@@ -15,6 +15,27 @@ test("light theme uses distinct muted surfaces instead of white and grey", () =>
   assert.match(lightTheme, /--color-brand:\s*var\(--color-slate-blue-600\)/);
 });
 
+test("light theme borders and icon ink stay readable on sand surfaces", () => {
+  assert.match(lightTheme, /--color-border-default:\s*var\(--color-sand-300\)/);
+  assert.match(lightTheme, /--color-text-subtle:\s*var\(--color-ink-700\)/);
+  const theme = readFileSync(new URL("../../../web/src/theme.ts", import.meta.url), "utf8");
+  assert.match(theme, /MuiIconButton:[\s\S]*?color:\s*"var\(--color-text-muted\)"/);
+  assert.match(theme, /active:\s*"rgba\(48,\s*45,\s*40,\s*0\.72\)"/);
+});
+
+test("memory log dialog uses semantic chrome instead of dark-mode hardcodes", () => {
+  const memlog = readFileSync(
+    new URL("../../../web/src/components/MemoryLogDialog.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.doesNotMatch(memlog, /common\.white/);
+  assert.doesNotMatch(memlog, /rgba\(0,\s*0,\s*0,\s*0\.6\)/);
+  assert.doesNotMatch(memlog, /info\.light/);
+  assert.doesNotMatch(memlog, /primary\.light/);
+  assert.match(memlog, /var\(--color-text-muted\)/);
+  assert.match(memlog, /var\(--color-accent-strong\)/);
+});
+
 test("brand mark uses the brand token for its spine", () => {
   const mark = readFileSync(
     new URL("../../../web/src/components/shell/BrandMark.tsx", import.meta.url),
@@ -22,6 +43,14 @@ test("brand mark uses the brand token for its spine", () => {
   );
   assert.match(mark, /fill="var\(--color-brand\)"/);
   assert.doesNotMatch(mark, /fill="var\(--color-accent\)"/);
+});
+
+test("buttons keep generous inline padding so pill hover states aren’t cramped", () => {
+  assert.match(tokens, /--button-padding-inline-sm:\s*var\(--space-4\)/);
+  assert.match(tokens, /--button-padding-inline-md:\s*var\(--space-5\)/);
+  const theme = readFileSync(new URL("../../../web/src/theme.ts", import.meta.url), "utf8");
+  assert.match(theme, /textSizeSmall:[\s\S]*?paddingInline:\s*"var\(--button-padding-inline-sm\)"/);
+  assert.match(theme, /outlinedSizeSmall:[\s\S]*?paddingInline:\s*"var\(--button-padding-inline-sm\)"/);
 });
 
 test("light theme defines soft, layered elevation", () => {

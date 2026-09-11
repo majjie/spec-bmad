@@ -81,6 +81,7 @@ export default function AppHeader({
             aria-label="Help - replay the guided tour"
             size="small"
             data-tour="help"
+            sx={{ color: "var(--color-text-muted)" }}
           >
             <HelpOutlineIcon fontSize="small" />
           </IconButton>

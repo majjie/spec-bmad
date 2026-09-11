@@ -80,9 +80,9 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
               sx={{
                 all: "unset",
                 cursor: "pointer",
-                px: 0.5,
-                py: 0.25,
-                borderRadius: 0.5,
+                px: "var(--space-2)",
+                py: "var(--space-1)",
+                borderRadius: "var(--radius-control)",
                 "&:hover": { bgcolor: "action.hover" },
               }}
             >
@@ -99,12 +99,35 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
       leaveDelay={400}
       slotProps={{
         tooltip: {
-          sx: { bgcolor: "grey.900", fontSize: "0.85rem", maxWidth: "none", maxHeight: "80vh", overflowY: "auto" },
+          sx: {
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
+            fontSize: "0.85rem",
+            maxWidth: "none",
+            maxHeight: "80vh",
+            overflowY: "auto",
+          },
         },
       }}
     >
-      <Paper variant="outlined" onClick={onOpen} sx={{ px: 1, py: 0.5, textAlign: "center", cursor: "pointer" }}>
-        <Typography variant="body2">{prefix}</Typography>
+      <Paper
+        variant="outlined"
+        onClick={onOpen}
+        sx={{
+          px: 1,
+          py: 0.5,
+          textAlign: "center",
+          cursor: "pointer",
+          bgcolor: "var(--color-bg-raised)",
+          borderColor: "var(--color-border-default)",
+          color: "var(--color-text-default)",
+          "&:hover": { bgcolor: "var(--color-bg-hover)" },
+        }}
+      >
+        <Typography variant="body2" sx={{ fontWeight: 600, color: "inherit" }}>
+          {prefix}
+        </Typography>
       </Paper>
     </Tooltip>
   );
@@ -168,9 +191,9 @@ function ReviewsTile({
               sx={{
                 all: "unset",
                 cursor: "pointer",
-                px: 0.5,
-                py: 0.25,
-                borderRadius: 0.5,
+                px: "var(--space-2)",
+                py: "var(--space-1)",
+                borderRadius: "var(--radius-control)",
                 "&:hover": { bgcolor: "action.hover" },
               }}
             >
@@ -186,7 +209,9 @@ function ReviewsTile({
       slotProps={{
         tooltip: {
           sx: {
-            bgcolor: "grey.900",
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
             fontSize: "0.85rem",
             maxWidth: "none",
             maxHeight: "80vh",
