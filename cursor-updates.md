@@ -5,3 +5,5 @@
 - Project-centric left nav (Harbor/Lumen accordions with Requirements/Architecture/Delivery), square selected rows, restored welcome+tour via onboarding v2, and removed the misleading Harbor product name from the header.
 - Rebuilt Sprint status hierarchy (stat strip, disclosure, action list, epic accordions) and shared Stage frame/Panel/ListRow patterns with Overview; sharpened radii and flat nav selection.
 - Overview uses the same StageFrame/StatStrip/Panel rhythm as Sprint for consistent spacing and hierarchy.
+- Matched Overview “Open file” to the outlined “Open sprint” button and pill-rounded all MUI buttons.
+- Softened the shell: bound-document logo, rounded corners and elevation, clearer left-nav hierarchy, and project accordions that stay closed after collapse.
