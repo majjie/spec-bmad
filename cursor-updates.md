@@ -13,6 +13,7 @@
 - Added a header light/dark mode switcher with persisted preference, light semantic tokens, and scheme-aware syntax highlighting.
 - Aligned IA to Workspace / Products / Folders: Sprint sits under Workspace, Overview is product-first, and nav leaves use document dates instead of ISO.
 - Redesigned the file viewer modal: centered ~880px panel with a proper header (title, status, type/date/filename) and calmer reader markdown.
+- Softened light mode: warm sand/sage surfaces instead of white-grey, ochre accents, and layered low-opacity shadows for cards and overlays.
 - Realigned IA to one BMAD project per session: Documents (Requirements/Architecture) replace the Products accordion; Harbor-only seed; header shows the project name; multi-slug nesting kept for tests only.
 
 - Refined the welcome modal: tighter measure, clearer glossary spacing, and a read-only safety callout.

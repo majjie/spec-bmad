@@ -14,6 +14,21 @@
   --color-neutral-100: #e8ebef;
   --color-neutral-50: #f4f6f8;
 
+  /* Warm light-theme foundations */
+  --color-sand-50: oklch(98% 0.012 85);
+  --color-sand-100: oklch(95.5% 0.018 85);
+  --color-sand-200: oklch(90.5% 0.022 85);
+  --color-sage-50: oklch(96.5% 0.018 145);
+  --color-sage-100: oklch(92.5% 0.028 145);
+  --color-sage-200: oklch(86% 0.035 145);
+  --color-ink-900: oklch(24% 0.025 65);
+  --color-ink-700: oklch(39% 0.025 65);
+  --color-ink-600: oklch(47% 0.025 65);
+  --color-ink-400: oklch(64% 0.02 65);
+  --color-ochre-600: oklch(49% 0.1 78);
+  --color-ochre-700: oklch(40% 0.085 78);
+  --color-shadow-warm: oklch(31% 0.03 55);
+
   --color-amber-400: #e8b84a;
   --color-amber-500: #d4a017;
   --color-amber-600: #b8860b;
@@ -61,6 +76,8 @@
   --color-bg-raised: var(--color-neutral-850);
   --color-bg-subtle: var(--color-neutral-800);
   --color-bg-hover: var(--color-neutral-700);
+  --color-bg-header: var(--color-bg-surface);
+  --color-bg-sidebar: var(--color-bg-surface);
 
   --color-border-default: var(--color-neutral-700);
   --color-border-subtle: var(--color-neutral-800);
@@ -113,25 +130,27 @@
 /* Light appearance — only semantic layer remapped (token-architect three-tier rule). */
 :root[data-color-scheme="light"] {
   color-scheme: light;
-  --color-shadow: #1a2230;
+  --color-shadow: var(--color-shadow-warm);
 
-  --color-bg-canvas: #eef1f5;
-  --color-bg-surface: #ffffff;
-  --color-bg-raised: #ffffff;
-  --color-bg-subtle: var(--color-neutral-100);
-  --color-bg-hover: var(--color-neutral-200);
+  --color-bg-canvas: var(--color-sand-100);
+  --color-bg-surface: var(--color-sand-50);
+  --color-bg-raised: var(--color-sand-50);
+  --color-bg-subtle: var(--color-sage-100);
+  --color-bg-hover: var(--color-sage-200);
+  --color-bg-header: var(--color-sand-50);
+  --color-bg-sidebar: var(--color-sage-50);
 
-  --color-border-default: var(--color-neutral-200);
-  --color-border-subtle: var(--color-neutral-100);
+  --color-border-default: var(--color-sand-200);
+  --color-border-subtle: var(--color-sage-100);
 
-  --color-text-default: var(--color-neutral-900);
-  --color-text-muted: var(--color-neutral-600);
-  --color-text-subtle: var(--color-neutral-600);
-  --color-text-disabled: var(--color-neutral-400);
+  --color-text-default: var(--color-ink-900);
+  --color-text-muted: var(--color-ink-700);
+  --color-text-subtle: var(--color-ink-600);
+  --color-text-disabled: var(--color-ink-400);
 
-  --color-accent: var(--color-amber-600);
-  --color-accent-strong: var(--color-amber-700);
-  --color-accent-muted: color-mix(in srgb, var(--color-amber-600) 14%, transparent);
+  --color-accent: var(--color-ochre-600);
+  --color-accent-strong: var(--color-ochre-700);
+  --color-accent-muted: color-mix(in oklch, var(--color-ochre-600) 15%, transparent);
 
   --color-status-done: var(--color-green-600);
   --color-status-review: var(--color-orange-600);
@@ -142,17 +161,22 @@
   --color-focus-ring: var(--color-amber-600);
 
   --shadow-sm:
-    0 1px 2px color-mix(in srgb, var(--color-shadow) 8%, transparent),
-    0 1px 1px color-mix(in srgb, var(--color-shadow) 5%, transparent);
+    0 2px 8px -2px color-mix(in oklch, var(--color-shadow) 10%, transparent),
+    0 1px 2px color-mix(in oklch, var(--color-shadow) 6%, transparent);
   --shadow-md:
-    0 8px 24px color-mix(in srgb, var(--color-shadow) 10%, transparent),
-    0 2px 6px color-mix(in srgb, var(--color-shadow) 6%, transparent);
+    0 12px 32px -10px color-mix(in oklch, var(--color-shadow) 16%, transparent),
+    0 3px 10px -3px color-mix(in oklch, var(--color-shadow) 9%, transparent),
+    0 1px 2px color-mix(in oklch, var(--color-shadow) 5%, transparent);
   --shadow-lg:
-    0 20px 48px color-mix(in srgb, var(--color-shadow) 14%, transparent),
-    0 6px 16px color-mix(in srgb, var(--color-shadow) 8%, transparent);
+    0 28px 64px -18px color-mix(in oklch, var(--color-shadow) 18%, transparent),
+    0 10px 24px -8px color-mix(in oklch, var(--color-shadow) 11%, transparent),
+    0 2px 6px -2px color-mix(in oklch, var(--color-shadow) 6%, transparent);
 
-  --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
-  --elevation-card: var(--shadow-sm);
+  --elevation-header: 0 1px 0 var(--color-border-subtle), var(--shadow-sm);
+  --elevation-card:
+    0 14px 36px -14px color-mix(in oklch, var(--color-shadow) 14%, transparent),
+    0 4px 12px -4px color-mix(in oklch, var(--color-shadow) 8%, transparent),
+    0 1px 3px color-mix(in oklch, var(--color-shadow) 4%, transparent);
   --elevation-overlay: var(--shadow-lg);
 }
 
