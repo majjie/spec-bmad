@@ -15,20 +15,20 @@ interface WelcomeModalProps {
 
 const GLOSSARY = [
   {
-    term: "Products",
-    detail: "Named lineages from your BMAD folders (for example Harbor). Expand one to see its documents.",
-  },
-  {
     term: "Requirements",
-    detail: "PRDs — what the organisation decided to build, grouped by date (newest first).",
+    detail: "PRD runs for this project, newest first. Open one to read the document and its reviews.",
   },
   {
     term: "Architecture",
-    detail: "The technical spine for that product.",
+    detail: "Technical spine documents for the same project folder.",
   },
   {
     term: "Sprint status",
-    detail: "Workspace delivery from sprint-status.yaml. It lives under Workspace, not inside a product.",
+    detail: "Delivery board from sprint-status.yaml for this workspace.",
+  },
+  {
+    term: "Method / Generated",
+    detail: "Raw folder explorers for `_bmad` (install) and `_bmad-output` (what the method produced).",
   },
 ];
 
@@ -74,8 +74,8 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           </Typography>
         </Box>
         <Typography variant="body1" sx={{ mb: 2.5, textWrap: "pretty", maxWidth: "48ch" }}>
-          A read-only map of this workspace&apos;s BMAD artifacts. Products in the left nav are
-          what BMAD has been planning — not this viewer&apos;s brand.
+          A read-only map of one BMAD project folder. The header shows the project name when it is
+          known; the left nav is organised by document type, not by multiple products.
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2.5 }}>
           {GLOSSARY.map((row) => (

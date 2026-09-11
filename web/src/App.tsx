@@ -29,7 +29,7 @@ import {
 import { fetchNavigatorTree, fetchSprintStatus, findFolderEntry } from "./navigatorApi.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
 import { shouldShowWelcome, writeOnboardingState } from "./onboarding/onboarding.js";
-import { type ShellSelection } from "./shell.js";
+import { workspaceProjectName, type ShellSelection } from "./shell.js";
 
 interface FileDialogState {
   path: string;
@@ -400,6 +400,7 @@ export default function App() {
         Skip to main content
       </Link>
       <AppHeader
+        projectName={workspaceProjectName(navigatorTree, sprintStatus?.summary.project ?? null)}
         refreshing={refreshing}
         refreshFailed={refreshFailed}
         onRefresh={() => void handleRefresh()}
@@ -476,7 +477,7 @@ export default function App() {
                   width: 280,
                   overflow: "auto",
                   borderRight: "1px solid var(--color-border-default)",
-                  bgcolor: "var(--color-bg-surface)",
+                  bgcolor: "var(--color-bg-sidebar)",
                 }}
               >
                 <FolderTree

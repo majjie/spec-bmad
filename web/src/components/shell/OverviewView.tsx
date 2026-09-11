@@ -6,11 +6,14 @@ import {
   buildProjectNav,
   countOpenActionItems,
   formatRunDate,
+  hasMultipleNamedSlugs,
+  namedSlugGroups,
   titleCaseProject,
+  workspaceProjectName,
   type ShellSelection,
 } from "../../shell.js";
 import { StageFrame, StageHeader, Stat, StatStrip } from "../stage/Stage.js";
-import { OpenItems, Panel, ProductCard } from "./OverviewPanels.js";
+import { ArtifactList, OpenItems, Panel } from "./OverviewPanels.js";
 
 interface OverviewViewProps {
   tree: NavigatorTree | null;
@@ -19,9 +22,6 @@ interface OverviewViewProps {
   onOpenSelection: (selection: ShellSelection) => void;
   onOpenFile: (path: string) => void;
 }
-
-const OVERVIEW_LEDE =
-  "A read-only map of this workspace — products BMAD has been planning, plus delivery status for the whole folder.";
 
 function latestLeaf(tree: NavigatorTree | null, kind: "prd" | "architecture") {
   const grouping = tree?.[kind] ?? null;
@@ -51,7 +51,9 @@ function latestLabel(
     return dash;
   }
   const date = latest.entry.date ? formatRunDate(latest.entry.date) : "";
-  return `${titleCaseProject(latest.project)}${date ? ` · ${date}` : ""}`;
+  const multi = hasMultipleNamedSlugs(buildProjectNav(tree));
+  const prefix = multi ? `${titleCaseProject(latest.project)} · ` : "";
+  return `${prefix}${date || latest.entry.folderName}`;
 }
 
 export default function OverviewView({
@@ -62,19 +64,28 @@ export default function OverviewView({
   onOpenFile,
 }: OverviewViewProps) {
   const hasSprint = tree?.sprintStatusAvailable === true;
-  const products = buildProjectNav(tree).filter((product) => product.key !== "_other");
+  const groups = buildProjectNav(tree);
+  const named = namedSlugGroups(groups);
+  const multi = hasMultipleNamedSlugs(groups);
+  const projectName = workspaceProjectName(tree, sprintStatus?.summary.project ?? null);
   const openCount = countOpenActionItems(sprintStatus?.actionItems ?? []);
   const dash = "—";
 
+  const allRequirements = named.flatMap((g) => g.requirements);
+  const allArchitecture = named.flatMap((g) => g.architecture);
+  const other = groups.find((g) => g.key === "_other");
+
+  const title = projectName ? `${projectName} overview` : "Workspace overview";
+  const lede = projectName
+    ? `A read-only map of ${projectName}'s BMAD planning artifacts and delivery status for this folder.`
+    : "A read-only map of this folder's BMAD planning artifacts and delivery status.";
+
   return (
     <StageFrame>
-      <StageHeader title="Workspace overview" lede={OVERVIEW_LEDE} />
+      <StageHeader title={title} lede={lede} />
 
       <StatStrip>
-        <Stat
-          label="Products"
-          value={products.length > 0 ? products.map((p) => p.title).join(", ") : dash}
-        />
+        <Stat label="Project" value={projectName ?? (multi ? named.map((p) => p.title).join(", ") : dash)} />
         <Stat label="Latest requirements" value={latestLabel(tree, "prd", dash)} />
         <Stat label="Latest architecture" value={latestLabel(tree, "architecture", dash)} />
         <Stat
@@ -136,29 +147,151 @@ export default function OverviewView({
         </Panel>
       )}
 
-      {products.length > 0 ? (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "var(--space-4)",
-            alignItems: "stretch",
-          }}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "var(--space-4)",
+          alignItems: "stretch",
+        }}
+      >
+        <Panel
+          title="Requirements"
+          {...(multi
+            ? { subtitle: `${named.length} lineages` }
+            : allRequirements.length > 0
+              ? { subtitle: "PRD runs" }
+              : {})}
+          {...(allRequirements[0]
+            ? {
+                action: (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => onOpenSelection({ kind: "prd", path: allRequirements[0]!.path })}
+                  >
+                    Open latest
+                  </Button>
+                ),
+              }
+            : {})}
         >
-          {products.map((product) => (
-            <ProductCard
-              key={product.key}
-              product={product}
-              onOpenPrd={(leaf) => onOpenSelection({ kind: "prd", path: leaf.path })}
-              onOpenArchitecture={(leaf) => onOpenSelection({ kind: "architecture", path: leaf.path })}
+          {multi ? (
+            named.map((group) =>
+              group.requirements.length > 0 ? (
+                <Box key={group.key} sx={{ mb: "var(--space-3)" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "var(--color-text-subtle)",
+                      fontWeight: 650,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {group.title}
+                  </Typography>
+                  <ArtifactList
+                    leaves={group.requirements}
+                    kind="prd"
+                    onOpen={(leaf) => onOpenSelection({ kind: "prd", path: leaf.path })}
+                  />
+                </Box>
+              ) : null,
+            )
+          ) : (
+            <ArtifactList
+              leaves={allRequirements}
+              kind="prd"
+              empty="No requirements runs yet."
+              onOpen={(leaf) => onOpenSelection({ kind: "prd", path: leaf.path })}
             />
-          ))}
-        </Box>
-      ) : (
-        <Typography variant="body2" color="text.secondary">
-          No named products yet — open Requirements or Architecture folders from the left nav when they appear.
-        </Typography>
-      )}
+          )}
+          {other && other.other.length > 0 && (
+            <Box sx={{ mt: "var(--space-3)" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "var(--color-text-subtle)",
+                  fontWeight: 650,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Other folders
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {other.other.map((entry) => (
+                  <Button
+                    key={entry.path}
+                    size="small"
+                    onClick={() => onOpenSelection({ kind: "prd", path: entry.path })}
+                    sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                  >
+                    {entry.folderName}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          )}
+        </Panel>
+
+        <Panel
+          title="Architecture"
+          {...(multi
+            ? { subtitle: `${named.filter((g) => g.architecture.length > 0).length} lineages` }
+            : allArchitecture.length > 0
+              ? { subtitle: "Spine runs" }
+              : {})}
+          {...(allArchitecture[0]
+            ? {
+                action: (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() =>
+                      onOpenSelection({ kind: "architecture", path: allArchitecture[0]!.path })
+                    }
+                  >
+                    Open latest
+                  </Button>
+                ),
+              }
+            : {})}
+        >
+          {multi ? (
+            named.map((group) =>
+              group.architecture.length > 0 ? (
+                <Box key={group.key} sx={{ mb: "var(--space-3)" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "var(--color-text-subtle)",
+                      fontWeight: 650,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {group.title}
+                  </Typography>
+                  <ArtifactList
+                    leaves={group.architecture}
+                    kind="architecture"
+                    onOpen={(leaf) => onOpenSelection({ kind: "architecture", path: leaf.path })}
+                  />
+                </Box>
+              ) : null,
+            )
+          ) : (
+            <ArtifactList
+              leaves={allArchitecture}
+              kind="architecture"
+              empty="No architecture runs yet."
+              onOpen={(leaf) => onOpenSelection({ kind: "architecture", path: leaf.path })}
+            />
+          )}
+        </Panel>
+      </Box>
     </StageFrame>
   );
 }

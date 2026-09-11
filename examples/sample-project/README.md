@@ -4,13 +4,18 @@ Fictional design-system ops console used as **seed data** for BMAD Browser. It i
 product code; the CLI treats this folder as a target project because it contains `_bmad`
 and `_bmad-output`.
 
+BMAD Browser sessions are **one project folder at a time**. This seed is deliberately a
+single lineage (**Harbor**) so the demo matches that model.
+
 ## What you should see
 
-| Tab | Contents |
+| Area | Contents |
 | --- | --- |
-| **Navigator** | PRD groups (`prd-harbor`, `prd-lumen` + `scratch-workshop-notes`), Architecture (`architecture-harbor`), Sprint Status (epic-2 active) |
-| **Infra** | Thin `_bmad` core config, agent stub, sprint-status workflow, sample Python script |
-| **Output** | Full `_bmad-output` tree including specs, CSV, and planning folders |
+| **Header** | Project name **Harbor** (from sprint-status.yaml) |
+| **Documents → Requirements** | `prd-harbor` dated runs (latest `2026-09-01`) |
+| **Documents → Architecture** | `architecture-harbor` (latest `2026-09-02`) |
+| **Sprint status** | Epic-2 active |
+| **Method / Generated** | Thin `_bmad` + full `_bmad-output` trees |
 
 The full PRD leaf is `prd-harbor-2026-09-01` (reviews, addendum, memlog, requirement codes).
 The full architecture leaf is `architecture-harbor-2026-09-02`.

@@ -52,13 +52,15 @@ interface NavRowProps {
   secondary?: string;
   selected: boolean;
   onClick: () => void;
-  depth?: 0 | 1;
+  depth?: 0 | 1 | 2;
   tourId?: string;
   icon?: ReactNode;
   ariaExpanded?: boolean;
   ariaControls?: string;
   id?: string;
 }
+
+const DEPTH_PL: Record<0 | 1 | 2, number> = { 0: 2, 1: 3.5, 2: 5 };
 
 /** Full-bleed square nav row — no inset pills or curved side gaps. */
 export function NavRow({
@@ -73,7 +75,7 @@ export function NavRow({
   ariaControls,
   id,
 }: NavRowProps) {
-  const isProject = depth === 0 && ariaExpanded !== undefined;
+  const isAccordion = ariaExpanded !== undefined;
   const open = ariaExpanded === true;
 
   return (
@@ -87,10 +89,10 @@ export function NavRow({
       sx={{
         mx: 0,
         mb: 0,
-        py: isProject ? 1 : 0.65,
+        py: isAccordion && depth === 0 ? 1 : 0.65,
         px: 2,
-        pl: depth === 1 ? 3.5 : 2,
-        minHeight: isProject ? 44 : 40,
+        pl: DEPTH_PL[depth],
+        minHeight: isAccordion && depth === 0 ? 44 : 40,
         borderRadius: 0,
         alignItems: secondary ? "flex-start" : "center",
         color: selected ? "var(--color-text-default)" : "var(--color-text-muted)",
@@ -109,7 +111,7 @@ export function NavRow({
         },
       }}
     >
-      {isProject && (
+      {isAccordion && (
         <ExpandMore
           fontSize="small"
           aria-hidden
@@ -141,10 +143,10 @@ export function NavRow({
         primary={label}
         secondary={secondary}
         primaryTypographyProps={{
-          fontWeight: isProject ? 650 : selected ? 650 : 500,
-          fontSize: isProject ? "0.9375rem" : depth === 0 ? "0.875rem" : "0.8125rem",
-          letterSpacing: isProject ? "-0.015em" : 0,
-          color: isProject ? "var(--color-text-default)" : "inherit",
+          fontWeight: isAccordion && depth === 0 ? 650 : selected ? 650 : 500,
+          fontSize: isAccordion && depth === 0 ? "0.9375rem" : depth === 0 ? "0.875rem" : "0.8125rem",
+          letterSpacing: isAccordion && depth === 0 ? "-0.015em" : 0,
+          color: isAccordion && depth === 0 ? "var(--color-text-default)" : "inherit",
         }}
         secondaryTypographyProps={{
           fontSize: "0.7rem",

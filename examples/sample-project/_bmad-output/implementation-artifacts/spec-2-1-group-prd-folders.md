@@ -19,8 +19,8 @@ newest-first, with non-conforming names listed literally.
 
 ## Acceptance
 
-- `prd-harbor-2026-09-01` appears under `prd-harbor` → `2026-09-01`
-- `scratch-workshop-notes` appears as its own node
-- Selecting a project node only expands/collapses
+- `prd-harbor-2026-09-01` appears under Requirements → `1 Sep 2026 · latest PRD`
+- `prd-harbor-2026-08-15` appears as the older dated run under the same section
+- Multi-slug fixtures (unit tests only) nest under Requirements by slug when more than one named lineage exists
 
 </frozen-after-approval>

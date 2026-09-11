@@ -10,6 +10,7 @@ import BrandMark from "./BrandMark.js";
 import { useColorScheme } from "./ColorSchemeProvider.js";
 
 interface AppHeaderProps {
+  projectName?: string | null;
   refreshing: boolean;
   refreshFailed: boolean;
   onRefresh: () => void;
@@ -17,6 +18,7 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({
+  projectName,
   refreshing,
   refreshFailed,
   onRefresh,
@@ -35,16 +37,26 @@ export default function AppHeader({
         alignItems: "center",
         justifyContent: "space-between",
         px: 2,
-        bgcolor: "var(--color-bg-surface)",
+        bgcolor: "var(--color-bg-header)",
         boxShadow: "var(--elevation-header)",
         zIndex: 1,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0 }}>
         <BrandMark size={32} />
-        <Typography variant="subtitle1" sx={{ fontWeight: 650, letterSpacing: "-0.02em" }}>
-          BMAD Browser
-        </Typography>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 650, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+            BMAD Browser
+          </Typography>
+          {projectName ? (
+            <Typography
+              variant="caption"
+              sx={{ color: "var(--color-text-subtle)", display: "block", lineHeight: 1.2 }}
+            >
+              {projectName}
+            </Typography>
+          ) : null}
+        </Box>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
         <Tooltip title={nextLabel}>

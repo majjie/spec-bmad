@@ -1,4 +1,4 @@
-export const ONBOARDING_STORAGE_KEY = "bmad-browser:onboarding:v2";
+export const ONBOARDING_STORAGE_KEY = "bmad-browser:onboarding:v3";
 
 export type OnboardingState = "pending" | "skipped" | "completed";
 
@@ -14,14 +14,14 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "sidebar",
     anchor: "sidebar",
-    title: "Products live here",
-    body: "Each product is an accordion. Expand one to open its Requirements and Architecture. Sprint status sits under Workspace when this folder has a sprint-status.yaml.",
+    title: "Documents live here",
+    body: "Requirements and Architecture hold this project's planning runs. Sprint status sits under Workspace when sprint-status.yaml is present.",
   },
   {
     id: "overview",
     anchor: "nav-overview",
     title: "Start on Overview",
-    body: "Overview summarises products and workspace delivery when you do not know where to click yet.",
+    body: "Overview summarises the active epic and the latest requirements and architecture documents.",
   },
   {
     id: "stage",
