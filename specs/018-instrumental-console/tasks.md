@@ -384,6 +384,42 @@ next reader meets a decision rather than a discrepancy.
       colour is supposed to live. It also asserts the component tree it scanned is non-empty,
       so the check cannot pass by finding nothing.
 
+## Phase 9: Merged from a parallel branch, reconciled here
+
+Four commits arrived by merge after this feature's artifacts were complete. Recorded rather
+than absorbed silently, because two of them are behaviour this spec did not describe.
+
+- [X] T043 **Epics now precede action items on the sprint view.** The action-items section
+      was rendered first, so on any corpus with more than a handful of items the epics - the
+      view's actual subject - sat below the fold. Now **FR-026a** and a contract clause, with
+      `quickstart.md` D5a checking it against a long list rather than the sample's short one.
+      Nothing in the artifacts had stated an order, which is why nothing caught it.
+- [X] T044 **Jump-list tooltips were unreadable in the light appearance** - the
+      requirement-code and review-file tooltips in `PrdDetailView.tsx` and
+      `ArchitectureDetailView.tsx` set `bgcolor: "grey.900"`, a fixed dark surface, while
+      their text colour followed the appearance. Dark-on-dark. Fixed on the merged branch with
+      semantic tokens plus a border.
+      **This was FR-027's fourth escape**, and the first three were mine. Each audit was
+      narrower than the next spelling someone reached for: hex, then intent slots, then
+      `rgba()`, then `grey.900`. All four were invisible in dark - a fixed dark value looks
+      deliberate on a dark page - and all four were found by a person opening the light
+      appearance. **FR-027a** now states the actual rule (no colour whose value is the same in
+      both appearances, literal or borrowed), and `tokenDiscipline.test.ts` enforces it
+      mechanically over every component.
+- [X] T045 **Merge resolution.** The merge combined both branches' edits to
+      `MemoryLogDialog.tsx`'s floating control cluster into one object literal with a
+      duplicated key, breaking `npm run typecheck`. Resolved in favour of the merged branch
+      throughout: its treatment of the cluster (a raised surface with a border) is correct,
+      and its `--color-accent-strong` for requirement-code links is the better choice on a
+      light surface, where the plain accent is legible as a label but marginal as a link.
+      **A correction to T042 belongs here.** That task tokenised two `rgba(0, 0, 0, …)` values
+      as scrims. Only one was a scrim: the other was this control cluster's background, which
+      I misread because I had grepped for the value rather than looked at what it styled.
+      `--color-scrim-soft` existed only to justify a second weight for that misreading and is
+      removed; there is one overlay in this application and now one `--color-scrim`.
+- [X] T046 Button and disclosure padding polish, and light-mode icon contrast hardening.
+      Presentational, within what FR-027 and FR-031 already require; no new requirement.
+
 ---
 
 ## Dependencies

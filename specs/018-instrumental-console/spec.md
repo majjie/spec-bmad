@@ -263,14 +263,22 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 - **FR-026**: Overview MUST additionally surface the outstanding action items with a direct
   affordance to open the document each one references, so the most common reason to visit
   sprint status is answerable without leaving Overview.
+- **FR-026a**: On the sprint view, epics MUST appear **above** action items. Epics are the
+  view's subject; action items are a supplement to them, and placing a variable-length list
+  first pushes the subject below the fold on any corpus with more than a handful of items.
 
 #### Visual system and accessibility
 
 - **FR-027**: All colour and typography MUST derive from a single named design-token system
   rather than one-off values chosen per component, so appearance stays consistent and can be
-  retargeted in one place. This includes **overlay and scrim colours**, which are the easiest
-  to overlook: a dimming layer looks acceptable against a dark page at almost any value, so an
-  un-tokenised one is invisible until the second appearance exists.
+  retargeted in one place. This includes every **transient surface** - tooltips, menus,
+  scrims, floating control clusters - which are the easiest to overlook, because a value
+  fixed to a dark shade looks correct on a dark page and only fails once a second appearance
+  exists.
+- **FR-027a**: No component may use a colour whose value is the same in both appearances.
+  This forbids raw literals, and equally forbids borrowing a fixed palette entry (a grey
+  step, a black or white constant, or an intent colour used to mean something other than that
+  intent). Only tokens and theme roles that the theme remaps per appearance are permitted.
 - **FR-028**: The interface MUST provide a control that moves keyboard focus directly to the
   main content, and MUST expose navigation, header, and main regions as identifiable
   landmarks.
@@ -309,6 +317,9 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 - **SC-004a**: Every step shown highlights an element actually on the page, in 100% of
   supported project shapes - including a project with method files but no generated
   artifacts.
+- **SC-006a**: No text is rendered against a surface of similar lightness in either
+  appearance. Verified mechanically for the *cause* - components hold no
+  appearance-invariant colour - and by eye for the result.
 - **SC-005**: Every step status is distinguishable in greyscale, because each is carried by
   at least two channels (icon and text) in addition to colour.
 - **SC-006**: Body text and focus indicators meet WCAG 2.1 AA contrast ratios in every

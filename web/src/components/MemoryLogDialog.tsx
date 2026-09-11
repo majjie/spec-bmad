@@ -38,7 +38,9 @@ function MemlogSegmentView({
       sx={{
         all: "unset",
         cursor: "pointer",
-        color: "var(--color-accent)",
+        // Links use the stronger accent, not the plain one: on a light surface the 600-weight
+        // accent is legible as a label but marginal as a link against sand.
+        color: "var(--color-accent-strong)",
         textDecoration: "underline",
       }}
     >
@@ -119,9 +121,6 @@ export default function MemoryLogDialog({
           top: 8,
           right: 8,
           zIndex: 10,
-          padding: "4px",
-          borderRadius: 1,
-          backgroundColor: "var(--color-scrim)",
           display: "flex",
           alignItems: "center",
           gap: 0.5,

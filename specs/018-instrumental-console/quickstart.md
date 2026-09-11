@@ -74,6 +74,7 @@ Open the printed `127.0.0.1` URL.
 | D3 | Apply a greyscale filter in devtools | Every status remains distinguishable (SC-005) |
 | D4 | Look for project metadata | Collapsed behind a disclosure, not competing with status (FR-024) |
 | D5 | Cross-check the open action-item count | Matches the number of items whose status is not `done` |
+| D5a | Look at the order of the page | **Epics first**, action items below them (FR-026a). With a long action-item list, epics must still be visible without scrolling past it |
 | D6 | Look at the Action items section | Full width, at its natural height - it does **not** scroll within itself, and is not height-matched to a neighbour (FR-025, superseding feature 008's FR-001-003) |
 | D7 | Inspect one action item | Owner indication, completion indication, and a jump control whose accessible name is the raw reference; properties the item does not declare are absent, not blank |
 | D8 | Activate a jump control | The referenced document opens in the file viewer |
@@ -89,6 +90,8 @@ Open the printed `127.0.0.1` URL.
 | E3 | Hover or focus each header icon control | A text name appears, and is exposed to assistive technology (FR-029) |
 | E4 | Enable "reduce motion" at the OS level, reload, replay the tour | No animated transitions; the reload indicator does not spin (FR-031) |
 | E5 | Run a contrast check over body text and focus rings | Meets WCAG 2.1 AA (SC-006) |
+| E6 | **In the light appearance**, open a PRD and hover a requirement-code tile and the reviews tile | The jump list is readable - a surface that follows the appearance, not a fixed dark panel with dark text (FR-027a, SC-006a) |
+| E7 | **In the light appearance**, open a memory log | Its floating close/info cluster reads as a raised control on the dialog, not a dark chip |
 
 ## F. Degraded and empty corpora
 

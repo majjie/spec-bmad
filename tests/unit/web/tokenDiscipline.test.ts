@@ -8,14 +8,18 @@ import assert from "node:assert/strict";
  * Feature 018 FR-027: all colour derives from the semantic token layer, never from a value
  * chosen in a component.
  *
- * This exists because FR-027 was twice believed satisfied when it was not. The first audit
- * grepped for hex literals and missed `info.light` being used to mean "this is a link"; the
- * second grepped for hex and palette slots and missed two `rgba()` modal scrims. Both were
- * found by eye, months of commits apart, and both were invisible in dark - a black scrim on a
- * near-black page looks like nothing at all.
+ * This exists because FR-027 was believed satisfied, and was not, four separate times - each
+ * time because the audit was narrower than the next spelling someone reached for:
  *
- * A mechanical check is the only kind that does not depend on remembering every spelling a
- * colour can have.
+ *   1. hex literals            - missed `info.light` used to mean "this is a link"
+ *   2. hex + intent slots      - missed an `rgba()` control-cluster background
+ *   3. hex + slots + rgba()    - missed `grey.900` on the requirement-code tooltips
+ *   4. all of the above        - which is why this list is deliberately wider than the
+ *                                defects found so far
+ *
+ * Every one was invisible in the dark appearance, because a fixed dark value looks correct on
+ * a dark page. Every one was found by a person looking at the light appearance. A mechanical
+ * check is the only kind that does not depend on remembering every spelling a colour can have.
  */
 
 const COMPONENTS_DIR = fileURLToPath(new URL("../../../web/src/components", import.meta.url));
@@ -61,11 +65,25 @@ test("no component defines a raw colour literal (FR-027)", () => {
   );
 });
 
-test("no component borrows a status palette slot to mean something else (FR-027)", () => {
-  // `text.secondary` and `divider` are semantic and fine. The status slots are the ones that
-  // get borrowed for an unrelated meaning - `info.light` for a link, `error.main` for a
-  // failure state that has its own `--color-status-error` token.
-  const BORROWED = /"(info|warning|success|error)\.(light|main|dark)"/;
+test("no component uses a palette slot whose value ignores the appearance (FR-027)", () => {
+  // The distinction that matters is not "theme slot vs literal" - it is whether the slot's
+  // value changes with the appearance.
+  //
+  // Allowed, because the theme remaps them per appearance: `text.*`, `background.*`,
+  // `action.*`, `divider`.
+  //
+  // Banned, because their value is fixed no matter which appearance is active:
+  //   - `grey.900`, `common.white` - a fixed dark surface or a fixed light ink
+  //   - the intent slots (`info.light`, `error.main`, …) when borrowed to mean something
+  //     other than that intent, which in this codebase is every use of them
+  //
+  // This list is deliberately broader than the defects found so far. FR-027 has been
+  // declared satisfied four times while it was not, and on three of those occasions the
+  // audit was narrower than the next spelling someone reached for: hex, then palette
+  // intent-slots, then `rgba()`, then `grey.900`. Each new spelling was invisible in dark,
+  // because a fixed dark value looks correct on a dark page.
+  const BORROWED =
+    /"(grey|common)\.[a-zA-Z0-9]+"|"(primary|secondary|info|warning|success|error)\.(light|main|dark)"/;
   const offenders: string[] = [];
 
   for (const file of files) {
@@ -81,20 +99,20 @@ test("no component borrows a status palette slot to mean something else (FR-027)
   assert.deepEqual(
     offenders,
     [],
-    `use a --color-status-* token instead of a borrowed palette slot:\n${offenders.join("\n")}`,
+    `these resolve to the same value in both appearances - use a semantic token, or a theme\nslot that the theme remaps (text.*, background.*, action.*, divider):\n${offenders.join("\n")}`,
   );
 });
 
-test("both appearances define every scrim token", () => {
-  // Scrims are the case this test was written for: defined once per appearance, so a modal
-  // over a sand page gets warm ink rather than the black that suits a charcoal one.
+test("both appearances define the scrim token", () => {
+  // The scrim is the case this test was written for: defined once per appearance, so an
+  // overlay on a sand page gets warm ink rather than the black that suits a charcoal one.
   const tokens = readFileSync(
     fileURLToPath(new URL("../../../web/src/tokens.css", import.meta.url)),
     "utf8",
   );
   const light = tokens.match(/:root\[data-color-scheme="light"\]\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 
-  for (const name of ["--color-scrim:", "--color-scrim-soft:"]) {
+  for (const name of ["--color-scrim:"]) {
     assert.ok(tokens.includes(name), `${name} must be defined for the default appearance`);
     assert.ok(light.includes(name), `${name} must be remapped for the light appearance`);
   }
