@@ -1,77 +1,12 @@
-import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import type { ActionItem } from "../../api.js";
 import type { ProjectCoverageRow, ProjectNavGroup, ProjectNavLeaf } from "../../shell.js";
+import { ListRow, Panel, Stat } from "../stage/Stage.js";
 
-export function Panel({
-  title,
-  subtitle,
-  children,
-  action,
-}: {
-  title: string;
-  subtitle?: string;
-  children: ReactNode;
-  action?: ReactNode;
-}) {
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: "var(--space-5)",
-        borderRadius: "var(--radius-card)",
-        boxShadow: "var(--elevation-card)",
-        bgcolor: "var(--color-bg-raised)",
-        minWidth: 0,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1, mb: 1.5 }}>
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="overline" sx={{ color: "var(--color-accent)", display: "block", lineHeight: 1.2 }}>
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography variant="caption" sx={{ color: "var(--color-text-subtle)" }}>
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
-        {action}
-      </Box>
-      <Box sx={{ flex: 1, minHeight: 0 }}>{children}</Box>
-    </Paper>
-  );
-}
-
-export function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <Box sx={{ minWidth: 0, px: "var(--space-5)", py: "var(--space-3)" }}>
-      <Typography variant="caption" component="dt" sx={{ color: "var(--color-label)" }}>
-        {label}
-      </Typography>
-      <Typography
-        variant="body2"
-        component="dd"
-        noWrap
-        title={value}
-        sx={{
-          m: 0,
-          color: "var(--color-value)",
-          fontWeight: 600,
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {value}
-      </Typography>
-    </Box>
-  );
-}
+export { Panel, Stat };
 
 export function LeafList({
   projects,
@@ -101,30 +36,7 @@ export function LeafList({
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 0.5 }}>
             {project[kind].map((leaf) => (
-              <Box
-                key={leaf.path}
-                component="button"
-                type="button"
-                onClick={() => onOpen(leaf)}
-                sx={{
-                  all: "unset",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 1,
-                  py: 0.75,
-                  px: 0.5,
-                  mx: -0.5,
-                  borderRadius: "var(--radius-control)",
-                  borderBottom: "1px solid var(--color-border-subtle)",
-                  "&:hover": { bgcolor: "var(--color-bg-hover)" },
-                  "&:focus-visible": {
-                    outline: "2px solid var(--color-focus-ring)",
-                    outlineOffset: 2,
-                  },
-                }}
-              >
+              <ListRow key={leaf.path} onClick={() => onOpen(leaf)}>
                 <Typography variant="body2" sx={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
                   {leaf.date || leaf.folderName}
                 </Typography>
@@ -133,7 +45,7 @@ export function LeafList({
                     Latest
                   </Typography>
                 )}
-              </Box>
+              </ListRow>
             ))}
           </Box>
         </Box>
@@ -154,24 +66,16 @@ export function OpenItems({ items, onOpenFile }: { items: ActionItem[]; onOpenFi
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       {open.slice(0, 6).map((item) => (
-        <Box
-          key={item.id}
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 2,
-            py: 0.75,
-            borderBottom: "1px solid var(--color-border-subtle)",
-          }}
-        >
-          <Typography variant="body2">{item.action ?? item.id}</Typography>
+        <ListRow key={item.id}>
+          <Typography variant="body2" sx={{ textWrap: "pretty", minWidth: 0 }}>
+            {item.action ?? item.id}
+          </Typography>
           {item.resolvedPath && (
             <Button size="small" onClick={() => onOpenFile(item.resolvedPath!)}>
-              Open file
+              Open
             </Button>
           )}
-        </Box>
+        </ListRow>
       ))}
     </Box>
   );
@@ -179,7 +83,7 @@ export function OpenItems({ items, onOpenFile }: { items: ActionItem[]; onOpenFi
 
 function coverageLabel(count: number, date: string): string {
   if (count === 0) {
-    return "-";
+    return "—";
   }
   const runs = `${count} run${count === 1 ? "" : "s"}`;
   return date ? `${runs} · ${date}` : runs;
@@ -192,14 +96,14 @@ export function CoverageTable({ rows }: { rows: ProjectCoverageRow[] }) {
   return (
     <Paper
       variant="outlined"
-        sx={{
-          p: 0,
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--elevation-card)",
-          bgcolor: "var(--color-bg-raised)",
-          overflow: "auto",
-          position: "relative",
-        }}
+      sx={{
+        p: 0,
+        borderRadius: "var(--radius-card)",
+        boxShadow: "var(--elevation-card)",
+        bgcolor: "var(--color-bg-raised)",
+        overflow: "auto",
+        position: "relative",
+      }}
     >
       <Box
         component="table"
@@ -265,7 +169,7 @@ export function CoverageTable({ rows }: { rows: ProjectCoverageRow[] }) {
                 </Typography>
               </td>
               <td>
-                <Typography variant="body2">{row.hasSprint ? "Tracking" : "-"}</Typography>
+                <Typography variant="body2">{row.hasSprint ? "Tracking" : "—"}</Typography>
               </td>
             </tr>
           ))}

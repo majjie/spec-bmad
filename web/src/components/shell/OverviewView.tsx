@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import type { NavigatorTree, SprintStatusResult } from "../../api.js";
 import {
@@ -10,7 +9,8 @@ import {
   titleCaseProject,
   type ShellSelection,
 } from "../../shell.js";
-import { CoverageTable, LeafList, OpenItems, Panel, Stat } from "./OverviewPanels.js";
+import { StageFrame, StageHeader, Stat, StatStrip } from "../stage/Stage.js";
+import { CoverageTable, LeafList, OpenItems, Panel } from "./OverviewPanels.js";
 
 interface OverviewViewProps {
   tree: NavigatorTree | null;
@@ -21,7 +21,7 @@ interface OverviewViewProps {
 }
 
 const OVERVIEW_LEDE =
-  "A read-only map of this project's BMAD artifacts - what was decided, the technical spine, and what is in progress.";
+  "A read-only map of this project's BMAD artifacts — what was decided, the technical spine, and what is in progress.";
 
 function latestLeaf(tree: NavigatorTree | null, kind: "prd" | "architecture") {
   const grouping = tree?.[kind] ?? null;
@@ -55,59 +55,13 @@ export default function OverviewView({
   const namedProjects = projects.filter((project) => project.key !== "_other");
   const coverage = buildProjectCoverage(projects);
   const openCount = countOpenActionItems(sprintStatus?.actionItems ?? []);
-  const dash = "-";
+  const dash = "—";
 
   return (
-    <Box
-      sx={{
-        p: "var(--space-6)",
-        width: "100%",
-        maxWidth: "none",
-        display: "flex",
-        flexDirection: "column",
-        gap: "var(--space-5)",
-      }}
-    >
-      <Box>
-        <Typography component="h1" variant="h5" sx={{ fontWeight: 650, letterSpacing: "-0.02em", mb: 0.5 }}>
-          Workspace overview
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          title={OVERVIEW_LEDE}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {OVERVIEW_LEDE}
-        </Typography>
-      </Box>
+    <StageFrame>
+      <StageHeader title="Workspace overview" lede={OVERVIEW_LEDE} />
 
-      <Paper
-        variant="outlined"
-        component="dl"
-        sx={{
-          m: 0,
-          display: "grid",
-          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-          bgcolor: "var(--color-bg-raised)",
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--elevation-card)",
-          overflow: "hidden",
-          "& > *:not(:last-child)": {
-            borderRight: "1px solid var(--color-border-subtle)",
-          },
-          "@media (max-width: 1100px)": {
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          },
-          "@media (max-width: 720px)": {
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          },
-        }}
-      >
+      <StatStrip>
         <Stat
           label="Products"
           value={namedProjects.length > 0 ? namedProjects.map((p) => p.title).join(", ") : dash}
@@ -128,9 +82,13 @@ export default function OverviewView({
               : dash
           }
         />
-        <Stat label="Active epic" value={hasSprint && sprintStatus ? sprintStatus.summary.activeEpic : dash} />
+        <Stat
+          label="Active epic"
+          value={hasSprint && sprintStatus ? sprintStatus.summary.activeEpic : dash}
+          mono
+        />
         <Stat label="Open action items" value={hasSprint && sprintStatus ? String(openCount) : dash} />
-      </Paper>
+      </StatStrip>
 
       <Box
         sx={{
@@ -214,17 +172,20 @@ export default function OverviewView({
                 </Typography>
               )}
               {sprintStatus && (
-                <Box sx={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
                   <Box>
                     <Typography variant="caption" sx={{ color: "var(--color-label)" }}>
                       Active epic
                     </Typography>
-                    <Typography variant="h6" sx={{ color: "var(--color-accent)", fontFamily: "var(--font-mono)" }}>
+                    <Typography
+                      variant="body1"
+                      sx={{ fontFamily: "var(--font-mono)", fontWeight: 650, letterSpacing: "-0.01em" }}
+                    >
                       {sprintStatus.summary.activeEpic}
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 0.75 }}>
+                    <Typography variant="caption" sx={{ color: "var(--color-label)", display: "block", mb: 0.5 }}>
                       Open action items
                     </Typography>
                     <OpenItems items={sprintStatus.actionItems} onOpenFile={onOpenFile} />
@@ -234,7 +195,7 @@ export default function OverviewView({
             </>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No sprint-status.yaml in this workspace - open a product&apos;s latest Requirements run from the left
+              No sprint-status.yaml in this workspace — open a product&apos;s latest Requirements run from the left
               nav.
             </Typography>
           )}
@@ -242,6 +203,6 @@ export default function OverviewView({
       </Box>
 
       <CoverageTable rows={coverage} />
-    </Box>
+    </StageFrame>
   );
 }

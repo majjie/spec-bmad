@@ -35,7 +35,7 @@ export default function AppHeader({
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0 }}>
-        <BrandMark size={28} />
+        <BrandMark size={32} />
         <Typography variant="subtitle1" sx={{ fontWeight: 650, letterSpacing: "-0.02em" }}>
           BMAD Browser
         </Typography>
