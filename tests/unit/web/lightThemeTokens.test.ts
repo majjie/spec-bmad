@@ -9,8 +9,19 @@ test("light theme uses distinct muted surfaces instead of white and grey", () =>
   assert.match(lightTheme, /--color-bg-canvas:\s*var\(--color-sand-100\)/);
   assert.match(lightTheme, /--color-bg-surface:\s*var\(--color-sand-50\)/);
   assert.match(lightTheme, /--color-bg-raised:\s*var\(--color-sand-50\)/);
-  assert.match(lightTheme, /--color-bg-subtle:\s*var\(--color-sage-100\)/);
-  assert.match(lightTheme, /--color-bg-sidebar:\s*var\(--color-sage-50\)/);
+  assert.match(lightTheme, /--color-bg-subtle:\s*var\(--color-mist-100\)/);
+  assert.match(lightTheme, /--color-bg-sidebar:\s*var\(--color-mist-50\)/);
+  assert.match(lightTheme, /--color-accent:\s*var\(--color-slate-blue-600\)/);
+  assert.match(lightTheme, /--color-brand:\s*var\(--color-slate-blue-600\)/);
+});
+
+test("brand mark uses the brand token for its spine", () => {
+  const mark = readFileSync(
+    new URL("../../../web/src/components/shell/BrandMark.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(mark, /fill="var\(--color-brand\)"/);
+  assert.doesNotMatch(mark, /fill="var\(--color-accent\)"/);
 });
 
 test("light theme defines soft, layered elevation", () => {

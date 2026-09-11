@@ -5,7 +5,7 @@ interface BrandMarkProps {
 }
 
 /**
- * Spec-browser mark: a bound document with an amber spine, not a flat accent square.
+ * Spec-browser mark: a bound document with an accented spine.
  */
 export default function BrandMark({ size = 32 }: BrandMarkProps) {
   const clipId = `brand-mark-${useId().replace(/:/g, "")}`;
@@ -36,7 +36,7 @@ export default function BrandMark({ size = 32 }: BrandMarkProps) {
         strokeWidth="1.5"
       />
       <g clipPath={`url(#${clipId})`}>
-        <rect x="3" y="3" width="7" height="26" fill="var(--color-accent)" />
+        <rect x="3" y="3" width="7" height="26" fill="var(--color-brand)" />
       </g>
       <rect x="14" y="11" width="10" height="2.25" rx="1.125" fill="var(--color-text-muted)" />
       <rect x="14" y="16.25" width="13" height="2.25" rx="1.125" fill="var(--color-text-muted)" />

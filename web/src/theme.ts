@@ -113,13 +113,13 @@ export function createAppTheme(mode: ColorScheme): Theme {
       palette: {
         mode: "light",
         primary: {
-          main: "#876216",
-          light: "#a98237",
-          dark: "#65470f",
-          contrastText: "#faf8f2",
+          main: "#3b6ea5",
+          light: "#5a8ab8",
+          dark: "#2c547d",
+          contrastText: "#f7f9fc",
         },
         secondary: {
-          main: "#52705a",
+          main: "#5a7a96",
         },
         background: {
           default: "#f3f0e7",
@@ -136,8 +136,8 @@ export function createAppTheme(mode: ColorScheme): Theme {
         info: { main: "#3b78b0" },
         error: { main: "#c44747" },
         action: {
-          hover: "rgba(65, 91, 67, 0.08)",
-          selected: "rgba(135, 98, 22, 0.12)",
+          hover: "rgba(59, 110, 165, 0.08)",
+          selected: "rgba(59, 110, 165, 0.12)",
           disabled: "#969087",
         },
       },
