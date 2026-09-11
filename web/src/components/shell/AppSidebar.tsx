@@ -142,9 +142,9 @@ export default function AppSidebar({
                     mx: 1,
                     mb: 0.75,
                     overflow: "hidden",
-                    borderRadius: "calc(var(--radius-nav-item) + var(--space-1))",
+                    borderRadius: 0,
                     bgcolor: open ? "var(--color-bg-subtle)" : "transparent",
-                    boxShadow: open ? "var(--shadow-sm)" : "none",
+                    boxShadow: "none",
                     transition: "background-color var(--duration-fast) var(--ease-out)",
                   }}
                 >
@@ -170,11 +170,12 @@ export default function AppSidebar({
                       dense
                       disablePadding
                       sx={{
-                        ml: 2.5,
-                        mr: 0.5,
-                        mb: 0.75,
-                        pl: 1,
-                        borderLeft: "1px solid var(--color-border-default)",
+                        ml: 0,
+                        mr: 0,
+                        mb: 0.5,
+                        pl: 2.75,
+                        borderLeft: "none",
+                        borderTop: "1px solid var(--color-border-subtle)",
                       }}
                     >
                       {project.requirements.length > 0 && (
