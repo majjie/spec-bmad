@@ -2,9 +2,12 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import BrandMark from "./BrandMark.js";
+import { useColorScheme } from "./ColorSchemeProvider.js";
 
 interface AppHeaderProps {
   refreshing: boolean;
@@ -19,6 +22,9 @@ export default function AppHeader({
   onRefresh,
   onHelp,
 }: AppHeaderProps) {
+  const { scheme, toggleScheme } = useColorScheme();
+  const nextLabel = scheme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+
   return (
     <Box
       component="header"
@@ -41,6 +47,22 @@ export default function AppHeader({
         </Typography>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Tooltip title={nextLabel}>
+          <IconButton
+            onClick={toggleScheme}
+            aria-label={nextLabel}
+            aria-pressed={scheme === "dark"}
+            size="small"
+            data-tour="color-scheme"
+            sx={{ color: "var(--color-text-muted)" }}
+          >
+            {scheme === "dark" ? (
+              <LightModeOutlinedIcon fontSize="small" />
+            ) : (
+              <DarkModeOutlinedIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Replay the guided tour">
           <IconButton
             onClick={onHelp}

@@ -4,12 +4,13 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileRenderMode } from "../fileRenderMode.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import CsvGrid from "./CsvGrid.js";
 import FrontmatterInfoControl from "./FrontmatterInfoControl.js";
 import MarkdownContent from "./MarkdownContent.js";
+import { useColorScheme } from "./shell/ColorSchemeProvider.js";
 
 interface FileViewerDialogProps {
   path: string | null;
@@ -24,6 +25,9 @@ function fileNameOf(path: string): string {
 }
 
 function DialogBody({ path, content, error }: { path: string; content: string | null; error: string | null }) {
+  const { scheme } = useColorScheme();
+  const syntaxStyle = scheme === "light" ? oneLight : vscDarkPlus;
+
   if (error) {
     return (
       <Typography color="error" sx={{ p: 2 }}>
@@ -60,7 +64,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
     // "light" build nuance doesn't apply to this export).
     return (
       <Box sx={{ p: 2 }}>
-        <SyntaxHighlighter language={mode.language} style={vscDarkPlus} showLineNumbers>
+        <SyntaxHighlighter language={mode.language} style={syntaxStyle} showLineNumbers>
           {content}
         </SyntaxHighlighter>
       </Box>
@@ -69,7 +73,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
 
   return (
     <Box sx={{ p: 2 }}>
-      <SyntaxHighlighter language="text" style={vscDarkPlus} showLineNumbers>
+      <SyntaxHighlighter language="text" style={syntaxStyle} showLineNumbers>
         {content}
       </SyntaxHighlighter>
     </Box>

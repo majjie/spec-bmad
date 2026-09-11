@@ -1,10 +1,8 @@
 import "./tokens.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
 import App from "./App.js";
-import theme from "./theme.js";
+import { ColorSchemeProvider } from "./components/shell/ColorSchemeProvider.js";
 
 const container = document.getElementById("root");
 if (!container) {
@@ -13,9 +11,8 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ColorSchemeProvider>
       <App />
-    </ThemeProvider>
+    </ColorSchemeProvider>
   </StrictMode>,
 );
