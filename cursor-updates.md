@@ -14,7 +14,9 @@
 - Aligned IA to Workspace / Products / Folders: Sprint sits under Workspace, Overview is product-first, and nav leaves use document dates instead of ISO.
 - Redesigned the file viewer modal: centered ~880px panel with a proper header (title, status, type/date/filename) and calmer reader markdown.
 - Softened light mode: warm sand/sage surfaces instead of white-grey, ochre accents, and layered low-opacity shadows for cards and overlays.
+- Swapped light-mode sage chrome for muted mist blue (sidebar, selection, logo spine, favicon).
 - Realigned IA to one BMAD project per session: Documents (Requirements/Architecture) replace the Products accordion; Harbor-only seed; header shows the project name; multi-slug nesting kept for tests only.
 
 - Refined the welcome modal: tighter measure, clearer glossary spacing, and a read-only safety callout.
 - Added an Expand control on the file viewer modal that toggles the panel to 98% of the screen.
+- Gave welcome modal action buttons more horizontal padding and widened the dialog slightly (480→540).

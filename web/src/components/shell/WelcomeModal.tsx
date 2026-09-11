@@ -64,7 +64,7 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           borderRadius: "var(--radius-overlay)",
           boxShadow: "var(--elevation-overlay)",
           backgroundImage: "none",
-          maxWidth: 480,
+          maxWidth: 540,
         },
       }}
     >
@@ -178,10 +178,20 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           flexWrap: "wrap",
         }}
       >
-        <Button onClick={onSkip} color="inherit">
+        <Button
+          onClick={onSkip}
+          color="inherit"
+          sx={{ px: "var(--space-6)", py: "var(--space-2)" }}
+        >
           Skip, take me to the workspace
         </Button>
-        <Button ref={startRef} variant="contained" onClick={onStartTour} disableElevation>
+        <Button
+          ref={startRef}
+          variant="contained"
+          onClick={onStartTour}
+          disableElevation
+          sx={{ px: "var(--space-6)", py: "var(--space-2)" }}
+        >
           Start the tour
         </Button>
       </DialogActions>
