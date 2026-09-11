@@ -50,7 +50,7 @@ const theme = createTheme({
       fontWeight: 650,
     },
   },
-  shape: { borderRadius: 12 },
+  shape: { borderRadius: 2 },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -71,14 +71,14 @@ const theme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          borderRadius: "var(--radius-control)",
+          borderRadius: "var(--button-radius)",
         },
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: "var(--radius-control)",
+          borderRadius: "var(--button-radius)",
         },
       },
     },

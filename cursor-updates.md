@@ -6,3 +6,4 @@
 - Rebuilt Sprint status hierarchy (stat strip, disclosure, action list, epic accordions) and shared Stage frame/Panel/ListRow patterns with Overview; sharpened radii and flat nav selection.
 - Overview is now a full-width dashboard: one-line lede, KPI strip, three artifact columns, and a product coverage table.
 - Polished the shell: browser-window BrandMark, card radius/shadow tokens, clearer project accordion hierarchy, and accordions that stay closed after collapse.
+- Matched Overview “Open file” to the outlined “Open sprint” button and pill-rounded all MUI buttons via `--button-radius`.
