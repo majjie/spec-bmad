@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from "react";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -63,37 +64,120 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           borderRadius: "var(--radius-overlay)",
           boxShadow: "var(--elevation-overlay)",
           backgroundImage: "none",
+          maxWidth: 480,
         },
       }}
     >
-      <DialogContent sx={{ pt: 3.5, px: 3.5 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+      <DialogContent sx={{ pt: "var(--space-8)", px: "var(--space-6)", pb: "var(--space-5)" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "var(--space-3)", mb: "var(--space-5)" }}>
           <BrandMark size={36} />
-          <Typography id={titleId} variant="h6" sx={{ fontWeight: 650 }}>
+          <Typography
+            id={titleId}
+            variant="h6"
+            sx={{ fontWeight: 650, letterSpacing: "-0.02em", textWrap: "balance" }}
+          >
             Welcome to BMAD Browser
           </Typography>
         </Box>
-        <Typography variant="body1" sx={{ mb: 2.5, textWrap: "pretty", maxWidth: "48ch" }}>
+
+        <Typography
+          variant="body1"
+          sx={{
+            mb: "var(--space-6)",
+            maxWidth: "42ch",
+            textWrap: "pretty",
+            lineHeight: 1.55,
+            color: "var(--color-text-muted)",
+          }}
+        >
           A read-only map of one BMAD project folder. The header shows the project name when it is
-          known; the left nav is organised by document type, not by multiple products.
+          known. The left nav is organised by document type — not by multiple products.
         </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2.5 }}>
+
+        <Box
+          component="dl"
+          sx={{
+            m: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-5)",
+            mb: "var(--space-6)",
+          }}
+        >
           {GLOSSARY.map((row) => (
-            <Box key={row.term}>
-              <Typography variant="subtitle2" sx={{ color: "var(--color-accent)" }}>
+            <Box key={row.term} component="div">
+              <Typography
+                component="dt"
+                variant="subtitle2"
+                sx={{
+                  color: "var(--color-accent)",
+                  mb: "var(--space-1)",
+                  lineHeight: 1.3,
+                }}
+              >
                 {row.term}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                component="dd"
+                variant="body2"
+                sx={{
+                  m: 0,
+                  maxWidth: "44ch",
+                  textWrap: "pretty",
+                  lineHeight: 1.5,
+                  color: "var(--color-text-subtle)",
+                }}
+              >
                 {row.detail}
               </Typography>
             </Box>
           ))}
         </Box>
-        <Typography variant="caption" color="text.secondary">
-          This viewer never writes, mutates, or deletes anything in this folder.
-        </Typography>
+
+        <Box
+          role="note"
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "var(--space-3)",
+            px: "var(--space-4)",
+            py: "var(--space-3)",
+            borderRadius: "var(--radius-control)",
+            border: "1px solid var(--color-border-default)",
+            bgcolor: "var(--color-accent-muted)",
+          }}
+        >
+          <InfoOutlinedIcon
+            aria-hidden
+            sx={{
+              mt: "1px",
+              fontSize: 18,
+              color: "var(--color-accent)",
+              flexShrink: 0,
+            }}
+          />
+          <Typography
+            variant="body2"
+            sx={{
+              color: "var(--color-text-default)",
+              textWrap: "pretty",
+              lineHeight: 1.45,
+              maxWidth: "40ch",
+            }}
+          >
+            This viewer never writes, mutates, or deletes anything in this folder.
+          </Typography>
+        </Box>
       </DialogContent>
-      <DialogActions sx={{ px: 3.5, pb: 3, gap: 1 }}>
+      <DialogActions
+        sx={{
+          px: "var(--space-6)",
+          pb: "var(--space-6)",
+          pt: "var(--space-2)",
+          gap: "var(--space-2)",
+          flexWrap: "wrap",
+        }}
+      >
         <Button onClick={onSkip} color="inherit">
           Skip, take me to the workspace
         </Button>
