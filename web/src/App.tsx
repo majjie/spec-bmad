@@ -390,6 +390,7 @@ export default function App() {
           color: "var(--color-text-default)",
           px: 2,
           py: 1,
+          borderRadius: "var(--radius-control)",
           "&:focus": { left: 8 },
         }}
       >

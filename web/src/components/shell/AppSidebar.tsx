@@ -1,15 +1,21 @@
-import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Typography from "@mui/material/Typography";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import FolderOutlined from "@mui/icons-material/FolderOutlined";
+import Inventory2Outlined from "@mui/icons-material/Inventory2Outlined";
+import SpaceDashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
 import type { NavigatorTree, TabAvailability } from "../../api.js";
-import { buildProjectNav, type ShellSelection } from "../../shell.js";
+import {
+  buildProjectNav,
+  expandForSelectionChange,
+  projectKeyForSelection,
+  seedExpandedIfNeeded,
+  toggleExpandedKey,
+  type ProjectNavGroup,
+  type ShellSelection,
+} from "../../shell.js";
+import { GroupLabel, NavRow, SectionLabel } from "./sidebarNav.js";
 
 interface AppSidebarProps {
   availability: TabAvailability | null;
@@ -19,58 +25,23 @@ interface AppSidebarProps {
   onSelect: (selection: ShellSelection) => void;
 }
 
-const itemSx = {
-  mx: 0,
-  borderRadius: 0,
-  py: 0.75,
-  "&.Mui-selected": {
-    bgcolor: "var(--color-bg-subtle)",
-  },
-  "&.Mui-selected:hover": {
-    bgcolor: "var(--color-bg-hover)",
-  },
-};
-
-/** Flat selected row — no pill radius, no curved chrome. */
-function NavRow({
-  label,
-  secondary,
-  selected,
-  onClick,
-  depth = 0,
-  tourId,
-  endIcon,
-}: {
-  label: string;
-  secondary?: string;
-  selected: boolean;
-  onClick: () => void;
-  depth?: number;
-  tourId?: string;
-  endIcon?: ReactNode;
-}) {
-  return (
-    <ListItemButton
-      selected={selected}
-      onClick={onClick}
-      data-tour={tourId}
-      sx={{ ...itemSx, pl: 1.5 + depth * 1.5 }}
-    >
-      <ListItemText
-        primary={label}
-        secondary={secondary}
-        primaryTypographyProps={{
-          fontWeight: selected ? 600 : 500,
-          fontSize: depth === 0 ? "0.9rem" : "0.825rem",
-        }}
-        secondaryTypographyProps={{
-          fontSize: "0.7rem",
-          sx: { color: "var(--color-text-subtle)" },
-        }}
-      />
-      {endIcon}
-    </ListItemButton>
-  );
+function projectSummary(project: ProjectNavGroup): string | undefined {
+  if (project.key === "_other") {
+    return "Unsorted folders";
+  }
+  const parts: string[] = [];
+  if (project.requirements.length > 0) {
+    parts.push(`${project.requirements.length} PRD${project.requirements.length === 1 ? "" : "s"}`);
+  }
+  if (project.architecture.length > 0) {
+    parts.push(
+      `${project.architecture.length} architecture${project.architecture.length === 1 ? "" : "s"}`,
+    );
+  }
+  if (project.hasSprint) {
+    parts.push("sprint");
+  }
+  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
 export default function AppSidebar({
@@ -80,76 +51,30 @@ export default function AppSidebar({
   selection,
   onSelect,
 }: AppSidebarProps) {
-  const projects = buildProjectNav(navigatorTree, sprintProject);
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const projects = useMemo(
+    () => buildProjectNav(navigatorTree, sprintProject),
+    [navigatorTree, sprintProject],
+  );
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  const seededRef = useRef(false);
+  const previousOwnerRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (projects.length === 0) {
       return;
     }
     setExpanded((prev) => {
-      if (prev.size > 0) {
-        return prev;
-      }
-      const withSprint = projects.find((p) => p.hasSprint);
-      return new Set([(withSprint ?? projects[0]!).key]);
+      const result = seedExpandedIfNeeded(prev, projects, seededRef.current);
+      seededRef.current = result.seeded;
+      return result.expanded;
     });
   }, [projects]);
 
   useEffect(() => {
-    if (selection.kind === "prd" || selection.kind === "architecture") {
-      const match = projects.find(
-        (p) =>
-          p.requirements.some((l) => l.path === selection.path) ||
-          p.architecture.some((l) => l.path === selection.path) ||
-          p.other.some((o) => o.path === selection.path),
-      );
-      if (match) {
-        setExpanded((prev) => new Set(prev).add(match.key));
-      }
-    }
-    if (selection.kind === "sprint") {
-      const match = projects.find((p) => p.hasSprint);
-      if (match) {
-        setExpanded((prev) => new Set(prev).add(match.key));
-      }
-    }
-  }, [selection, projects]);
-
-  function toggleProject(key: string) {
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  }
-
-  function projectSummary(project: (typeof projects)[number]): string | undefined {
-    if (project.key === "_other") {
-      return "Unsorted folders";
-    }
-    const parts: string[] = [];
-    if (project.requirements.length > 0) {
-      parts.push(`${project.requirements.length} PRD${project.requirements.length === 1 ? "" : "s"}`);
-    }
-    if (project.architecture.length > 0) {
-      parts.push(
-        `${project.architecture.length} architecture${project.architecture.length === 1 ? "" : "s"}`,
-      );
-    }
-    if (project.hasSprint) {
-      parts.push("sprint");
-    }
-    return parts.length > 0 ? parts.join(" · ") : undefined;
-  }
-
-  const showMethod = availability === null || availability.infra;
-  const showGenerated = availability === null || availability.output;
-  const showCurated = availability === null || availability.navigator;
+    const nextKey = projectKeyForSelection(projects, selection);
+    setExpanded((prev) => expandForSelectionChange(prev, previousOwnerRef.current, nextKey));
+    previousOwnerRef.current = nextKey;
+  }, [projects, selection]);
 
   function isSelected(sel: ShellSelection): boolean {
     if (selection.kind !== sel.kind) {
@@ -160,6 +85,10 @@ export default function AppSidebar({
     }
     return true;
   }
+
+  const showMethod = availability === null || availability.infra;
+  const showGenerated = availability === null || availability.output;
+  const showCurated = availability === null || availability.navigator;
 
   return (
     <Box
@@ -172,74 +101,90 @@ export default function AppSidebar({
         borderRight: "1px solid var(--color-border-default)",
         bgcolor: "var(--color-bg-surface)",
         overflow: "auto",
-        py: 1,
+        py: 0.5,
       }}
     >
       {showCurated && (
-        <Box sx={{ mb: 1.5 }}>
-          <Typography
-            variant="overline"
-            sx={{ px: 2, color: "var(--color-text-subtle)", display: "block" }}
-          >
-            Workspace
-          </Typography>
+        <Box>
+          <SectionLabel>Workspace</SectionLabel>
           <List dense disablePadding>
             <NavRow
               label="Overview"
               selected={selection.kind === "overview"}
               onClick={() => onSelect({ kind: "overview" })}
               tourId="nav-overview"
+              icon={<SpaceDashboardOutlined fontSize="small" />}
             />
           </List>
         </Box>
       )}
 
       {showCurated && projects.length > 0 && (
-        <Box sx={{ mb: 1.5 }}>
-          <Typography
-            variant="overline"
-            sx={{ px: 2, color: "var(--color-text-subtle)", display: "block" }}
-          >
-            Projects
-          </Typography>
+        <Box
+          sx={{
+            mt: 1,
+            pt: 0.5,
+            borderTop: "1px solid var(--color-border-subtle)",
+          }}
+        >
+          <SectionLabel>Projects</SectionLabel>
           <List dense disablePadding>
             {projects.map((project) => {
               const open = expanded.has(project.key);
               const summary = projectSummary(project);
+              const panelId = `project-panel-${project.key}`;
+              const headerId = `project-header-${project.key}`;
+              const ownsSelection = projectKeyForSelection([project], selection) === project.key;
               return (
-                <Box key={project.key}>
+                <Box
+                  key={project.key}
+                  sx={{
+                    mx: 1,
+                    mb: 0.75,
+                    overflow: "hidden",
+                    borderRadius: "calc(var(--radius-nav-item) + var(--space-1))",
+                    bgcolor: open ? "var(--color-bg-subtle)" : "transparent",
+                    boxShadow: open ? "var(--shadow-sm)" : "none",
+                    transition: "background-color var(--duration-fast) var(--ease-out)",
+                  }}
+                >
                   <NavRow
+                    id={headerId}
+                    flush
                     label={project.title}
                     {...(summary ? { secondary: summary } : {})}
-                    selected={false}
-                    onClick={() => toggleProject(project.key)}
-                    endIcon={open ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+                    selected={!open && ownsSelection}
+                    onClick={() => setExpanded((prev) => toggleExpandedKey(prev, project.key))}
+                    ariaExpanded={open}
+                    ariaControls={panelId}
                   />
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List dense disablePadding>
+                  <Collapse
+                    in={open}
+                    timeout={280}
+                    unmountOnExit
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={headerId}
+                  >
+                    <List
+                      dense
+                      disablePadding
+                      sx={{
+                        ml: 2.5,
+                        mr: 0.5,
+                        mb: 0.75,
+                        pl: 1,
+                        borderLeft: "1px solid var(--color-border-default)",
+                      }}
+                    >
                       {project.requirements.length > 0 && (
                         <>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              display: "block",
-                              px: 2,
-                              pt: 1,
-                              pb: 0.25,
-                              pl: 4,
-                              color: "var(--color-text-subtle)",
-                              fontWeight: 600,
-                              letterSpacing: "0.04em",
-                              textTransform: "uppercase",
-                              fontSize: "0.65rem",
-                            }}
-                          >
-                            Requirements
-                          </Typography>
+                          <GroupLabel>Requirements</GroupLabel>
                           {project.requirements.map((leaf) => (
                             <NavRow
                               key={leaf.path}
-                              depth={2}
+                              depth={1}
+                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "prd", path: leaf.path })}
                               onClick={() => onSelect({ kind: "prd", path: leaf.path })}
@@ -249,27 +194,12 @@ export default function AppSidebar({
                       )}
                       {project.architecture.length > 0 && (
                         <>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              display: "block",
-                              px: 2,
-                              pt: 1,
-                              pb: 0.25,
-                              pl: 4,
-                              color: "var(--color-text-subtle)",
-                              fontWeight: 600,
-                              letterSpacing: "0.04em",
-                              textTransform: "uppercase",
-                              fontSize: "0.65rem",
-                            }}
-                          >
-                            Architecture
-                          </Typography>
+                          <GroupLabel>Architecture</GroupLabel>
                           {project.architecture.map((leaf) => (
                             <NavRow
                               key={leaf.path}
-                              depth={2}
+                              depth={1}
+                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "architecture", path: leaf.path })}
                               onClick={() => onSelect({ kind: "architecture", path: leaf.path })}
@@ -279,25 +209,10 @@ export default function AppSidebar({
                       )}
                       {project.hasSprint && (
                         <>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              display: "block",
-                              px: 2,
-                              pt: 1,
-                              pb: 0.25,
-                              pl: 4,
-                              color: "var(--color-text-subtle)",
-                              fontWeight: 600,
-                              letterSpacing: "0.04em",
-                              textTransform: "uppercase",
-                              fontSize: "0.65rem",
-                            }}
-                          >
-                            Delivery
-                          </Typography>
+                          <GroupLabel>Delivery</GroupLabel>
                           <NavRow
-                            depth={2}
+                            depth={1}
+                            flush
                             label="Sprint status"
                             selected={selection.kind === "sprint"}
                             onClick={() => onSelect({ kind: "sprint" })}
@@ -307,7 +222,8 @@ export default function AppSidebar({
                       {project.other.map((entry) => (
                         <NavRow
                           key={entry.path}
-                          depth={2}
+                          depth={1}
+                          flush
                           label={entry.folderName}
                           selected={isSelected({ kind: "prd", path: entry.path })}
                           onClick={() => onSelect({ kind: "prd", path: entry.path })}
@@ -323,13 +239,14 @@ export default function AppSidebar({
       )}
 
       {(showMethod || showGenerated) && (
-        <Box>
-          <Typography
-            variant="overline"
-            sx={{ px: 2, color: "var(--color-text-subtle)", display: "block" }}
-          >
-            Folders
-          </Typography>
+        <Box
+          sx={{
+            mt: 1,
+            pt: 0.5,
+            borderTop: "1px solid var(--color-border-subtle)",
+          }}
+        >
+          <SectionLabel>Folders</SectionLabel>
           <List dense disablePadding>
             {showMethod && (
               <NavRow
@@ -337,6 +254,7 @@ export default function AppSidebar({
                 secondary="_bmad install"
                 selected={selection.kind === "method"}
                 onClick={() => onSelect({ kind: "method" })}
+                icon={<FolderOutlined fontSize="small" />}
               />
             )}
             {showGenerated && (
@@ -345,6 +263,7 @@ export default function AppSidebar({
                 secondary="_bmad-output"
                 selected={selection.kind === "generated"}
                 onClick={() => onSelect({ kind: "generated" })}
+                icon={<Inventory2Outlined fontSize="small" />}
               />
             )}
           </List>

@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 /**
  * Maps semantic CSS tokens (tokens.css) into MUI. Components should prefer theme
- * palette / typography over hardcoded hex. Accent is amber — used sparingly.
+ * palette / typography over hardcoded hex. Accent is amber - used sparingly.
  */
 const theme = createTheme({
   palette: {
@@ -45,12 +45,12 @@ const theme = createTheme({
     button: { textTransform: "none", fontWeight: 600 },
     overline: {
       textTransform: "uppercase",
-      letterSpacing: "0.08em",
-      fontSize: "0.7rem",
-      fontWeight: 600,
+      letterSpacing: "0.12em",
+      fontSize: "0.65rem",
+      fontWeight: 650,
     },
   },
-  shape: { borderRadius: 2 },
+  shape: { borderRadius: 12 },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -70,13 +70,15 @@ const theme = createTheme({
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 2 },
+        root: {
+          borderRadius: "var(--radius-control)",
+        },
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: 2,
+          borderRadius: "var(--radius-control)",
         },
       },
     },
@@ -86,14 +88,30 @@ const theme = createTheme({
           borderColor: "var(--color-border-default)",
           backgroundImage: "none",
           backgroundColor: "var(--color-bg-raised)",
-          borderRadius: 2,
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--elevation-card)",
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: "var(--radius-overlay)",
+          boxShadow: "var(--elevation-overlay)",
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: "var(--radius-full)",
         },
       },
     },
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
+          borderRadius: "var(--radius-nav-item)",
         },
       },
     },
@@ -102,6 +120,8 @@ const theme = createTheme({
         tooltip: {
           backgroundColor: "var(--color-bg-subtle)",
           border: "1px solid var(--color-border-default)",
+          borderRadius: "var(--radius-control)",
+          boxShadow: "var(--shadow-md)",
           fontSize: "0.85rem",
         },
       },

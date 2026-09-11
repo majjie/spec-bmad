@@ -109,7 +109,7 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           // which use zIndex up to 5 - so the close icon can never be painted over.
           zIndex: 10,
           padding: "4px",
-          borderRadius: 1,
+          borderRadius: "var(--radius-control)",
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           display: "flex",
           alignItems: "center",

@@ -22,7 +22,8 @@ export function Panel({
       variant="outlined"
       sx={{
         p: "var(--space-5)",
-        borderRadius: "2px",
+        borderRadius: "var(--radius-card)",
+        boxShadow: "var(--elevation-card)",
         bgcolor: "var(--color-bg-raised)",
         minWidth: 0,
         height: "100%",
@@ -115,6 +116,7 @@ export function LeafList({
                   py: 0.75,
                   px: 0.5,
                   mx: -0.5,
+                  borderRadius: "var(--radius-control)",
                   borderBottom: "1px solid var(--color-border-subtle)",
                   "&:hover": { bgcolor: "var(--color-bg-hover)" },
                   "&:focus-visible": {
@@ -177,7 +179,7 @@ export function OpenItems({ items, onOpenFile }: { items: ActionItem[]; onOpenFi
 
 function coverageLabel(count: number, date: string): string {
   if (count === 0) {
-    return "—";
+    return "-";
   }
   const runs = `${count} run${count === 1 ? "" : "s"}`;
   return date ? `${runs} · ${date}` : runs;
@@ -190,7 +192,14 @@ export function CoverageTable({ rows }: { rows: ProjectCoverageRow[] }) {
   return (
     <Paper
       variant="outlined"
-      sx={{ p: 0, borderRadius: "2px", bgcolor: "var(--color-bg-raised)", overflow: "auto", position: "relative" }}
+        sx={{
+          p: 0,
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--elevation-card)",
+          bgcolor: "var(--color-bg-raised)",
+          overflow: "auto",
+          position: "relative",
+        }}
     >
       <Box
         component="table"
@@ -256,7 +265,7 @@ export function CoverageTable({ rows }: { rows: ProjectCoverageRow[] }) {
                 </Typography>
               </td>
               <td>
-                <Typography variant="body2">{row.hasSprint ? "Tracking" : "—"}</Typography>
+                <Typography variant="body2">{row.hasSprint ? "Tracking" : "-"}</Typography>
               </td>
             </tr>
           ))}

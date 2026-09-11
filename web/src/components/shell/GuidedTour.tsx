@@ -125,8 +125,8 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
             left: rect.left - 4,
             width: rect.width + 8,
             height: rect.height + 8,
-            borderRadius: 0,
-            boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)",
+            borderRadius: "var(--radius-control)",
+            boxShadow: "0 0 0 9999px color-mix(in srgb, var(--color-shadow) 55%, transparent)",
             border: "2px solid var(--color-accent)",
             pointerEvents: "none",
             transition: "top var(--duration-normal) var(--ease-out), left var(--duration-normal) var(--ease-out), width var(--duration-normal) var(--ease-out), height var(--duration-normal) var(--ease-out)",
@@ -147,7 +147,8 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
           pointerEvents: "auto",
           bgcolor: "var(--color-bg-raised)",
           border: "1px solid var(--color-border-default)",
-          borderRadius: "2px",
+          borderRadius: "var(--radius-overlay)",
+          boxShadow: "var(--elevation-overlay)",
           backgroundImage: "none",
         }}
       >

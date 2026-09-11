@@ -84,7 +84,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 function Tile({ children, sx }: { children: ReactNode; sx?: object }) {
   return (
-    <Paper variant="outlined" sx={{ p: 2, minWidth: 260, borderRadius: "var(--radius-md)", ...sx }}>
+    <Paper variant="outlined" sx={{ p: 2, minWidth: 260, borderRadius: "var(--radius-card)", ...sx }}>
       {children}
     </Paper>
   );

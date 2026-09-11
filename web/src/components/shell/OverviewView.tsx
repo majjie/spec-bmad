@@ -21,7 +21,7 @@ interface OverviewViewProps {
 }
 
 const OVERVIEW_LEDE =
-  "A read-only map of this project's BMAD artifacts — what was decided, the technical spine, and what is in progress.";
+  "A read-only map of this project's BMAD artifacts - what was decided, the technical spine, and what is in progress.";
 
 function latestLeaf(tree: NavigatorTree | null, kind: "prd" | "architecture") {
   const grouping = tree?.[kind] ?? null;
@@ -55,7 +55,7 @@ export default function OverviewView({
   const namedProjects = projects.filter((project) => project.key !== "_other");
   const coverage = buildProjectCoverage(projects);
   const openCount = countOpenActionItems(sprintStatus?.actionItems ?? []);
-  const dash = "—";
+  const dash = "-";
 
   return (
     <Box
@@ -72,7 +72,16 @@ export default function OverviewView({
         <Typography component="h1" variant="h5" sx={{ fontWeight: 650, letterSpacing: "-0.02em", mb: 0.5 }}>
           Workspace overview
         </Typography>
-        <Typography variant="body2" color="text.secondary" title={OVERVIEW_LEDE} sx={{ whiteSpace: "nowrap" }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          title={OVERVIEW_LEDE}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {OVERVIEW_LEDE}
         </Typography>
       </Box>
@@ -85,7 +94,8 @@ export default function OverviewView({
           display: "grid",
           gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
           bgcolor: "var(--color-bg-raised)",
-          borderRadius: "2px",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--elevation-card)",
           overflow: "hidden",
           "& > *:not(:last-child)": {
             borderRight: "1px solid var(--color-border-subtle)",
@@ -224,7 +234,7 @@ export default function OverviewView({
             </>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No sprint-status.yaml in this workspace — open a product&apos;s latest Requirements run from the left
+              No sprint-status.yaml in this workspace - open a product&apos;s latest Requirements run from the left
               nav.
             </Typography>
           )}

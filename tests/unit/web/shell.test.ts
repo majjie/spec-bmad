@@ -5,11 +5,13 @@ import {
   buildProjectNav,
   countOpenActionItems,
   ensureExpandedForSelection,
+  expandForSelectionChange,
   formatStatusLabel,
   humanizeProjectSlug,
   initialExpandedProjectKey,
   normalizeProjectKey,
   projectKeyForSelection,
+  seedExpandedIfNeeded,
   titleCaseProject,
   toggleExpandedKey,
 } from "../../../web/src/shell.js";
@@ -187,4 +189,27 @@ test("ensureExpandedForSelection opens the owning project once, without reopenin
   assert.equal(userCollapsed.size, 0);
   const unchanged = ensureExpandedForSelection(userCollapsed, undefined);
   assert.equal(unchanged.size, 0);
+});
+
+test("expandForSelectionChange does not reopen after collapsing the same project", () => {
+  const opened = expandForSelectionChange(new Set(), undefined, "harbor");
+  assert.equal(opened.has("harbor"), true);
+
+  const collapsed = toggleExpandedKey(opened, "harbor");
+  const stillClosed = expandForSelectionChange(collapsed, "harbor", "harbor");
+  assert.equal(stillClosed.size, 0);
+
+  const switched = expandForSelectionChange(stillClosed, "harbor", "lumen");
+  assert.equal(switched.has("lumen"), true);
+  assert.equal(switched.has("harbor"), false);
+});
+
+test("seedExpandedIfNeeded only seeds once so a full collapse stays closed", () => {
+  const first = seedExpandedIfNeeded(new Set(), [{ key: "harbor", hasSprint: true }], false);
+  assert.equal(first.seeded, true);
+  assert.deepEqual([...first.expanded], ["harbor"]);
+
+  const afterCollapse = seedExpandedIfNeeded(new Set(), [{ key: "harbor", hasSprint: true }], true);
+  assert.equal(afterCollapse.expanded.size, 0);
+  assert.equal(afterCollapse.seeded, true);
 });

@@ -4,6 +4,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import BrandMark from "./BrandMark.js";
 
 interface AppHeaderProps {
   refreshing: boolean;
@@ -28,20 +29,13 @@ export default function AppHeader({
         alignItems: "center",
         justifyContent: "space-between",
         px: 2,
-        borderBottom: "1px solid var(--color-border-default)",
         bgcolor: "var(--color-bg-surface)",
+        boxShadow: "var(--elevation-header)",
+        zIndex: 1,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0 }}>
-        <Box
-          aria-hidden
-          sx={{
-            width: 18,
-            height: 18,
-            bgcolor: "var(--color-accent)",
-            flexShrink: 0,
-          }}
-        />
+        <BrandMark size={28} />
         <Typography variant="subtitle1" sx={{ fontWeight: 650, letterSpacing: "-0.02em" }}>
           BMAD Browser
         </Typography>
@@ -50,7 +44,7 @@ export default function AppHeader({
         <Tooltip title="Replay the guided tour">
           <IconButton
             onClick={onHelp}
-            aria-label="Help — replay the guided tour"
+            aria-label="Help - replay the guided tour"
             size="small"
             data-tour="help"
           >

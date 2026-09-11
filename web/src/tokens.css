@@ -1,7 +1,7 @@
-/* BMAD Browser — three-tier tokens (primitives → semantic). Components use semantic only. */
+/* BMAD Browser - three-tier tokens (primitives → semantic). Components use semantic only. */
 
 :root {
-  /* Primitives — cool-tinted charcoal + amber accent */
+  /* Primitives - cool-tinted charcoal + amber accent */
   --color-neutral-950: #0c0f12;
   --color-neutral-900: #12161b;
   --color-neutral-850: #171c22;
@@ -35,14 +35,19 @@
   --space-6: 24px;
   --space-8: 32px;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
 
-  --duration-fast: 100ms;
-  --duration-normal: 250ms;
+  --color-shadow: #05070a;
+
+  --duration-fast: 150ms;
+  --duration-normal: 280ms;
   --duration-slow: 400ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* Semantic */
   --color-bg-canvas: var(--color-neutral-950);
@@ -74,8 +79,28 @@
 
   --color-focus-ring: var(--color-amber-400);
 
-  --sidebar-width: 248px;
-  --header-height: 48px;
+  --radius-control: var(--radius-sm);
+  --radius-nav-item: var(--radius-sm);
+  --radius-card: var(--radius-lg);
+  --radius-overlay: var(--radius-xl);
+
+  --shadow-sm:
+    0 1px 2px color-mix(in srgb, var(--color-shadow) 45%, transparent),
+    0 1px 1px color-mix(in srgb, var(--color-shadow) 25%, transparent);
+  --shadow-md:
+    0 8px 24px color-mix(in srgb, var(--color-shadow) 42%, transparent),
+    0 2px 6px color-mix(in srgb, var(--color-shadow) 28%, transparent);
+  --shadow-lg:
+    0 20px 48px color-mix(in srgb, var(--color-shadow) 50%, transparent),
+    0 6px 16px color-mix(in srgb, var(--color-shadow) 32%, transparent);
+
+  --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
+  --elevation-card: var(--shadow-sm);
+  --elevation-overlay: var(--shadow-lg);
+  --elevation-nav-inset: inset 3px 0 0 var(--color-accent);
+
+  --sidebar-width: 268px;
+  --header-height: 56px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -167,7 +167,7 @@ export function formatStatusLabel(status: string): string {
   }
 }
 
-/** Action items still open — anything other than exactly "done". */
+/** Action items still open - anything other than exactly "done". */
 export function countOpenActionItems(items: { status: string | null }[]): number {
   return items.filter((item) => item.status !== "done").length;
 }
@@ -182,7 +182,7 @@ export interface ProjectCoverageRow {
   hasSprint: boolean;
 }
 
-/** First project to seed open — sprint owner if present, otherwise the first group. */
+/** First project to seed open - sprint owner if present, otherwise the first group. */
 export function initialExpandedProjectKey(
   projects: ReadonlyArray<Pick<ProjectNavGroup, "key" | "hasSprint">>,
 ): string | null {
@@ -237,7 +237,38 @@ export function ensureExpandedForSelection(
   return next;
 }
 
-/** Named products only — unsorted folders stay out of the overview scan. */
+/**
+ * Expand only when the selection moves to a different project. Collapsing the
+ * accordion for the current selection must not bounce it back open.
+ */
+export function expandForSelectionChange(
+  expanded: ReadonlySet<string>,
+  previousOwnerKey: string | undefined,
+  nextOwnerKey: string | undefined,
+): Set<string> {
+  if (!nextOwnerKey || nextOwnerKey === previousOwnerKey) {
+    return new Set(expanded);
+  }
+  return ensureExpandedForSelection(expanded, nextOwnerKey);
+}
+
+/** Seed the first open accordion once. Later empty sets are a user collapse. */
+export function seedExpandedIfNeeded(
+  expanded: ReadonlySet<string>,
+  projects: ReadonlyArray<Pick<ProjectNavGroup, "key" | "hasSprint">>,
+  seeded: boolean,
+): { expanded: Set<string>; seeded: boolean } {
+  if (seeded) {
+    return { expanded: new Set(expanded), seeded: true };
+  }
+  const key = initialExpandedProjectKey(projects);
+  if (!key) {
+    return { expanded: new Set(expanded), seeded: false };
+  }
+  return { expanded: new Set([key]), seeded: true };
+}
+
+/** Named products only - unsorted folders stay out of the overview scan. */
 export function buildProjectCoverage(groups: ProjectNavGroup[]): ProjectCoverageRow[] {
   return groups
     .filter((group) => group.key !== "_other")

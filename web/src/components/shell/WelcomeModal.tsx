@@ -5,6 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Typography from "@mui/material/Typography";
+import BrandMark from "./BrandMark.js";
 
 interface WelcomeModalProps {
   open: boolean;
@@ -19,7 +20,7 @@ const GLOSSARY = [
   },
   {
     term: "Requirements",
-    detail: "PRDs — what the organisation decided to build, grouped by date (newest first).",
+    detail: "PRDs - what the organisation decided to build, grouped by date (newest first).",
   },
   {
     term: "Architecture & Sprint",
@@ -55,28 +56,22 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
         sx: {
           bgcolor: "var(--color-bg-raised)",
           border: "1px solid var(--color-border-default)",
-          borderRadius: "2px",
+          borderRadius: "var(--radius-overlay)",
+          boxShadow: "var(--elevation-overlay)",
           backgroundImage: "none",
         },
       }}
     >
       <DialogContent sx={{ pt: 3.5, px: 3.5 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-          <Box
-            aria-hidden
-            sx={{
-              width: 28,
-              height: 28,
-              bgcolor: "var(--color-accent)",
-            }}
-          />
+          <BrandMark size={36} />
           <Typography id={titleId} variant="h6" sx={{ fontWeight: 650 }}>
             Welcome to BMAD Browser
           </Typography>
         </Box>
         <Typography variant="body1" sx={{ mb: 2.5, textWrap: "pretty", maxWidth: "48ch" }}>
           A read-only map of this workspace&apos;s BMAD artifacts. Projects in the left nav are
-          the products BMAD has been planning — not this viewer&apos;s brand.
+          the products BMAD has been planning - not this viewer&apos;s brand.
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2.5 }}>
           {GLOSSARY.map((row) => (
