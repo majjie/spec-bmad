@@ -16,3 +16,4 @@
 - Realigned IA to one BMAD project per session: Documents (Requirements/Architecture) replace the Products accordion; Harbor-only seed; header shows the project name; multi-slug nesting kept for tests only.
 
 - Refined the welcome modal: tighter measure, clearer glossary spacing, and a read-only safety callout.
+- Added an Expand control on the file viewer modal that toggles the panel to 98% of the screen.

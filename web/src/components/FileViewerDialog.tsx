@@ -1,12 +1,16 @@
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import CloseIcon from "@mui/icons-material/Close";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileRenderMode } from "../fileRenderMode.js";
 import { deriveFileViewerMeta } from "../fileViewerMeta.js";
+import { fileViewerPaperSize } from "../fileViewerPaper.js";
 import { stripFrontmatter } from "../frontmatter.js";
 import { formatRunDate } from "../shell.js";
 import CsvGrid from "./CsvGrid.js";
@@ -124,12 +128,20 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
   // Frontmatter stripping only ever applies to the Markdown render mode (FR-003), and only
   // once content has actually loaded - every other mode, and the loading/error states,
   // pass `content` straight through to `DialogBody` unchanged.
+  const [expanded, setExpanded] = useState(false);
   const mode = path ? getFileRenderMode(fileNameOf(path)) : null;
   const frontmatter = mode?.kind === "markdown" && content !== null && !error ? stripFrontmatter(content) : null;
   const displayContent = frontmatter ? frontmatter.body : content;
   const preamble = frontmatter?.preamble ?? null;
   const hasPreamble = preamble !== null && Object.keys(preamble).length > 0;
   const meta = path ? deriveFileViewerMeta(path, preamble) : null;
+  const paperSize = fileViewerPaperSize(expanded);
+
+  useEffect(() => {
+    if (path === null) {
+      setExpanded(false);
+    }
+  }, [path]);
 
   const metaItems =
     meta === null
@@ -147,11 +159,7 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
       {...(path ? { "aria-labelledby": "file-viewer-title" } : {})}
       sx={{
         "& .MuiDialog-paper": {
-          margin: "var(--space-4)",
-          width: "min(880px, calc(100% - 32px))",
-          maxWidth: "880px",
-          height: "min(820px, calc(100% - 48px))",
-          maxHeight: "calc(100% - 48px)",
+          ...paperSize,
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -199,6 +207,15 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.25, flexShrink: 0, mt: -0.25 }}>
             {hasPreamble && preamble && <FrontmatterInfoControl preamble={preamble} />}
+            <IconButton
+              onClick={() => setExpanded((prev) => !prev)}
+              aria-label={expanded ? "Shrink" : "Expand"}
+              aria-pressed={expanded}
+              size="small"
+              sx={{ color: "var(--color-text-muted)" }}
+            >
+              {expanded ? <CloseFullscreenIcon fontSize="small" /> : <OpenInFullIcon fontSize="small" />}
+            </IconButton>
             <IconButton
               onClick={onClose}
               aria-label="Close"
