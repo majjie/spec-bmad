@@ -30,7 +30,8 @@ export function GroupLabel({ children }: { children: ReactNode }) {
       variant="caption"
       sx={{
         display: "block",
-        px: 1.25,
+        px: 2,
+        pl: 3.5,
         pt: 1.25,
         pb: 0.25,
         color: "var(--color-text-subtle)",
@@ -87,10 +88,11 @@ export function NavRow({
       sx={{
         mx: flush ? 0.5 : 1,
         mb: 0.25,
-        py: isProject ? 1 : 0.6,
-        px: 1.25,
+        py: isProject ? 1 : 0.65,
+        px: 2,
+        pl: depth === 1 ? 3.5 : 2,
         minHeight: isProject ? 44 : 40,
-        borderRadius: 0,
+        borderRadius: "var(--radius-nav-item)",
         alignItems: secondary ? "flex-start" : "center",
         color: selected ? "var(--color-text-default)" : "var(--color-text-muted)",
         "&:hover": {
@@ -98,12 +100,12 @@ export function NavRow({
           color: "var(--color-text-default)",
         },
         "&.Mui-selected": {
-          bgcolor: "var(--color-bg-subtle)",
+          bgcolor: "var(--color-accent-muted)",
           color: "var(--color-text-default)",
-          boxShadow: "none",
+          boxShadow: depth === 1 || !isProject ? "var(--elevation-nav-inset)" : "none",
         },
         "&.Mui-selected:hover": {
-          bgcolor: "var(--color-bg-hover)",
+          bgcolor: "var(--color-accent-muted)",
         },
       }}
     >

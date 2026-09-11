@@ -80,7 +80,7 @@
   --color-focus-ring: var(--color-amber-400);
 
   --radius-control: var(--radius-sm);
-  --radius-nav-item: var(--radius-sm);
+  --radius-nav-item: 0;
   --radius-card: var(--radius-lg);
   --radius-overlay: var(--radius-xl);
   --button-radius: var(--radius-full);
@@ -98,7 +98,7 @@
   --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
   --elevation-card: var(--shadow-sm);
   --elevation-overlay: var(--shadow-lg);
-  --elevation-nav-inset: inset 3px 0 0 var(--color-accent);
+  --elevation-nav-inset: none;
 
   --sidebar-width: 268px;
   --header-height: 56px;
