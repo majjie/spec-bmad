@@ -52,7 +52,7 @@ export function StageHeader({
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ mt: 0.5, maxWidth: "62ch", textWrap: "pretty" }}
+            sx={{ mt: 0.5, maxWidth: "96ch", textWrap: "pretty" }}
           >
             {lede}
           </Typography>
