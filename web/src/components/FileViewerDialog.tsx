@@ -31,7 +31,17 @@ function fileNameOf(path: string): string {
   return segments[segments.length - 1] ?? path;
 }
 
-function DialogBody({ path, content, error }: { path: string; content: string | null; error: string | null }) {
+function DialogBody({
+  path,
+  content,
+  error,
+  expanded,
+}: {
+  path: string;
+  content: string | null;
+  error: string | null;
+  expanded: boolean;
+}) {
   const { scheme } = useColorScheme();
   const syntaxStyle = scheme === "light" ? oneLight : vscDarkPlus;
 
@@ -60,7 +70,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
   }
 
   if (mode.kind === "markdown") {
-    return <MarkdownContent content={content} density="reader" />;
+    return <MarkdownContent content={content} density="reader" wide={expanded} />;
   }
 
   if (mode.kind === "syntax") {
@@ -235,7 +245,7 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           bgcolor: "var(--color-bg-raised)",
         }}
       >
-        {path && <DialogBody path={path} content={displayContent} error={error} />}
+        {path && <DialogBody path={path} content={displayContent} error={error} expanded={expanded} />}
       </Box>
     </Dialog>
   );

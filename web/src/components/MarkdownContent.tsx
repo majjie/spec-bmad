@@ -10,6 +10,8 @@ interface MarkdownContentProps {
   components?: Components;
   /** `reader` adds calmer type rhythm for modal document viewing. */
   density?: "default" | "reader";
+  /** When true with `reader`, drop the narrow measure so content fills the panel. */
+  wide?: boolean;
 }
 
 // A `className` match only ever occurs for a fenced code block whose fence actually
@@ -32,10 +34,12 @@ export default function MarkdownContent({
   content,
   components,
   density = "default",
+  wide = false,
 }: MarkdownContentProps) {
   const { scheme } = useColorScheme();
   const syntaxStyle = scheme === "light" ? oneLight : vscDarkPlus;
   const reader = density === "reader";
+  const narrowMeasure = reader && !wide;
 
   // The same Prism pairing FileViewerDialog.tsx's own whole-file "syntax" mode already
   // uses (FR-005), switched to oneLight when the shell is in light mode.
@@ -60,10 +64,12 @@ export default function MarkdownContent({
       component="div"
       sx={{
         p: reader ? "var(--space-5)" : 2,
-        px: reader ? "var(--space-6)" : 2,
+        px: reader ? (wide ? "var(--space-8)" : "var(--space-6)") : 2,
         color: "var(--color-text-default)",
-        maxWidth: reader ? "72ch" : "none",
-        mx: reader ? "auto" : 0,
+        maxWidth: narrowMeasure ? "72ch" : "none",
+        mx: narrowMeasure ? "auto" : 0,
+        width: wide && reader ? "100%" : undefined,
+        boxSizing: "border-box",
         lineHeight: reader ? 1.65 : undefined,
         "& h1": {
           fontSize: reader ? "1.35rem" : undefined,

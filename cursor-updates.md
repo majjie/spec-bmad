@@ -19,5 +19,6 @@
 
 - Refined the welcome modal: tighter measure, clearer glossary spacing, and a read-only safety callout.
 - Added an Expand control on the file viewer modal that toggles the panel to 98% of the screen.
+- Expanded file viewer now drops the 72ch reader measure so markdown fills the wider panel.
 - Gave welcome modal action buttons more horizontal padding and widened the dialog slightly (480→540).
 - Raised StageHeader lede measure so the Harbor overview line stays on one row.
