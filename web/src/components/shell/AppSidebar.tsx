@@ -142,9 +142,9 @@ export default function AppSidebar({
                     mx: 1,
                     mb: 0.75,
                     overflow: "hidden",
-                    borderRadius: 0,
+                    borderRadius: "calc(var(--radius-nav-item) + var(--space-1))",
                     bgcolor: open ? "var(--color-bg-subtle)" : "transparent",
-                    boxShadow: "none",
+                    boxShadow: open ? "var(--shadow-sm)" : "none",
                     transition: "background-color var(--duration-fast) var(--ease-out)",
                   }}
                 >
