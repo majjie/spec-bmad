@@ -10,7 +10,7 @@ interface FrontmatterInfoControlProps {
 }
 
 // FR-007/FR-008 (feature 010): one row per preamble entry, key and value in two distinct
-// theme palette colors — no hardcoded hex, consistent with this app's existing
+// theme palette colors - no hardcoded hex, consistent with this app's existing
 // theme-driven styling.
 function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
   return (
@@ -31,7 +31,7 @@ function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
 
 /**
  * The (i)-icon + hover-or-click controlled tooltip showing a Markdown file's frontmatter
- * key/value pairs — extracted out of `FileViewerDialog.tsx` (feature 010) so this same
+ * key/value pairs - extracted out of `FileViewerDialog.tsx` (feature 010) so this same
  * control can also be reused, unmodified, by the non-modal PRD detail pane (feature 012),
  * which needs it without an accompanying close button.
  */
@@ -48,7 +48,7 @@ export default function FrontmatterInfoControl({ preamble }: FrontmatterInfoCont
         tooltip: {
           sx: {
             // Opaque (not MUI's default translucent grey) and a larger base font size,
-            // per feedback — the readout was hard to read against varied Markdown content
+            // per feedback - the readout was hard to read against varied Markdown content
             // showing through it.
             bgcolor: "grey.900",
             fontSize: "0.85rem",

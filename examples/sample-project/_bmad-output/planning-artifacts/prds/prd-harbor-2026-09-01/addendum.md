@@ -5,7 +5,7 @@ created: "2026-09-01"
 status: "draft"
 ---
 
-# Addendum — Harbor PRD (2026-09-01)
+# Addendum - Harbor PRD (2026-09-01)
 
 ## Clarifications after adversarial review
 

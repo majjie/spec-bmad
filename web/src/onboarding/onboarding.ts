@@ -15,7 +15,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar",
     anchor: "sidebar",
     title: "Projects live here",
-    body: "Each project is an accordion. Expand one to open its Requirements (PRDs), Architecture spines, and Sprint status — the three document types BMAD produces.",
+    body: "Each project is an accordion. Expand one to open its Requirements (PRDs), Architecture spines, and Sprint status - the three document types BMAD produces.",
   },
   {
     id: "overview",
@@ -39,7 +39,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "help",
     anchor: "help",
     title: "Replay anytime",
-    body: "Use Help in the header to run this tour again — including after you skip it.",
+    body: "Use Help in the header to run this tour again - including after you skip it.",
   },
 ];
 

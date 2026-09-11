@@ -5,7 +5,7 @@ artifacts from a localhost web UI.
 
 Point the CLI at a project that contains `_bmad` and/or `_bmad-output` folders and it
 serves a dark-themed, desktop-oriented explorer for those artifacts on `127.0.0.1`. The
-viewer is strictly **read-only** — it never writes, mutates, or deletes anything in the
+viewer is strictly **read-only** - it never writes, mutates, or deletes anything in the
 target project.
 
 ## Requirements
@@ -20,7 +20,7 @@ npm run build:web                 # builds the frontend into web/dist (not check
 npx tsx src/cli.ts /path/to/project
 ```
 
-The CLI prints the URL it bound to (an OS-assigned port on `127.0.0.1`) — open it in a
+The CLI prints the URL it bound to (an OS-assigned port on `127.0.0.1`) - open it in a
 browser. `Ctrl-C` shuts the server down.
 
 ```
@@ -66,31 +66,31 @@ history stack, so mouse Back buttons move within the app instead of leaving it.
 
 **Navigator** presents three curated roots:
 
-- **PRD view** — `planning-artifacts/prds` folders grouped by project slug, then by date
+- **PRD view** - `planning-artifacts/prds` folders grouped by project slug, then by date
   (newest first); folders that don't match the convention are listed under their literal
   name. Selecting a leaf opens the **PRD detail view** described below.
-- **Architecture view** — `planning-artifacts/architecture` folders, grouped by exactly
+- **Architecture view** - `planning-artifacts/architecture` folders, grouped by exactly
   the same slug-then-date convention and the same non-conforming bucket, since the two
   artifact types share it. Shown only when that folder has subfolders. Selecting a leaf
   opens the **Architecture detail view** described below.
-- **Sprint Status** — shown when `implementation-artifacts/sprint-status.yaml` exists.
+- **Sprint Status** - shown when `implementation-artifacts/sprint-status.yaml` exists.
   A Summary tile (including a calculated *Active epic* field), an Action Items tile, and
   one collapsible tile per epic listing its numbered steps with status icons. A step's
   magnifying-glass button opens the matching `spec-<index>-*.md` from
   `implementation-artifacts` in the file viewer; steps are matched by index prefix
   (`1-6a-walk-the-artifact-tree-safely` → `spec-1-6a-`), not by full-slug equality.
 
-**PRD detail view** — selecting a PRD leaf renders that folder's `prd.md` as Markdown
+**PRD detail view** - selecting a PRD leaf renders that folder's `prd.md` as Markdown
 filling the pane (no dialog, no close control), partitioned into three regions by divider
 lines:
 
 - A row of tiles across the top, each bound to files in the same PRD folder and greyed out
   when its target is absent:
-  - **reviews** — `review-*.md` files, listed in a hover tooltip under friendly Title Case
+  - **reviews** - `review-*.md` files, listed in a hover tooltip under friendly Title Case
     names (`review-edge-cases.md` → "Edge Cases"), alphabetically; picking one opens it in
     the file viewer.
-  - **addendum** — opens `addendum.md` in the file viewer.
-  - **memory log** — opens `.memlog.md` in a bespoke dialog: one candy-striped item per
+  - **addendum** - opens `addendum.md` in the file viewer.
+  - **memory log** - opens `.memlog.md` in a bespoke dialog: one candy-striped item per
     bullet, the parenthetical prefix (`(decision)`, `(assumption)`, …) broken out as a
     coloured header, and any requirement code that exists in the PRD rendered as a link
     that closes the dialog and jumps the PRD to it.
@@ -98,16 +98,16 @@ lines:
   top-right corner while the document scrolls beneath it.
 - A **requirement-code index** column down the right: one small tile per unique code
   prefix found in the document (`FR`, `NFR`, `UJ`, …), matching both bullet-style
-  (`**FR-25** …`) and header-style (`### UJ-1 — …`) requirements. Hovering a tile lists
+  (`**FR-25** …`) and header-style (`### UJ-1 - …`) requirements. Hovering a tile lists
   every code under that prefix in numerical order; the tooltip stays open while the
   pointer is over it (with a 400ms grace period after it leaves), scrolls internally when
   it's taller than the screen, and clicking a code jumps the PRD to that point.
 
-**Architecture detail view** — selecting an architecture leaf renders that folder's
+**Architecture detail view** - selecting an architecture leaf renders that folder's
 `ARCHITECTURE-SPINE.md` the same way, deliberately mirroring the PRD view's layout while
 differing in three places:
 
-- The requirement-code index indexes **header-style codes only** (`### AD-1 — …`).
+- The requirement-code index indexes **header-style codes only** (`### AD-1 - …`).
   Architecture documents don't use the bullet-pointed style, so a `**AD-1**` in the body
   is left alone rather than indexed.
 - **reviews** are read from the folder's own `reviews/` subfolder rather than the leaf
@@ -118,13 +118,13 @@ differing in three places:
 
 If the folder has no `ARCHITECTURE-SPINE.md`, the pane says so instead of erroring.
 
-**File viewer** — double-clicking a file opens a full-screen dialog, rendered by
+**File viewer** - double-clicking a file opens a full-screen dialog, rendered by
 extension: Markdown as HTML, `.yaml`/`.toml`/`.py` with syntax highlighting, `.csv` as a
 read-only spreadsheet grid, everything else as monospace text with line numbers. Escape,
 the close button, or browser Back all dismiss it.
 
-For Markdown, a leading YAML frontmatter block — and the tag lines of a marker element
-wrapping the document, e.g. `<frozen-after-approval …>` … `</frozen-after-approval>` —
+For Markdown, a leading YAML frontmatter block - and the tag lines of a marker element
+wrapping the document, e.g. `<frozen-after-approval …>` … `</frozen-after-approval>` -
 is excluded from the rendered output rather than rendered as text; the content the marker
 wraps still renders normally. When a preamble was found, an `(i)` control appears beside
 the close button, and hovering or clicking it reads the parsed key/value pairs back with
@@ -132,8 +132,8 @@ keys and values in distinct colours. Anything that doesn't match that exact shap
 unterminated block, a non-mapping YAML document, a non-Markdown file) renders completely
 unchanged.
 
-Everywhere Markdown renders in this tool — the file viewer, the PRD detail view, and the
-Architecture detail view — tables show a full cell grid in the app's own divider colour,
+Everywhere Markdown renders in this tool - the file viewer, the PRD detail view, and the
+Architecture detail view - tables show a full cell grid in the app's own divider colour,
 and fenced code blocks get a background distinct from the surrounding text. A block whose
 opening fence names a language (e.g. `` ```typescript ``) is syntax-highlighted with the
 same highlighter used for the `.py`/`.yaml` file view; one with no language, or a language
@@ -171,7 +171,7 @@ web/
   src/                   React + MUI frontend (Vite); the parsing/derivation modules
                          (frontmatter, prdIndex, memlogParser, reviewFiles, csvGrid,
                          sortEntries) are plain TypeScript and unit-tested directly
-  dist/                  build output, served by the CLI — build before first run
+  dist/                  build output, served by the CLI - build before first run
 tests/
   unit/, integration/    node:test suites
 specs/                   one folder per feature: spec, plan, tasks, contracts, checklists
@@ -179,7 +179,7 @@ specs/                   one folder per feature: spec, plan, tasks, contracts, c
 ```
 
 Artifact parsing lives outside the web layer, so it's importable and testable without a
-browser — and the frontend's own derivation logic is kept in DOM-free modules for the same
+browser - and the frontend's own derivation logic is kept in DOM-free modules for the same
 reason (`tests/unit/web/`).
 
 ## Development
@@ -198,7 +198,7 @@ Both type-check targets run under TypeScript strict mode, with
 BMAD Browser is developed spec-first via [Spec Kit](https://github.com/github/spec-kit):
 every feature starts as a spec, then a plan, then tasks, before any implementation code is
 written. Those artifacts live in [specs/](specs/) and the process is binding, not
-advisory — see [.specify/memory/constitution.md](.specify/memory/constitution.md) for the
+advisory - see [.specify/memory/constitution.md](.specify/memory/constitution.md) for the
 project's five core principles (spec-first development, read-only viewing, zero-install
 local-first operation, CLI/TypeScript standards, and test-first parsing logic).
 

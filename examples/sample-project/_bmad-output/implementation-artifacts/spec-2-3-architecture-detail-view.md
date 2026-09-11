@@ -8,7 +8,7 @@ review_loop_iteration: 0
 context: []
 ---
 
-# Spec 2-3 — Architecture detail view
+# Spec 2-3 - Architecture detail view
 
 ## Intent
 

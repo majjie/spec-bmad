@@ -1,4 +1,4 @@
-# Harbor sample — thin BMAD core config for Infra browsing
+# Harbor sample - thin BMAD core config for Infra browsing
 project_name: harbor
 project_key: HARBOR
 output_folder: _bmad-output

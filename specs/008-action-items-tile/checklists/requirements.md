@@ -34,7 +34,7 @@
 - No [NEEDS CLARIFICATION] markers were needed at spec-writing time. The source
   description's one genuinely incomplete sentence (the epic label's position, cut off
   mid-phrase) was flagged as an Assumption and then directly confirmed by the user
-  afterward — now recorded in a `## Clarifications` session and folded into FR-004
+  afterward - now recorded in a `## Clarifications` session and folded into FR-004
   itself, with the Assumption removed as no longer speculative. The jump-icon-to-file-viewer
   and ref-path-resolution questions both had reasonable, low-risk defaults consistent with
   existing features (File Content Viewer, Output Navigator) and remain Assumptions.

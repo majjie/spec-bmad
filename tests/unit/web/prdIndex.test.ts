@@ -14,7 +14,7 @@ test("buildRequirementCodeIndex() detects a bullet-style code", () => {
 });
 
 test("buildRequirementCodeIndex() detects a header-style code", () => {
-  const content = "### UJ-1 — Verifying a completed stage\n\nSome body text.\n";
+  const content = "### UJ-1 - Verifying a completed stage\n\nSome body text.\n";
   const refs = buildRequirementCodeIndex(content);
   assert.equal(refs.length, 1);
   assert.equal(refs[0]?.code, "UJ-1");
@@ -33,7 +33,7 @@ test("buildRequirementCodeIndex() counts a duplicated code as two distinct refer
 });
 
 test("buildRequirementCodeIndex() counts the same code in both styles as two distinct references", () => {
-  const content = "### FR-25 — A heading\n\n**FR-25** A bullet mentioning the same code.\n";
+  const content = "### FR-25 - A heading\n\n**FR-25** A bullet mentioning the same code.\n";
   const refs = buildRequirementCodeIndex(content);
   assert.equal(refs.length, 2);
   assert.equal(refs[0]?.style, "header");
@@ -57,7 +57,7 @@ test("buildRequirementCodeIndex() returns an empty array for content with no req
 });
 
 test("buildRequirementCodeIndex() preserves document order across mixed styles and prefixes", () => {
-  const content = ["**FR-9** first.", "", "### UJ-2 — a scenario", "", "**FR-25** later."].join("\n");
+  const content = ["**FR-9** first.", "", "### UJ-2 - a scenario", "", "**FR-25** later."].join("\n");
   const refs = buildRequirementCodeIndex(content);
   assert.deepEqual(
     refs.map((r) => r.code),
@@ -93,7 +93,7 @@ test("groupByPrefix() returns an empty array when given no references", () => {
 });
 
 test("buildRequirementCodeIndex() with no styles argument still detects both styles (no regression)", () => {
-  const content = "### AD-1 — A decision\n\n**AD-1** A bullet mentioning the same code.\n";
+  const content = "### AD-1 - A decision\n\n**AD-1** A bullet mentioning the same code.\n";
   const refs = buildRequirementCodeIndex(content);
   assert.equal(refs.length, 2);
   assert.deepEqual(
@@ -103,7 +103,7 @@ test("buildRequirementCodeIndex() with no styles argument still detects both sty
 });
 
 test("buildRequirementCodeIndex() with styles: ['header'] detects header-style codes but not bullet-style", () => {
-  const content = "### AD-1 — A decision\n\nBody text mentioning **AD-1** as a bullet-style occurrence.\n";
+  const content = "### AD-1 - A decision\n\nBody text mentioning **AD-1** as a bullet-style occurrence.\n";
   const refs = buildRequirementCodeIndex(content, ["header"]);
   assert.equal(refs.length, 1);
   assert.equal(refs[0]?.code, "AD-1");
@@ -111,7 +111,7 @@ test("buildRequirementCodeIndex() with styles: ['header'] detects header-style c
 });
 
 test("buildRequirementCodeIndex() with styles: ['bullet'] detects only bullet-style codes", () => {
-  const content = "### AD-1 — A decision\n\n**AD-2** A bullet-style code.\n";
+  const content = "### AD-1 - A decision\n\n**AD-2** A bullet-style code.\n";
   const refs = buildRequirementCodeIndex(content, ["bullet"]);
   assert.equal(refs.length, 1);
   assert.equal(refs[0]?.code, "AD-2");

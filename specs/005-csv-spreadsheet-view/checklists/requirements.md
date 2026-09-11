@@ -32,17 +32,17 @@
 ## Notes
 
 - Items marked incomplete require spec updates before `/speckit-clarify` or `/speckit-plan`
-- No [NEEDS CLARIFICATION] markers were needed. The two real scope questions —
+- No [NEEDS CLARIFICATION] markers were needed. The two real scope questions -
   whether the grid should support any cell-selection interactivity, and whether large CSVs
-  need virtualization — both had strong, directly-applicable precedents already set by
+  need virtualization - both had strong, directly-applicable precedents already set by
   earlier features in this project (Web Artifact Explorer's clarification on
   virtualization; this project's consistent preference for the simplest interpretation
   matching a "look like" visual request), so they were resolved via documented Assumptions
   rather than left open.
 - This feature directly fulfills the "later step" `.csv` rendering deferred by the File
-  Content Viewer feature's own spec.md Edge Cases and Assumptions — it changes that one
+  Content Viewer feature's own spec.md Edge Cases and Assumptions - it changes that one
   rendering mode only, per FR-013.
 - Post-clarification: the header-row-treatment question (Clarifications session) was
   resolved as Option A (distinguished, frozen header; row numbers label data rows only),
-  which reshaped FR-002–FR-005 and FR-009 plus both user stories' acceptance scenarios —
+  which reshaped FR-002–FR-005 and FR-009 plus both user stories' acceptance scenarios -
   all cross-references were checked for consistency after the renumbering this caused.

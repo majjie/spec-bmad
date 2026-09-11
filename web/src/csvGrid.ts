@@ -21,7 +21,7 @@ export function columnLetter(index: number): string {
 
 /**
  * Parses CSV text into a header row plus data rows, per data-model.md's derivation rules.
- * Ragged rows are left unpadded — padding for display happens at render time in CsvGrid.
+ * Ragged rows are left unpadded - padding for display happens at render time in CsvGrid.
  */
 export function parseCsvGrid(text: string): ParsedCsv {
   const result = Papa.parse<string[]>(text, { header: false, skipEmptyLines: true });

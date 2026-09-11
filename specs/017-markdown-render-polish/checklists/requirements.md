@@ -35,10 +35,10 @@
   codebase was inspected to confirm this tool already provides syntax-highlighted rendering
   for whole code files (used today when opening a recognized file type directly), and that
   exactly three places render Markdown content for a user to read (PRD documents,
-  Architecture documents, and the general file-viewer's own Markdown mode) — grounding
+  Architecture documents, and the general file-viewer's own Markdown mode) - grounding
   FR-008's "everywhere this tool renders Markdown" scope in a concrete, already-known list
   rather than a vague generalization.
-- This is a rendering/styling-only feature — no new parsing or derivation logic is
+- This is a rendering/styling-only feature - no new parsing or derivation logic is
   introduced, so it is expected to fall under this tool's existing UI-rendering test
   carve-out rather than requiring new unit tests; that determination belongs to
   `/speckit-plan`, not this spec.

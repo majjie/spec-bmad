@@ -34,17 +34,17 @@ Single project with a bundled web frontend (per plan.md): frontend code lives un
 
 **Purpose**: Confirm the feature needs no new dependencies before touching any code.
 
-- [X] T001 Verify no new package is needed — this feature only uses `@mui/material`
+- [X] T001 Verify no new package is needed - this feature only uses `@mui/material`
       (`Tooltip`, `Dialog`, `Paper`) and `@mui/icons-material` icons already installed and
       already assigned to these tiles by feature 012.
 
-**Checkpoint**: No dependency work needed — proceed directly to Foundational.
+**Checkpoint**: No dependency work needed - proceed directly to Foundational.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Shared plumbing every tile's story sits on top of — the folder-contents
+**Purpose**: Shared plumbing every tile's story sits on top of - the folder-contents
 fetch every tile's enabled/disabled state reads from, the `onOpenFile` threading reviews
 and addendum both need, and the shared requirement-code shape memlog parsing reuses.
 
@@ -56,17 +56,17 @@ and addendum both need, and the shared requirement-code shape memlog parsing reu
 - [X] T003 In `web/src/components/PrdDetailView.tsx`, accept a new `onOpenFile: (path:
       string) => void` prop; alongside the existing `prd.md` fetch effect, also call
       `fetchContents("output", entry.path)` (`web/src/api.ts`) and store the result as new
-      state (e.g. `folderFiles: ContentsEntry[] | null`) — treat a fetch failure the same
+      state (e.g. `folderFiles: ContentsEntry[] | null`) - treat a fetch failure the same
       as "no matching files" for every tile's gating, rather than surfacing a separate
       error state (depends on T002; contracts/ui-behavior.md "Data fetched once per PRD
       selection").
 - [X] T004 [P] In `web/src/prdIndex.ts`, export the existing requirement-code shape
       (`[A-Z]{2,}-\d+`, word-boundary-aware) as a named constant
       (e.g. `REQUIREMENT_CODE_PATTERN`) so `memlogParser.ts` can reuse the exact same
-      definition instead of a second copy — no behavior change to `prdIndex.ts` itself
+      definition instead of a second copy - no behavior change to `prdIndex.ts` itself
       (research.md § 5).
 
-**Checkpoint**: Foundation ready — User Stories 1, 2, and 3 can now all start.
+**Checkpoint**: Foundation ready - User Stories 1, 2, and 3 can now all start.
 
 ---
 
@@ -82,7 +82,7 @@ selecting one opens its content in a file-viewer dialog.
 
 ### Tests for User Story 1 ⚠️
 
-> Genuine derivation logic (constitution Principle V) — write these first and confirm
+> Genuine derivation logic (constitution Principle V) - write these first and confirm
 > they fail before implementing T006.
 
 - [X] T005 [P] [US1] Write failing unit tests in `tests/unit/web/reviewFiles.test.ts` for
@@ -95,7 +95,7 @@ selecting one opens its content in a file-viewer dialog.
 ### Implementation for User Story 1
 
 - [X] T006 [US1] Implement `buildReviewFileList` in `web/src/reviewFiles.ts` to make T005
-      pass — copy `fileName`/`path` directly from each matching `ContentsEntry`, do not
+      pass - copy `fileName`/`path` directly from each matching `ContentsEntry`, do not
       reconstruct `path` via string concatenation (depends on T005; data-model.md).
 - [X] T007 [US1] In `PrdDetailView.tsx`, compute the reviews list via
       `buildReviewFileList(folderFiles)` (depends on T003, T006).
@@ -103,7 +103,7 @@ selecting one opens its content in a file-viewer dialog.
       `Tooltip` matching `PrefixTile`'s own configuration (`open`/`onOpen`/`onClose`,
       `leaveDelay={400}`, opaque/scrollable `sx`) listing each review's `displayName`;
       when the list is empty, the tile renders with `color="disabled"` on its icon and
-      `color="text.disabled"` on its label (two different tokens — not the same string on
+      `color="text.disabled"` on its label (two different tokens - not the same string on
       both, research.md § 7) and no `onClick`/tooltip at all (depends on T007;
       FR-002/FR-004/FR-006, research.md § 4).
 - [X] T009 [US1] Wire selecting a listed review to `onOpenFile(review.path)` and close the
@@ -112,7 +112,7 @@ selecting one opens its content in a file-viewer dialog.
       `offsetWidth` via a `ref` + `ResizeObserver` (the same technique
       `SprintStatusView.tsx` uses to match Action Items' height to Summary's) and set the
       tooltip's `width` to match it, rather than letting it shrink to fit its narrowest
-      listed name — feedback that the tooltip felt too small (depends on T008; FR-002,
+      listed name - feedback that the tooltip felt too small (depends on T008; FR-002,
       Clarifications).
 - [X] T010 [US1] Manually verify quickstart.md Scenario 1 via Playwright: alphabetical
       friendly-name order in the tooltip, selecting one opens the standard file-viewer
@@ -162,7 +162,7 @@ and confirm selecting it closes the dialog and jumps the PRD to that code's loca
 
 ### Tests for User Story 3 ⚠️
 
-> Genuine derivation logic (constitution Principle V) — write these first and confirm
+> Genuine derivation logic (constitution Principle V) - write these first and confirm
 > they fail before implementing T015.
 
 - [X] T014 [P] [US3] Write failing unit tests in `tests/unit/web/memlogParser.test.ts` for
@@ -236,12 +236,12 @@ Navigator/PRD-viewer behavior.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all user stories.
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories.
 - **User Story 1 (Phase 3)**: Depends on Foundational only.
-- **User Story 2 (Phase 4)**: Depends on Foundational only — independent of Phase 3, can
+- **User Story 2 (Phase 4)**: Depends on Foundational only - independent of Phase 3, can
   run in parallel with it.
-- **User Story 3 (Phase 5)**: Depends on Foundational only — independent of Phases 3 and
+- **User Story 3 (Phase 5)**: Depends on Foundational only - independent of Phases 3 and
   4, can run in parallel with either.
 - **Polish (Phase 6)**: Depends on all desired user stories being complete.
 
@@ -258,7 +258,7 @@ Navigator/PRD-viewer behavior.
 - T005 (US1 tests) and T014 (US3 tests) can run in parallel with each other and with
   Phase 4's tasks, since none share a file with them.
 - T023 is independent of T024 and can run in parallel.
-- Once Foundational is complete, User Stories 1, 2, and 3 can all proceed in parallel —
+- Once Foundational is complete, User Stories 1, 2, and 3 can all proceed in parallel -
   unlike feature 012, none of this feature's stories has a real cross-story file
   dependency forcing a particular order.
 
@@ -267,7 +267,7 @@ Navigator/PRD-viewer behavior.
 ## Parallel Example: Foundational Phase
 
 ```bash
-# Launch T002 and T004 together — different files, no shared dependency:
+# Launch T002 and T004 together - different files, no shared dependency:
 Task: "Thread onOpenFile through web/src/components/NavigatorDetailPane.tsx"
 Task: "Export REQUIREMENT_CODE_PATTERN from web/src/prdIndex.ts"
 ```
@@ -279,11 +279,11 @@ Task: "Export REQUIREMENT_CODE_PATTERN from web/src/prdIndex.ts"
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup.
-2. Complete Phase 2: Foundational (CRITICAL — blocks all stories).
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories).
 3. Complete Phase 3: User Story 1.
 4. **STOP and VALIDATE**: Run quickstart.md Scenario 1 independently.
 5. This alone already turns the reviews tile from an inert placeholder into a working
-   file-browsing affordance — a meaningful increment even before addendum or the memory
+   file-browsing affordance - a meaningful increment even before addendum or the memory
    log are wired up.
 
 ### Incremental Delivery
@@ -300,7 +300,7 @@ Task: "Export REQUIREMENT_CODE_PATTERN from web/src/prdIndex.ts"
 - [P] tasks = different files, no dependencies.
 - [Story] label maps task to specific user story for traceability.
 - Unlike feature 012 (where User Story 2 had a real file-dependency on User Story 1's own
-  output), this feature's three stories are genuinely independent of one another — any
+  output), this feature's three stories are genuinely independent of one another - any
   order, or full parallelism, is safe.
 - Commit after each task or logical group.
 - Stop at any checkpoint to validate a story independently.

@@ -1,7 +1,7 @@
 # Phase 1 Data Model: Artifact Access Layer
 
 Derived from `spec.md` § Key Entities, translated into concrete shapes. No persistence is
-involved — every type here exists only in process memory for the lifetime of the CLI run.
+involved - every type here exists only in process memory for the lifetime of the CLI run.
 
 ## ArtifactNode
 
@@ -11,13 +11,13 @@ Represents a single file or folder discovered under a `_bmad`/`_bmad-output` fol
 |---|---|---|
 | `name` | `string` | The entry's own name (last path segment), e.g. `spec.md` |
 | `path` | `string` | Absolute path on disk |
-| `type` | `'file' \| 'folder'` | Never `'symlink'` — symlinks are excluded before a node is created (FR-003) |
+| `type` | `'file' \| 'folder'` | Never `'symlink'` - symlinks are excluded before a node is created (FR-003) |
 | `children` | `ArtifactNode[]` | Present (possibly empty) when `type === 'folder'`; omitted when `type === 'file'` |
 
 **Validation rules**:
-- Never constructed for a symlinked entry (FR-003) — the scanner filters these out before
+- Never constructed for a symlinked entry (FR-003) - the scanner filters these out before
   building a node, so a symlink simply produces no `ArtifactNode` at all.
-- Never carries file contents — only `name`/`path`/`type`/`children` (FR-002).
+- Never carries file contents - only `name`/`path`/`type`/`children` (FR-002).
 - `children` ordering is not specified by the spec; implementation MAY use whatever order
   `readdir` returns, since no requirement or success criterion depends on ordering.
 
@@ -34,7 +34,7 @@ Clarifications session).
 | `bmadOutputFolderPath` | `string \| null` | Absolute path to its `_bmad-output` child, or `null` if absent |
 
 **Validation rules**:
-- At least one of `bmadFolderPath` / `bmadOutputFolderPath` MUST be non-null — that is
+- At least one of `bmadFolderPath` / `bmadOutputFolderPath` MUST be non-null - that is
   exactly the FR-007 validity condition.
 - A path only counts here if it is a real directory, not a symlink (FR-007, FR-003).
 
@@ -60,7 +60,7 @@ The in-memory store described in FR-004/FR-005, holding one cached tree per
 (no entry) --get()--> fresh
 fresh --invalidate()--> stale
 stale --get()--> fresh   (rebuilds tree from disk)
-fresh --get()--> fresh   (returns cached tree, no disk access) — FR-004
+fresh --get()--> fresh   (returns cached tree, no disk access) - FR-004
 ```
 
 ## DiscoveryResult

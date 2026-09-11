@@ -10,10 +10,10 @@ welcome modal, and guided tour as frontend modules with DOM-free config unit-tes
 
 ## Technical approach
 
-1. `web/src/tokens.css` — primitive + semantic CSS variables
-2. `web/src/theme.ts` — map tokens into MUI `createTheme`
+1. `web/src/tokens.css` - primitive + semantic CSS variables
+2. `web/src/theme.ts` - map tokens into MUI `createTheme`
 3. Shell components: `AppHeader`, `AppSidebar`, `OverviewView`, `WelcomeModal`, `GuidedTour`
-4. `web/src/onboarding/` — persistence + tour step definitions
+4. `web/src/onboarding/` - persistence + tour step definitions
 5. Polish SprintStatusView / PrdDetailView / ArchitectureDetailView / FrontmatterInfoControl
 
 ## Constitution check

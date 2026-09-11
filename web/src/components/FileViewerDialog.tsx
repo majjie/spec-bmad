@@ -45,7 +45,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
   // csv-grid renders flush, with no ambient padding: its sticky header/row-number cells
   // need to sit right at the scroll container's own clip boundary. A padding gap between
   // that boundary and where the header actually sticks was found to leave a band where
-  // scrolled-past rows stay visible, uncovered by the header — see the Box below.
+  // scrolled-past rows stay visible, uncovered by the header - see the Box below.
   if (mode.kind === "csv-grid") {
     return <CsvGrid content={content} />;
   }
@@ -78,7 +78,7 @@ function DialogBody({ path, content, error }: { path: string; content: string | 
 
 export default function FileViewerDialog({ path, content, error, onClose }: FileViewerDialogProps) {
   // Frontmatter stripping only ever applies to the Markdown render mode (FR-003), and only
-  // once content has actually loaded — every other mode, and the loading/error states,
+  // once content has actually loaded - every other mode, and the loading/error states,
   // pass `content` straight through to `DialogBody` unchanged.
   const mode = path ? getFileRenderMode(fileNameOf(path)) : null;
   const frontmatter = mode?.kind === "markdown" && content !== null && !error ? stripFrontmatter(content) : null;
@@ -105,8 +105,8 @@ export default function FileViewerDialog({ path, content, error, onClose }: File
           position: "absolute",
           top: 8,
           right: 8,
-          // Above any per-rendering-mode content — e.g. CsvGrid's frozen header cells,
-          // which use zIndex up to 5 — so the close icon can never be painted over.
+          // Above any per-rendering-mode content - e.g. CsvGrid's frozen header cells,
+          // which use zIndex up to 5 - so the close icon can never be painted over.
           zIndex: 10,
           padding: "4px",
           borderRadius: 1,

@@ -473,7 +473,7 @@ test("GET /api/navigator/sprint-status returns actionItems with each ref resolve
         resolvedPath: string | null;
       }[];
     };
-    // item-2 (non-"done") sorts before item-1 (status "done") — FR-009's post-implementation
+    // item-2 (non-"done") sorts before item-1 (status "done") - FR-009's post-implementation
     // stable partition by done-status.
     assert.equal(body.actionItems.length, 2);
     assert.equal(body.actionItems[0]?.id, "item-2");

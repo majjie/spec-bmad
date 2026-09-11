@@ -35,6 +35,6 @@
   low-ambiguity: the user explicitly describes architecture folders as mirroring the PRD
   folder structure already built and shipped (features 006/007), so every grouping/
   tolerance/ordering behavior confidently defaults to that same established precedent
-  rather than needing a fresh decision. The one judgment call — where "Architecture" sits
-  in the tree relative to "PRD" and "Sprint Status" — is recorded in Assumptions as
+  rather than needing a fresh decision. The one judgment call - where "Architecture" sits
+  in the tree relative to "PRD" and "Sprint Status" - is recorded in Assumptions as
   low-stakes with no functional impact.

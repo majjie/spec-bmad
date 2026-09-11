@@ -13,7 +13,7 @@ import type { ActionItem } from "../api.js";
 interface ActionItemsTileProps {
   actionItems: ActionItem[];
   onOpenFile: (path: string) => void;
-  // The Summary tile's own measured height (SprintStatusView.tsx) — an explicit, definite
+  // The Summary tile's own measured height (SprintStatusView.tsx) - an explicit, definite
   // value (not CSS stretch) so this tile always matches it exactly regardless of how many
   // action items it holds, scrolling internally instead of growing past it (FR-002/FR-003).
   height: number;
@@ -32,7 +32,7 @@ function OwnerIcon({ owner }: { owner: string }) {
   );
 }
 
-// FR-006: filled iff status is exactly "done", else unfilled — never a third state.
+// FR-006: filled iff status is exactly "done", else unfilled - never a third state.
 function StatusCheckbox({ status }: { status: string }) {
   const Icon = status === "done" ? CheckBoxIcon : CheckBoxOutlineBlankIcon;
   return <Icon fontSize="small" />;
@@ -67,7 +67,7 @@ function JumpIcon({
 }
 
 // FR-004: a header line (owner icon, tick-box, jump icon, epic label), then the action
-// text on its own line below it — not inline with the header, per the post-implementation
+// text on its own line below it - not inline with the header, per the post-implementation
 // Clarifications correcting the original inline layout.
 function ActionItemRow({
   item,

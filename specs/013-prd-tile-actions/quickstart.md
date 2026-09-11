@@ -1,6 +1,6 @@
 # Quickstart: PRD Tile Actions
 
-Manual validation guide for this feature's UI/rendering behavior — the carve-out under
+Manual validation guide for this feature's UI/rendering behavior - the carve-out under
 constitution Principle V. `reviewFiles.ts` and `memlogParser.ts` are covered by their own
 unit tests (`npm test`), not by this guide.
 
@@ -26,19 +26,19 @@ unit tests (`npm test`), not by this guide.
 3. Build and run the CLI against this fixture project:
    `npx tsx src/cli.ts <fixture-project-path>`, then open the printed localhost URL.
 
-## Scenario 1 — Reviews tile
+## Scenario 1 - Reviews tile
 
 1. Select the PRD leaf folder containing the two `review-*.md` files.
 2. **Expect**: the "reviews" tile appears enabled (not greyed out).
 3. Hover it. **Expect**: a tooltip lists "Adversarial" before "Edge Cases" (alphabetical by
    friendly name).
 4. Select "Edge Cases". **Expect**: a file-viewer dialog opens showing
-   `review-edge-cases.md`'s content, with a Close button — the same established modal
+   `review-edge-cases.md`'s content, with a Close button - the same established modal
    behavior as any other file opened in this tool.
 5. Close it, then select the second (empty) PRD leaf folder. **Expect**: the reviews tile
    now appears visually disabled, and hovering/clicking it does nothing.
 
-## Scenario 2 — Addendum tile
+## Scenario 2 - Addendum tile
 
 1. Select the PRD leaf folder containing `addendum.md`.
 2. **Expect**: the "addendum" tile appears enabled. Click it. **Expect**: a file-viewer
@@ -46,11 +46,11 @@ unit tests (`npm test`), not by this guide.
 3. Select the empty PRD leaf folder. **Expect**: the addendum tile appears disabled and
    does nothing on click.
 
-## Scenario 3 — Memory log tile
+## Scenario 3 - Memory log tile
 
 1. Select the PRD leaf folder containing `.memlog.md`. **Expect**: the "memory log" tile
    appears enabled. Click it.
-2. **Expect**: a bespoke dialog opens (not the standard Markdown viewer) — its YAML
+2. **Expect**: a bespoke dialog opens (not the standard Markdown viewer) - its YAML
    frontmatter is excluded from the body and reachable via the (i) icon, exactly as
    established for any other Markdown file.
 3. **Expect**: each bullet renders as its own row, with alternating row backgrounds
@@ -66,7 +66,7 @@ unit tests (`npm test`), not by this guide.
 8. Click the `FR-76` link. **Expect**: the memory log dialog closes, and the PRD view
    (visible underneath) has scrolled to `FR-76`'s location.
 9. Reopen the memory log dialog and click the `FR-56` link from the same bullet used in
-   step 7. **Expect**: the dialog closes and the PRD scrolls to `FR-56`'s own location —
+   step 7. **Expect**: the dialog closes and the PRD scrolls to `FR-56`'s own location -
    confirming both links in that bullet jump independently, not just the first.
 10. Select the empty PRD leaf folder. **Expect**: the memory log tile appears disabled and
     does nothing on click.
@@ -76,7 +76,7 @@ unit tests (`npm test`), not by this guide.
 1. Confirm the requirement-code index column (feature 012) still lists prefixes and jumps
    correctly on the PRD containing `prd.md`'s codes.
 2. Open a Markdown file directly from the Output tab's own file browser (not through a
-   tile) that happens to be named `.memlog.md` (or any other file) — confirm it still
+   tile) that happens to be named `.memlog.md` (or any other file) - confirm it still
    renders as plain Markdown in the standard `FileViewerDialog`, unaffected by this
    feature's bespoke memory-log rendering.
 3. Confirm Sprint Status and every other existing Navigator selection still renders

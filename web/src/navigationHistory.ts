@@ -9,7 +9,7 @@ export interface NavigationState {
 
 /**
  * Builds the initial-load baseline state (FR-012, feature 002/003) for whichever tab is
- * actually the resolved default — the Navigator tab with nothing selected (feature 007
+ * actually the resolved default - the Navigator tab with nothing selected (feature 007
  * FR-001, `path: ""`), or the Infra tab with its root folder selected, when falling back
  * (feature 007 FR-002).
  */
@@ -19,9 +19,9 @@ export function createBaselineState(tab: TabId, path: string): NavigationState {
 
 /**
  * True when `tab`, `path`, and `openFile` all match. Used to detect a redundant
- * navigation — e.g. re-clicking the tab or folder that's already active/selected, or
+ * navigation - e.g. re-clicking the tab or folder that's already active/selected, or
  * re-opening the file that's already open (MUI's `Tabs onChange` fires even for the
- * already-active tab) — so it doesn't push a no-op duplicate history entry (FR-001/
+ * already-active tab) - so it doesn't push a no-op duplicate history entry (FR-001/
  * FR-002's "a *different* folder"/"*switching* tabs" wording). Expand/collapse never
  * reaches this check at all: `FolderTree.tsx`'s `onExpandedItemsChange` is a separate
  * callback from `onSelectedItemsChange` and never calls `navigate()`, which is what

@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Included for `parseActionItems` — genuine parsing/derivation logic under
+**Tests**: Included for `parseActionItems` - genuine parsing/derivation logic under
 constitution Principle V's main clause (like feature 006/007's `groupPrdFolders`/
 `parseSprintStatus`/`calculateActiveEpic`), not just UI-adjacent pure logic. The existing
 `parseSprintStatus` tests are updated for its new signature and new field, not dropped.
@@ -30,7 +30,7 @@ testing of each story.
 Per `plan.md` § Project Structure: one new backend module
 (`src/navigator/action-items.ts`), one new frontend component
 (`web/src/components/ActionItemsTile.tsx`), and targeted edits to feature 006/007's
-existing sprint-status/Navigator/file-viewer plumbing — no new routes.
+existing sprint-status/Navigator/file-viewer plumbing - no new routes.
 
 ---
 
@@ -44,7 +44,7 @@ directly to User Story 1.
 
 ## Phase 2: Foundational
 
-No cross-story blocking work is needed — User Story 2 only extends files User Story 1
+No cross-story blocking work is needed - User Story 2 only extends files User Story 1
 creates (`ActionItemsTile.tsx`'s jump icon, and the Navigator/App.tsx plumbing around it);
 nothing needs to land before User Story 1 itself.
 
@@ -54,7 +54,7 @@ nothing needs to land before User Story 1 itself.
 
 **Goal**: An "Action Items" tile appears beside the Summary tile, same height, listing
 every action item with its owner/status/epic/action rendered (and the jump icon rendered,
-though not yet clickable — that's User Story 2), hiding any element whose bound property
+though not yet clickable - that's User Story 2), hiding any element whose bound property
 is absent, scrolling internally when there are more items than fit.
 
 **Independent Test**: Open a Sprint Status view for a file with several action items
@@ -97,17 +97,17 @@ tile scrolls internally once there are enough items to overflow it.
       project's established server/client type-duplication convention, e.g. feature 006's
       `PrdGroupingResult`)
 - [X] T007 [US1] Implement `web/src/components/ActionItemsTile.tsx`: a titled tile with a
-      scrolling list, one row per `ActionItem` in array order, each showing — per
-      data-model.md's rendering table — an owner-type icon (human-outline unless `owner`
+      scrolling list, one row per `ActionItem` in array order, each showing - per
+      data-model.md's rendering table - an owner-type icon (human-outline unless `owner`
       is exactly `"dev loop"`, else computer-like; tooltip = `owner`), a read-only
       tick-box icon (filled iff `status === "done"` exactly, else unfilled), a jump icon
-      (tooltip = `ref`; purely visual in this task, no click handler yet — User Story 2
+      (tooltip = `ref`; purely visual in this task, no click handler yet - User Story 2
       wires that), the epic label (`epic-<N>`) immediately to its right, and the action
-      text — each element rendered only when its bound field is non-`null` (FR-008); an
+      text - each element rendered only when its bound field is non-`null` (FR-008); an
       empty-state message when `actionItems` is empty (FR-012); depends on T006
 - [X] T008 [US1] Restructure `web/src/components/SprintStatusView.tsx`'s layout: wrap the
       Summary tile and the new `<ActionItemsTile>` in one row (`display: flex`, default
-      `alignItems: stretch` so they share height, **and `width: "100%"`** — the row is a
+      `alignItems: stretch` so they share height, **and `width: "100%"`** - the row is a
       new direct child of the outer container's existing `alignItems: "flex-start"`, the
       same override the epic-tile stack already needed from that container and for the
       same reason, research.md § 4), `ActionItemsTile` taking the rest of the row's width
@@ -137,7 +137,7 @@ identically to how they already do there.
 
 - [X] T010 [US2] Generalize `web/src/App.tsx`'s `openFileDialog`/`loadFileContent`:
       `openFileDialog` now takes an explicit `(tab: TabId, currentPath: string, path:
-      string)` — callers supply the current path directly, since the Navigator tab has no
+      string)` - callers supply the current path directly, since the Navigator tab has no
       `tabStates` entry to look it up from (update the existing Infra/Output
       `ContentsTable` call site to pass `tabStates[activeTab].selectedPath ?? ""`
       explicitly too); `loadFileContent` maps `tab === "navigator"` to `"output"` when
@@ -167,7 +167,7 @@ quickstart.md's scenarios)
 - [X] T014 [P] Run `npm run typecheck` and resolve any strict-mode type errors introduced
       by the change
 - [X] T015 Execute `quickstart.md` Scenarios 1–4 in a real desktop browser and confirm
-      each matches its expected outcome — a headless Chromium is available via Playwright
+      each matches its expected outcome - a headless Chromium is available via Playwright
       in this environment (used for features 006/007's own quickstart verification);
       prefer actually driving the app with it over only disclosing that manual
       verification wasn't performed
@@ -177,13 +177,13 @@ quickstart.md's scenarios)
 ## Phase 6: Post-Implementation Design Feedback (2026-09-08)
 
 **Context**: User feedback after T001–T015 landed, corrected in the same session per
-feature 007's precedent — fix now, spec/data-model/contracts updated to match
+feature 007's precedent - fix now, spec/data-model/contracts updated to match
 (spec.md's new Clarifications session, FR-002/FR-004/FR-009/FR-014).
 
 - [X] T016 [US1] Add a failing-first unit test to
       `tests/unit/navigator/action-items.test.ts` for the new sort rule (every non-`"done"`
       item before every `"done"` item, file order preserved within each group), then
-      implement it in `parseActionItems()` (`src/navigator/action-items.ts`) — genuine
+      implement it in `parseActionItems()` (`src/navigator/action-items.ts`) - genuine
       derivation logic per constitution Principle V, same as the rest of this module
 - [X] T017 [US1] Restructure `ActionItemsTile.tsx`'s row rendering: header line (owner
       icon, tick-box, jump icon, epic label) with the action text on its own line below it
@@ -197,7 +197,7 @@ feature 007's precedent — fix now, spec/data-model/contracts updated to match
 - [X] T019 Re-run `npm test`/`npm run typecheck` and re-verify `quickstart.md`'s scenarios
       in a real browser after T016–T018
 - [X] T020 [US1] Fix T018's height mechanism: an explicit `height` on *only* the Action
-      Items tile doesn't reliably make it dictate the shared row height — with flexbox's
+      Items tile doesn't reliably make it dictate the shared row height - with flexbox's
       default `alignItems: stretch`, the Summary tile's own auto-height content still wins
       the row's cross size whenever it's naturally taller than that fixed value (e.g. a
       long `story_location`/`tracking_system` value in real data), leaving Action Items
@@ -208,15 +208,15 @@ feature 007's precedent — fix now, spec/data-model/contracts updated to match
       content exceeds that fixed height
 - [X] T021 [US1] Fix T020's safety net: a fixed `height` on the row forced the Summary tile
       to scroll internally whenever its real content (e.g. a long `story_location` value)
-      exceeded it — which the tile was never meant to do. Change the row's `height` to
+      exceeded it - which the tile was never meant to do. Change the row's `height` to
       `minHeight` instead: Action Items still gets its usual ~360px default whenever
       Summary's content is shorter (the common case, `alignItems: "stretch"` fills both to
       that floor), but if Summary's content is ever taller, the row now grows to fit it
-      instead of clipping it, and Action Items stretches to match the larger height too —
+      instead of clipping it, and Action Items stretches to match the larger height too -
       remove the now-unnecessary `overflow: "auto"` safety net from the Summary tile
 - [X] T022 [US1] Fix T021's remaining gap: `minHeight` on the row still let Action Items'
       own unbounded item count inflate the row (and drag Summary along with it) instead of
-      scrolling, once there were enough items — pure CSS can't cap one flex sibling's
+      scrolling, once there were enough items - pure CSS can't cap one flex sibling's
       content without also risking a mismatch against the other (FR-002 round 3,
       research.md § 4's rejected-approaches list). Replace the CSS-only approach with a
       `ResizeObserver` in `SprintStatusView.tsx` (`useLayoutEffect`) that measures the
@@ -234,11 +234,11 @@ feature 007's precedent — fix now, spec/data-model/contracts updated to match
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: Empty for this feature — no dependencies, no work
-- **Foundational (Phase 2)**: Empty for this feature — no cross-story blocking work exists
+- **Setup (Phase 1)**: Empty for this feature - no dependencies, no work
+- **Foundational (Phase 2)**: Empty for this feature - no cross-story blocking work exists
 - **User Story 1 (Phase 3)**: No dependency on Setup/Foundational completing anything; no
   dependency on User Story 2
-- **User Story 2 (Phase 4)**: Depends on User Story 1 — its jump icon (T012) extends the
+- **User Story 2 (Phase 4)**: Depends on User Story 1 - its jump icon (T012) extends the
   row `ActionItemsTile.tsx` (T007) already renders, and its plumbing (T010/T011) exists
   specifically to serve that jump icon
 - **Polish (Phase 5)**: Depends on both user stories being complete
@@ -263,7 +263,7 @@ feature 007's precedent — fix now, spec/data-model/contracts updated to match
 ### Parallel Opportunities
 
 - T001 (`parseActionItems` tests) and T006 (the frontend type mirror in `web/src/api.ts`)
-  can run in parallel — different files, no dependency between them
+  can run in parallel - different files, no dependency between them
 - T014 (typecheck) can run in parallel with T013 (test suite) and T015 (manual
   quickstart) in Polish
 
@@ -289,7 +289,7 @@ Task: "Add ActionItem/actionItems to SprintStatusResult in web/src/api.ts"
 
 ### Incremental Delivery
 
-1. Add User Story 1 → validate independently (MVP — the tile itself, fully readable)
+1. Add User Story 1 → validate independently (MVP - the tile itself, fully readable)
 2. Add User Story 2 → validate independently (jump-to-file, atop the same rows)
 3. Each story adds value without breaking the previous one
 
@@ -300,7 +300,7 @@ Task: "Add ActionItem/actionItems to SprintStatusResult in web/src/api.ts"
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - `parseActionItems`'s correctness (T001/T002), including its path-resolution rule,
-  matters as much as any backend test task in earlier features — it's genuine derivation
+  matters as much as any backend test task in earlier features - it's genuine derivation
   logic, not UI-adjacent pure logic
 - Verify tests fail before implementing
 - Commit after each task or logical group

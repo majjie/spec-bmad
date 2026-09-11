@@ -35,17 +35,17 @@ Single project with a bundled web frontend (per plan.md): frontend code lives un
 **Purpose**: Confirm the feature needs no new dependencies before touching any code.
 
 - [X] T001 Verify `web/package.json` already lists `react-markdown`, `remark-gfm`,
-      `js-yaml`, and `@mui/icons-material` (for `RateReview`, `PostAdd`, `History`) — all
+      `js-yaml`, and `@mui/icons-material` (for `RateReview`, `PostAdd`, `History`) - all
       already used elsewhere in this app (`FileViewerDialog.tsx`, `frontmatter.ts`,
-      `SprintStatusView.tsx`) — and that no `npm install` is required.
+      `SprintStatusView.tsx`) - and that no `npm install` is required.
 
-**Checkpoint**: No dependency work needed — proceed directly to Foundational.
+**Checkpoint**: No dependency work needed - proceed directly to Foundational.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Shared plumbing every user story's work sits on top of — the folder-path
+**Purpose**: Shared plumbing every user story's work sits on top of - the folder-path
 lookup, the extracted info-control, and the new component's basic wiring into the
 Navigator.
 
@@ -62,11 +62,11 @@ Navigator.
       Record<string, unknown>` as its only prop and preserving the existing hover/click/
       opaque-background/larger-font tooltip behavior exactly (research.md § 2).
 - [X] T004 In `web/src/components/FileViewerDialog.tsx`, replace the now-inlined block with
-      `FrontmatterInfoControl`, keeping the Close button as a separate sibling — no
+      `FrontmatterInfoControl`, keeping the Close button as a separate sibling - no
       observable behavior change (depends on T003; contracts/ui-behavior.md "Regression
       guard").
 - [X] T005 In `web/src/api.ts`, add `fetchFileContentOrNull(tab, path): Promise<string |
-      null>` alongside the existing `fetchFileContent` — identical, except it resolves to
+      null>` alongside the existing `fetchFileContent` - identical, except it resolves to
       `null` on a 404 instead of throwing (research.md § 7). Then create
       `web/src/components/PrdDetailView.tsx`: accepts the resolved PRD folder entry,
       fetches `` `${entry.path}/prd.md` `` via this new function, and renders a "Loading…"
@@ -76,7 +76,7 @@ Navigator.
       `Typography`; leave every other branch (`"sprint-status"`, `null`, unmatched)
       untouched (depends on T002, T005; FR-014).
 
-**Checkpoint**: Foundation ready — User Story 1 and User Story 2 can now both start.
+**Checkpoint**: Foundation ready - User Story 1 and User Story 2 can now both start.
 
 ---
 
@@ -99,17 +99,17 @@ happens for any other Markdown file opened in this tool.
       styling (code/table borders, etc.) (depends on T005; FR-001/FR-002).
 - [X] T008 [US1] In `PrdDetailView.tsx`, render `FrontmatterInfoControl` (T003)
       `position: absolute` in the file-viewer region's top-right corner whenever a
-      preamble was present — with no accompanying close button (depends on T004, T007;
+      preamble was present - with no accompanying close button (depends on T004, T007;
       FR-003).
 - [X] T023 [US1] Post-implementation fix: in `PrdDetailView.tsx`, move the (i) control out
       from inside the scrolling Box into a sibling of it (both children of the same
       `position: relative` wrapper), so it stays fixed in the top-right corner regardless
-      of scroll position — previously it was nested inside the same element that had both
+      of scroll position - previously it was nested inside the same element that had both
       `position: relative` and `overflow: auto`, which meant it scrolled away with the
       content instead of staying fixed, unlike `FileViewerDialog`'s own (i)/Close controls
       (depends on T008; FR-003, Clarifications).
 - [X] T009 [US1] In `PrdDetailView.tsx`, render a clear "no PRD document" message (not an
-      error, not a blank pane) when `fetchFileContentOrNull` resolves to `null` —
+      error, not a blank pane) when `fetchFileContentOrNull` resolves to `null` -
       distinct from the genuine-fetch-error branch, which still shows the thrown error's
       message (depends on T005; FR-004, research.md § 7).
 - [X] T010 [US1] Manually verify quickstart.md Scenario 1 via Playwright: full-pane render
@@ -117,7 +117,7 @@ happens for any other Markdown file opened in this tool.
       for an empty folder, and other Navigator selections (Sprint Status, no selection)
       unaffected.
 
-**Checkpoint**: User Story 1 is fully functional and independently testable — a PRD now
+**Checkpoint**: User Story 1 is fully functional and independently testable - a PRD now
 renders full-pane with its frontmatter tooltip, with or without a `prd.md` file present.
 
 ---
@@ -128,13 +128,13 @@ renders full-pane with its frontmatter tooltip, with or without a `prd.md` file 
 detected requirement code without scrolling the document by hand (FR-007–FR-013).
 
 **Independent Test**: Open a PRD containing both bullet-style codes (e.g. `**FR-25**`) and
-header-style codes (e.g. `### UJ-1 — ...`) across at least two different prefixes; confirm
+header-style codes (e.g. `### UJ-1 - ...`) across at least two different prefixes; confirm
 one tile appears per unique prefix, hovering one lists every code under it in numerical
 order by full code text, and clicking a code scrolls the document to its location.
 
 ### Tests for User Story 2 ⚠️
 
-> Genuine derivation logic (constitution Principle V) — write these first and confirm they
+> Genuine derivation logic (constitution Principle V) - write these first and confirm they
 > fail before implementing T012.
 
 - [X] T011 [P] [US2] Write failing unit tests in `tests/unit/web/prdIndex.test.ts` for
@@ -158,7 +158,7 @@ order by full code text, and clicking a code scrolls the document to its locatio
       T013's ordered array in document order (depends on T013; research.md § 3).
 - [X] T015 [US2] In `PrdDetailView.tsx`, render the requirement-code index column as a
       structurally separate flex sibling of the file-viewer region (its own
-      `overflow: auto`, never inside the document's own scroll container) — one tile per
+      `overflow: auto`, never inside the document's own scroll container) - one tile per
       prefix group ordered by first appearance, entirely absent when no codes are detected
       (depends on T013; FR-009, Clarifications).
 - [X] T016 [US2] Add a controlled `Tooltip` (matching feature 010's `open`/`onOpen`/
@@ -166,14 +166,14 @@ order by full code text, and clicking a code scrolls the document to its locatio
       order by full code text, with `slotProps.tooltip.sx` adding `maxHeight`/
       `overflowY: auto` for internal scrolling (depends on T015; FR-010, FR-013). Leave
       `disableInteractive` unset (MUI's own default) so hover-through to the tooltip's own
-      content keeps it open (FR-011) — add a one-line comment at the call site noting this,
+      content keeps it open (FR-011) - add a one-line comment at the call site noting this,
       per research.md § 5's implementation note.
 - [X] T017 [US2] Wire selecting a code in the tooltip to
       `document.getElementById(reference.id)?.scrollIntoView(...)` against the file-viewer
       region and close the tooltip afterward (depends on T014, T016; FR-011 is satisfied
       automatically by MUI's default interactive `Tooltip`, FR-012).
 - [X] T024 [US2] Post-implementation fix: add `leaveDelay={400}` to the prefix tile's
-      `Tooltip` (T016) — MUI's own default is 0ms (closes instantly on mouseleave), which
+      `Tooltip` (T016) - MUI's own default is 0ms (closes instantly on mouseleave), which
       felt too abrupt; 400ms gives the pointer a comfortable grace period to reach the
       tooltip's content before it closes (depends on T016; FR-011, Clarifications).
 - [X] T018 [US2] Manually verify quickstart.md Scenario 2 via Playwright: index column
@@ -181,7 +181,7 @@ order by full code text, and clicking a code scrolls the document to its locatio
       duplicate-code rows jump to distinct locations, the non-matching `### Overview`
       heading is untouched, and zero detected codes suppresses the column entirely.
 
-**Checkpoint**: User Stories 1 and 2 both work independently — the PRD renders full-pane
+**Checkpoint**: User Stories 1 and 2 both work independently - the PRD renders full-pane
 and its requirement codes are indexed and jumpable.
 
 ---
@@ -198,7 +198,7 @@ none of them do anything when selected.
 
 ### Implementation for User Story 3
 
-- [X] T019 [P] [US3] In `PrdDetailView.tsx`, add the top placeholder-tile row — "reviews"
+- [X] T019 [P] [US3] In `PrdDetailView.tsx`, add the top placeholder-tile row - "reviews"
       (`RateReviewIcon`), "addendum" (`PostAddIcon`), "memory log" (`HistoryIcon`), icon
       left of title, small fixed height, no `onClick` handlers at all (depends on T005;
       FR-005/FR-006).
@@ -222,7 +222,7 @@ viewer.
       T004) introduced no behavior change (SC-005).
 - [X] T025 Post-implementation fix: in `PrdDetailView.tsx`, add a `borderBottom` divider
       under the placeholder tiles row and a `borderLeft` divider on the requirement-code
-      index column, visually partitioning the pane's three regions — a whole-pane outer
+      index column, visually partitioning the pane's three regions - a whole-pane outer
       border was tried first and found to add little value, since the pane's right/bottom
       edges coincide with the browser viewport's own edge and are invisible there (FR-015,
       Clarifications).
@@ -233,14 +233,14 @@ viewer.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all user stories.
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories.
 - **User Story 1 (Phase 3)**: Depends on Foundational only.
 - **User Story 2 (Phase 4)**: Depends on Foundational; its rendering tasks (T013+) also
   depend on User Story 1's T007 (the frontmatter-stripped content and Markdown render it
-  attaches anchors to) — so in practice, complete Phase 3 before Phase 4, even though both
+  attaches anchors to) - so in practice, complete Phase 3 before Phase 4, even though both
   are P1.
-- **User Story 3 (Phase 5)**: Depends on Foundational only (T005) — independent of Phases 3
+- **User Story 3 (Phase 5)**: Depends on Foundational only (T005) - independent of Phases 3
   and 4, and can run in parallel with either.
 - **Polish (Phase 6)**: Depends on all desired user stories being complete.
 
@@ -262,7 +262,7 @@ viewer.
 ## Parallel Example: Foundational Phase
 
 ```bash
-# Launch T002 and T003 together — different files, no shared dependency:
+# Launch T002 and T003 together - different files, no shared dependency:
 Task: "Generalize findPrdFolderName in web/src/components/NavigatorDetailPane.tsx"
 Task: "Extract FrontmatterInfoControl.tsx from web/src/components/FileViewerDialog.tsx"
 ```
@@ -274,11 +274,11 @@ Task: "Extract FrontmatterInfoControl.tsx from web/src/components/FileViewerDial
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup.
-2. Complete Phase 2: Foundational (CRITICAL — blocks all stories).
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories).
 3. Complete Phase 3: User Story 1.
 4. **STOP and VALIDATE**: Run quickstart.md Scenario 1 independently.
 5. This alone already replaces today's bare-folder-name placeholder with a real, readable
-   PRD view — a meaningful increment even before the index or placeholder tiles exist.
+   PRD view - a meaningful increment even before the index or placeholder tiles exist.
 
 ### Incremental Delivery
 
@@ -293,7 +293,7 @@ Task: "Extract FrontmatterInfoControl.tsx from web/src/components/FileViewerDial
 - [P] tasks = different files, no dependencies.
 - [Story] label maps task to specific user story for traceability.
 - User Story 2 is the story that delivers this feature's actual "solve cumbersome
-  navigation" value — treat it as equally essential to ship as User Story 1, not an
+  navigation" value - treat it as equally essential to ship as User Story 1, not an
   optional extra, despite being sequenced after it for practical file-dependency reasons.
 - Commit after each task or logical group.
 - Stop at any checkpoint to validate a story independently.

@@ -34,22 +34,22 @@ viewer dialog for the memlog and make the PRD jump to that requirement code."
 ### Session 2026-09-09
 
 - Q: The friendly review names strip the "review-" prefix and replace dashes with spaces
-  — should the result be capitalized as Title Case (every word capitalized, e.g. "Edge
-  Cases") or Sentence case (only the first letter, e.g. "Edge cases")? → A: Title Case —
+  - should the result be capitalized as Title Case (every word capitalized, e.g. "Edge
+  Cases") or Sentence case (only the first letter, e.g. "Edge cases")? → A: Title Case -
   every word capitalized (e.g. "Edge Cases").
 - Q: Should a memory log bullet's body text support inline Markdown formatting (bold,
   italic, code spans) alongside the requirement-code-to-link substitution, or should it
-  render as plain text with only that substitution applied? → A: Plain text only — the
+  render as plain text with only that substitution applied? → A: Plain text only - the
   requirement-code-to-link substitution is the only transformation applied; any literal
   Markdown syntax in the source text renders as-is, unparsed.
 - Q: When a single memory log bullet mentions more than one requirement code, should every
   one of them become a clickable link, or only the first one found in that bullet? → A:
   Every matching requirement code within a bullet becomes its own independent clickable
-  link — not just the first one found.
+  link - not just the first one found.
 
 ### Session 2026-09-09 (post-implementation feedback)
 
-- Q: The reviews tooltip felt too small on viewing — should it be widened? → A: Yes — the
+- Q: The reviews tooltip felt too small on viewing - should it be widened? → A: Yes - the
   tooltip's width now matches the reviews tile's own rendered width exactly, rather than
   shrinking to fit its narrowest listed name.
 
@@ -59,11 +59,11 @@ viewer dialog for the memlog and make the PRD jump to that requirement code."
 
 A user viewing a PRD whose folder contains one or more `review-*.md` files hovers the
 "reviews" tile and sees a tooltip listing each review by a friendly, readable name, sorted
-alphabetically. Selecting one opens that review's full content in a file-viewer dialog —
+alphabetically. Selecting one opens that review's full content in a file-viewer dialog -
 without leaving the PRD view or hunting for the file in the Output tab.
 
 **Why this priority**: This is the first of the three placeholder tiles (feature 012) to
-gain real behavior, and the most representative of the pattern the other two tiles reuse —
+gain real behavior, and the most representative of the pattern the other two tiles reuse -
 delivering it first de-risks the rest of the feature.
 
 **Independent Test**: Open a PRD folder containing at least two `review-*.md` files (e.g.
@@ -75,8 +75,8 @@ content in a file-viewer dialog.
 
 1. **Given** a PRD folder containing one or more `review-*.md` files, **When** the user
    hovers (or activates) the reviews tile, **Then** a tooltip lists each file's friendly
-   name — the `review-` prefix removed, every dash replaced with a space, and the result
-   capitalized — sorted alphabetically.
+   name - the `review-` prefix removed, every dash replaced with a space, and the result
+   capitalized - sorted alphabetically.
 2. **Given** that tooltip, **When** the user selects one of the listed reviews, **Then** a
    file-viewer dialog opens showing that file's full content, exactly as already
    established for any other Markdown file opened elsewhere in this tool.
@@ -92,7 +92,7 @@ A user viewing a PRD whose folder contains an `addendum.md` file clicks the "add
 tile and sees that file's full content in a file-viewer dialog.
 
 **Why this priority**: The simplest of the three tiles to wire up, and independently
-valuable on its own — a quick, low-risk win alongside User Story 1.
+valuable on its own - a quick, low-risk win alongside User Story 1.
 
 **Independent Test**: Open a PRD folder containing `addendum.md`; confirm clicking the
 addendum tile opens its content in a file-viewer dialog. Open a different PRD folder with
@@ -111,14 +111,14 @@ clicked.
 ### User Story 3 - Review the memory log with jump-enabled requirement codes (Priority: P2)
 
 A user viewing a PRD whose folder contains a `.memlog.md` file clicks the "memory log"
-tile and sees its content rendered in a bespoke, readable format — each entry shown as a
+tile and sees its content rendered in a bespoke, readable format - each entry shown as a
 candy-striped row with its category (decision/change/assumption/etc.) broken out into a
 distinctly colored header. Where an entry mentions a requirement code that also appears in
 the PRD currently open, that code is a clickable link; selecting it closes the memory log
 dialog and jumps the PRD straight to that code's location.
 
-**Why this priority**: The most novel and complex of the three tiles — a genuinely bespoke
-rendering format, not a reuse of the standard Markdown viewer — so it can reasonably ship
+**Why this priority**: The most novel and complex of the three tiles - a genuinely bespoke
+rendering format, not a reuse of the standard Markdown viewer - so it can reasonably ship
 after the simpler, more standard Reviews and Addendum tiles.
 
 **Independent Test**: Open a PRD folder containing a `.memlog.md` file with at least one
@@ -155,12 +155,12 @@ and jumps the PRD to that code's location.
 ### Edge Cases
 
 - What happens when a filename doesn't match the exact, case-sensitive `review-` prefix
-  (e.g. `Review-Something.md` or `REVIEW-x.md`)? It is not treated as a review file —
+  (e.g. `Review-Something.md` or `REVIEW-x.md`)? It is not treated as a review file -
   matching is case-sensitive, consistent with this tool's other exact filename-pattern
   conventions (e.g. `prd.md`, `.memlog.md`).
 - What happens when a memory log bullet's leading text doesn't match the single
   parenthetical-word shape (e.g. no parentheses at all, or multiple words inside them)? It
-  renders as a plain candy-striped row with no separated header — the same
+  renders as a plain candy-striped row with no separated header - the same
   tolerate-and-degrade-gracefully approach this tool already applies to unexpected content
   shapes elsewhere.
 - What happens when `addendum.md` or `.memlog.md` exists but is empty or fails to parse as
@@ -170,14 +170,14 @@ and jumps the PRD to that code's location.
 - What happens when a requirement code mentioned in the memory log matches more than one
   location in the currently-open PRD (e.g. a duplicated code, or a code that appears in
   both the bullet and header styles there)? The link jumps to that code's first occurrence
-  in the PRD's own document order — the same "first appearance" convention this tool
+  in the PRD's own document order - the same "first appearance" convention this tool
   already applies to ordering the requirement-code index's own prefix tiles (feature 012).
 - What happens when a single memory log bullet mentions more than one requirement code
   (e.g. both `FR-76` and `FR-56` in the same entry, as in the feature description's own
-  example)? Every matching code becomes its own independent clickable link — not only the
+  example)? Every matching code becomes its own independent clickable link - not only the
   first one found in that bullet (Clarifications).
 - What happens if a review file is removed from disk between when the tooltip listed it
-  and when the user selects it? Out of scope — this tool reads a snapshot at selection
+  and when the user selects it? Out of scope - this tool reads a snapshot at selection
   time and has no live file-watching anywhere else either.
 
 ## Requirements *(mandatory)*
@@ -191,7 +191,7 @@ and jumps the PRD to that code's location.
   matching file. That tooltip's width MUST match the reviews tile's own rendered width
   (Clarifications), rather than shrinking to fit its narrowest listed name.
 - **FR-003**: Each listed file's display name MUST be derived by removing the `review-`
-  prefix, replacing every dash with a space, and rendering the result in Title Case —
+  prefix, replacing every dash with a space, and rendering the result in Title Case -
   every word capitalized (e.g. "review-edge-cases.md" → "Edge Cases") (Clarifications).
 - **FR-004**: The tooltip's list MUST be sorted alphabetically by each file's derived
   display name.
@@ -219,16 +219,16 @@ and jumps the PRD to that code's location.
   "(decision)"), that word MUST be broken out into its own header, shown capitalized and
   in a color visually distinct from the row's body text.
 - **FR-014**: Bullet body text MUST render as plain text, with only the
-  requirement-code-to-link substitution (FR-015) applied — no other Markdown formatting
+  requirement-code-to-link substitution (FR-015) applied - no other Markdown formatting
   (bold, italic, code spans, etc.) is parsed; any such literal syntax in the source text
   renders unparsed, as-is (Clarifications).
 - **FR-015**: Within a bullet's body text, every substring matching a requirement code
   that is also present in the currently-open PRD's own detected requirement-code index
-  MUST be rendered as a clickable link — independently, when a single bullet mentions more
+  MUST be rendered as a clickable link - independently, when a single bullet mentions more
   than one such code, not just the first one found in it (Clarifications).
 - **FR-016**: Selecting that link MUST close the memory log dialog and move the PRD view
-  to that code's location — its first occurrence in document order when the code matches
-  more than one location there — using the same jump behavior already established for the
+  to that code's location - its first occurrence in document order when the code matches
+  more than one location there - using the same jump behavior already established for the
   requirement-code index column (feature 012).
 - **FR-017**: A requirement-code-shaped substring in the memory log that does not match
   any code detected in the currently-open PRD MUST render as plain text, not a link.
@@ -238,9 +238,9 @@ and jumps the PRD to that code's location.
 ### Key Entities
 
 - **Review File Reference**: One detected `review-*.md` file within the currently-viewed
-  PRD folder — its raw filename and its derived friendly display name. Not persisted;
+  PRD folder - its raw filename and its derived friendly display name. Not persisted;
   derived fresh each time the PRD is viewed.
-- **Memory Log Entry**: One top-level bullet point from `.memlog.md` — its category label
+- **Memory Log Entry**: One top-level bullet point from `.memlog.md` - its category label
   (if its leading text matched the single-parenthetical-word shape), its body text, and
   any requirement-code links detected within that body text. Not persisted; derived fresh
   each time the memory log dialog is opened.
@@ -263,21 +263,21 @@ and jumps the PRD to that code's location.
 ## Assumptions
 
 - "Within the context of the PRD sub-folder being viewed" scopes every file lookup in this
-  feature (`review-*.md`, `addendum.md`, `.memlog.md`) to that one folder only — no
+  feature (`review-*.md`, `addendum.md`, `.memlog.md`) to that one folder only - no
   parent or sibling folder is ever searched, and only files directly inside it are
   considered (not nested subfolders).
 - Filename matching (the `review-` prefix, `addendum.md`, `.memlog.md`) is case-sensitive,
   consistent with this tool's other exact filename-pattern conventions.
 - Opening a review or the addendum reuses this tool's existing file-viewer dialog exactly
   as already used elsewhere in this app (Output/Infra tabs and every other "open this
-  file" affordance) — no new viewer component is introduced for these two tiles.
+  file" affordance) - no new viewer component is introduced for these two tiles.
 - The memory log's bespoke renderer applies only to `.memlog.md`; it does not change how
   any other Markdown file (including reviews and the addendum) is rendered.
 - The memory log dialog is a normal, closeable dialog like any other file-viewer dialog in
-  this tool (unlike the main non-modal PRD pane) — selecting a requirement-code link is
+  this tool (unlike the main non-modal PRD pane) - selecting a requirement-code link is
   simply one additional way to close it, alongside its regular close control.
 - Requirement-code detection within the memory log's body text reuses the exact same
   code-shape pattern already established for the PRD's own requirement-code index
-  (feature 012) — no new code format is introduced.
+  (feature 012) - no new code format is introduced.
 - A file's mere existence (not whether its content is well-formed) is what determines
   whether its tile is enabled.

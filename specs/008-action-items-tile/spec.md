@@ -13,7 +13,7 @@ repeating item sitting within a scrolling container. Each item will consist of a
 with: an owner-type icon (human outline unless owner is 'dev loop', in which case a
 computer-like icon; tooltip is the raw owner text), a read-only tick-box icon (filled when
 status is 'done'), a bending-arrow 'jump icon' (tooltip is the raw ref text), the epic in
-small text — to the right of the jump icon — and the action text. If any bound property
+small text - to the right of the jump icon - and the action text. If any bound property
 is missing, hide that element. If the jump icon is clicked and the referenced file exists,
 a file view dialog is invoked, with the same close/back behaviour as the Infra/Output
 tabs' file view dialog."
@@ -23,7 +23,7 @@ tabs' file view dialog."
 ### Session 2026-09-08
 
 - Q: The source description's sentence describing the epic label's position was cut off
-  ("The epic in small text to the right of the ...") — what does it sit to the right of?
+  ("The epic in small text to the right of the ...") - what does it sit to the right of?
   → A: The jump icon.
 
 ### Session 2026-09-08 (post-implementation feedback)
@@ -32,31 +32,31 @@ tabs' file view dialog."
   fit), or the reverse? → A: ~~The Action Items tile establishes the shared row height; the
   Summary tile stretches to match it.~~ **Superseded** (Session 2026-09-08, round 3 below):
   attempting to let Action Items dictate the height led first to Action Items being visibly
-  *shorter* than Summary whenever Summary's real content was long, then — once that was
-  fixed — to Summary being forced to scroll, and finally to Action Items' own unbounded
+  *shorter* than Summary whenever Summary's real content was long, then - once that was
+  fixed - to Summary being forced to scroll, and finally to Action Items' own unbounded
   item count inflating the row instead of scrolling. The Summary tile's natural height
   governs the row after all, exactly as it did before this feature; Action Items matches it
   and scrolls internally, no matter how many items it holds.
 - Q: Should an item's action text sit inline with its header icons, or on its own line? →
-  A: On its own line, directly below the header row — the original description's separation
+  A: On its own line, directly below the header row - the original description's separation
   of "a header with [icons]" from "the text within the action" was correct; rendering it
   inline was a mistake to correct now.
 - Q: In what order should items with different statuses render? → A: All non-`"done"`
   items first, then all `"done"` items; within each of those two groups, the file's
   declared order is preserved (a stable partition, not a full re-sort).
 - Q: What glyph should the jump icon use? → A: A magnifying glass (search icon), not a
-  bending arrow — the bending-arrow glyph from the original description is superseded.
-- Q: Should adjacent item rows look visually distinct from one another? → A: Yes —
+  bending arrow - the bending-arrow glyph from the original description is superseded.
+- Q: Should adjacent item rows look visually distinct from one another? → A: Yes -
   alternating ("candy stripe") row backgrounds.
 
-### Session 2026-09-08 (round 3 — height mechanism correction)
+### Session 2026-09-08 (round 3 - height mechanism correction)
 
 - Q: Given the Action-Items-dictates-height approach (round 2 above) proved unworkable in
   practice, what's the final, load-bearing rule? → A: The Summary tile always renders at
   its own natural height and never scrolls internally, exactly as before this feature
   existed. The Action Items tile matches that height exactly (not merely "close to it" or
   "at least that tall") and scrolls its own items internally, regardless of how many there
-  are — a large action-items list must never make the Action Items tile (or the row, or the
+  are - a large action-items list must never make the Action Items tile (or the row, or the
   Summary tile) grow past the Summary tile's natural height.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -64,11 +64,11 @@ tabs' file view dialog."
 ### User Story 1 - See action items alongside the sprint summary (Priority: P1)
 
 A user viewing the Sprint Status view sees a new tile, next to the Summary tile, listing
-every action item from the sprint-status file — each showing at a glance who (or what)
-owns it, whether it's done, which epic it belongs to, and what it says — without leaving
+every action item from the sprint-status file - each showing at a glance who (or what)
+owns it, whether it's done, which epic it belongs to, and what it says - without leaving
 the view, even when there are more items than fit on screen at once.
 
-**Why this priority**: This is the entire feature — everything else (the jump-to-file
+**Why this priority**: This is the entire feature - everything else (the jump-to-file
 behavior) is a refinement of an item that's already visible and readable on its own.
 
 **Independent Test**: Open a Sprint Status view for a file with several action items
@@ -90,7 +90,7 @@ overflow it.
    tick-box icon appears filled; **given** any other status, **then** it appears unfilled.
 4. **Given** an action item missing one of `owner`, `status`, `ref`, `epic`, or `action`,
    **When** it renders, **Then** only the element bound to that missing property is
-   absent — every other element still renders normally.
+   absent - every other element still renders normally.
 5. **Given** more action items than fit within the tile's height, **When** the user
    scrolls within the tile, **Then** the rest of the items come into view without the
    tile itself, the Summary tile, or the page growing.
@@ -107,7 +107,7 @@ in the same full-screen file viewer already used elsewhere in this tool, closabl
 same three ways (its "X", Escape, or the browser's Back).
 
 **Why this priority**: A valuable shortcut, but every action item is already fully
-readable without it (User Story 1) — this only adds a way to go see the source document.
+readable without it (User Story 1) - this only adds a way to go see the source document.
 
 **Independent Test**: Click the jump icon on an action item whose `ref` points to a real,
 readable file; confirm the same file viewer dialog used by the Infra/Output tabs opens
@@ -135,10 +135,10 @@ identically to how they already do there.
   The tile still appears, showing an empty-state message (FR-012).
 - What happens when an action item is missing every one of its displayable properties
   (`owner`, `status`, `ref`, `epic`, `action`)? Every element is hidden per FR-008, leaving
-  an effectively empty row for that item — an accepted, if unusual, consequence of hiding
+  an effectively empty row for that item - an accepted, if unusual, consequence of hiding
   per-property rather than skipping the whole item.
 - What happens when the jump icon's referenced file can't be read? The file viewer dialog
-  still opens, showing an error message (FR-011) — the same behavior the dialog already
+  still opens, showing an error message (FR-011) - the same behavior the dialog already
   has for any other unreadable file.
 
 ## Requirements *(mandatory)*
@@ -150,10 +150,10 @@ identically to how they already do there.
 - **FR-002**: The Summary tile MUST render at its own natural height and MUST NOT scroll
   internally under any circumstance. The Action Items tile MUST match the Summary tile's
   height exactly and MUST fill the remaining horizontal space in the row, regardless of how
-  many action items it holds (round 3 Clarifications — this supersedes the round 2 "Action
+  many action items it holds (round 3 Clarifications - this supersedes the round 2 "Action
   Items dictates the height" rule, which proved unworkable).
 - **FR-003**: When there are more action items than fit within the tile's height, the
-  tile's own contents MUST scroll internally — the tile itself MUST NOT grow taller.
+  tile's own contents MUST scroll internally - the tile itself MUST NOT grow taller.
 - **FR-004**: Each action item MUST render as a two-line block: a header line containing,
   in order, an owner-type icon, a read-only tick-box icon, a jump icon, and the item's epic
   in small text immediately to the right of the jump icon; followed by a second line
@@ -165,7 +165,7 @@ identically to how they already do there.
   exactly, and unfilled for any other status value.
 - **FR-007**: The jump icon's tooltip/accessible text MUST be the item's raw `ref` value.
 - **FR-008**: When an action item is missing its `owner`, `status`, `ref`, `epic`, or
-  `action` property, the element bound to that specific property MUST be hidden — every
+  `action` property, the element bound to that specific property MUST be hidden - every
   other element of that same item MUST still render normally.
 - **FR-009**: Action items MUST render with every non-`"done"` item before every `"done"`
   item; within each of those two groups, the sprint-status file's declared order MUST be
@@ -175,12 +175,12 @@ identically to how they already do there.
   behavior (its "X" icon, Escape, and browser Back all close it and keep browser history
   consistent).
 - **FR-011**: If the referenced file can't be read, the dialog MUST show an error message
-  in place of file contents rather than a broken or blank view — the same behavior the
+  in place of file contents rather than a broken or blank view - the same behavior the
   dialog already has for any other unreadable file.
 - **FR-012**: When the Sprint Status view has no action items at all, the Action Items
   tile MUST still appear, showing an empty-state message rather than an error or blank
   space.
-- **FR-013**: No element of an action item is interactive except the jump icon — the
+- **FR-013**: No element of an action item is interactive except the jump icon - the
   tick-box, owner icon, epic text, and action text are read-only display only, consistent
   with the project's read-only principle.
 - **FR-014**: Adjacent action item rows MUST alternate background shading ("candy stripe")
@@ -210,7 +210,7 @@ identically to how they already do there.
   feature's established behavior) rather than being pre-checked and silently suppressed.
 - `ref` is a path relative to the project's root folder (matching the sample data's own
   `_bmad-output/...` shape), resolved via the same file-serving path the Output tab
-  already uses — action items only ever come from a file already located under
+  already uses - action items only ever come from a file already located under
   `_bmad-output`.
 - The epic number is displayed as `epic-<N>` (e.g. "epic-1"), matching the epic-key
   convention already used elsewhere in the Sprint Status view, rather than the bare
@@ -219,7 +219,7 @@ identically to how they already do there.
   to implementation, consistent with prior features' precedent. The jump icon's glyph is a
   magnifying glass (search icon), per the post-implementation Clarifications above.
 - The Action Items tile always renders whenever the Sprint Status view itself renders,
-  with an empty-state message when there are no items — consistent with how the epic-tile
+  with an empty-state message when there are no items - consistent with how the epic-tile
   area already behaves when there are no epics.
 - This feature only adds a new read path for `action_items` data already present in the
   sprint-status file; no editing, checking off, or reordering of any kind.

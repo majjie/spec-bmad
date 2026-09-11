@@ -32,6 +32,6 @@
 ## Notes
 
 - Items marked incomplete require spec updates before `/speckit-clarify` or `/speckit-plan`
-- All items passed on first validation pass; no [NEEDS CLARIFICATION] markers were needed —
+- All items passed on first validation pass; no [NEEDS CLARIFICATION] markers were needed -
   reasonable defaults for cache-invalidation triggers, crawl semantics, and error handling
   were documented in the spec's Assumptions and Edge Cases sections instead.

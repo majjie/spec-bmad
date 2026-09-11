@@ -10,7 +10,7 @@ description: "Task list template for feature implementation"
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: Included for the one piece of pure, DOM-independent logic this feature adds
-(`navigationHistory.ts`) — constitution Principle V's main clause. Everything else (History
+(`navigationHistory.ts`) - constitution Principle V's main clause. Everything else (History
 API wiring, icon rendering, row styling) is UI/rendering, validated manually per Principle
 V's explicit carve-out (see `quickstart.md`), matching how feature 002 handled its own
 React components.
@@ -37,14 +37,14 @@ changes.
 **Purpose**: Add the one new dependency this feature needs
 
 - [X] T001 Add `@mui/icons-material` to root `package.json` devDependencies (build-time
-      only, bundled into `web/dist/` like the rest of MUI — research.md § 5); run
+      only, bundled into `web/dist/` like the rest of MUI - research.md § 5); run
       `npm install`
 
 ---
 
 ## Phase 2: Foundational
 
-No cross-story blocking work is needed for this feature — each of the four user stories
+No cross-story blocking work is needed for this feature - each of the four user stories
 below is independent of the others (they touch overlapping files but not overlapping
 logic), so there is nothing that must land before all of them. Proceed directly to User
 Story 1.
@@ -82,9 +82,9 @@ own Independent Test for this story).
       calls, which it replaces as the single entry point for both. Route `Tabs`' `onChange`
       and `FolderTree`/`ContentsTable`'s selection callbacks through it. When called with
       `fromHistory` false or omitted (a real user click), it also calls `history.pushState`
-      with the new `NavigationState` (FR-001/FR-002) — but first uses T003's `statesEqual`
+      with the new `NavigationState` (FR-001/FR-002) - but first uses T003's `statesEqual`
       to compare against the current state and skips the push if they're equal (a
-      redundant re-click of the already-active tab or already-selected folder — see
+      redundant re-click of the already-active tab or already-selected folder - see
       `data-model.md`'s `statesEqual` row for why this is *not* about expand/collapse,
       which never calls this function at all: `FolderTree.tsx`'s `onExpandedItemsChange`
       stays its own separate, untouched handler, which is what actually satisfies FR-005).
@@ -177,10 +177,10 @@ Scenario 7)
 - [X] T010 [P] Run `npm run typecheck` and resolve any strict-mode type errors introduced
       by the new dependency/code
 - [X] T011 Execute `quickstart.md` Scenarios 1–7 in a real desktop browser and confirm each
-      matches its expected outcome — this feature is entirely browser-interactive (History
+      matches its expected outcome - this feature is entirely browser-interactive (History
       API, click behavior, visual styling), so unlike prior features' automated-test-heavy
       validation, this manual pass is the primary way most of it gets verified at all
-      (partial — no browser is available in this environment; verified instead that the
+      (partial - no browser is available in this environment; verified instead that the
       server starts, the built bundle contains the expected History API / icon / striping
       code, and `/api/tabs` still responds correctly. None of the 7 scenarios' actual
       click/visual/Back-Forward behavior has been human-confirmed in a real browser yet)
@@ -192,14 +192,14 @@ Scenario 7)
 ### Phase Dependencies
 
 - **Setup (Phase 1)**: No dependencies - can start immediately
-- **Foundational (Phase 2)**: Empty for this feature — no cross-story blocking work exists
+- **Foundational (Phase 2)**: Empty for this feature - no cross-story blocking work exists
 - **User Story 1 (Phase 3)**: No dependency on Setup or any other story
-- **User Story 2 (Phase 4)**: Depends on User Story 1 — both modify `web/src/App.tsx`, so
+- **User Story 2 (Phase 4)**: Depends on User Story 1 - both modify `web/src/App.tsx`, so
   sequence after US1 to avoid file conflicts, even though the two behaviors are logically
   independent
 - **User Story 3 (Phase 5)**: Depends on Setup (T001, the icon dependency); independent of
   US1/US2
-- **User Story 4 (Phase 6)**: Depends on User Story 3 — both modify
+- **User Story 4 (Phase 6)**: Depends on User Story 3 - both modify
   `web/src/components/ContentsTable.tsx`, so sequence after US3
 - **Polish (Phase 7)**: Depends on all four user stories being complete
 
@@ -207,16 +207,16 @@ Scenario 7)
 
 - **User Story 1 (P1)**: Independently testable; no dependency on the other three
 - **User Story 2 (P2)**: Independently testable on its own once implemented, but its one
-  task lands in `web/src/App.tsx`, the same file User Story 1 modifies — sequence after
+  task lands in `web/src/App.tsx`, the same file User Story 1 modifies - sequence after
   US1 to avoid file conflicts
 - **User Story 3 (P3)**: Independently testable; only depends on Setup, not on US1/US2
 - **User Story 4 (P4)**: Independently testable on its own once implemented, but its one
-  task lands in `ContentsTable.tsx`, the same file User Story 3 modifies — sequence after
+  task lands in `ContentsTable.tsx`, the same file User Story 3 modifies - sequence after
   US3
 
 ### Parallel Opportunities
 
-- T007 and T008 (User Story 3) can run in parallel — different files, no dependency
+- T007 and T008 (User Story 3) can run in parallel - different files, no dependency
   between them
 - T010 (typecheck) can run in parallel with T011 (manual quickstart run) in Polish
 - User Story 3 (T007/T008) has no dependency on User Story 1 or 2, so a second contributor
@@ -246,7 +246,7 @@ Task: "Add folder icon in web/src/components/ContentsTable.tsx"
 ### Incremental Delivery
 
 1. Complete Setup → nothing to validate yet (just a dependency install)
-2. Add User Story 1 → validate independently (MVP — fixes the "leaves the page" bug)
+2. Add User Story 1 → validate independently (MVP - fixes the "leaves the page" bug)
 3. Add User Story 2 → validate independently (root expanded by default)
 4. Add User Story 3 → validate independently (folder icons)
 5. Add User Story 4 → validate independently (row striping)
@@ -258,7 +258,7 @@ Task: "Add folder icon in web/src/components/ContentsTable.tsx"
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
-- Unlike features 001/002, this feature's Foundational phase is genuinely empty — the four
+- Unlike features 001/002, this feature's Foundational phase is genuinely empty - the four
   stories are independent enough that none of them block the others; the file-level
   sequencing noted above (US2 after US1, US4 after US3) is about avoiding edit conflicts
   in the same file, not a behavioral dependency

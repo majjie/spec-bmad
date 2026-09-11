@@ -26,7 +26,7 @@ const COLUMNS: { id: SortColumn; label: string }[] = [
 
 function formatSize(size: number | null): string {
   if (size === null) {
-    return "—";
+    return "-";
   }
   if (size < 1024) {
     return `${size} B`;

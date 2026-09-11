@@ -17,4 +17,4 @@ Orchestrates analysis, planning, and implementation workflows for the Harbor des
 
 ## Notes
 
-This is sample seed data for BMAD Browser demos — not a live agent definition.
+This is sample seed data for BMAD Browser demos - not a live agent definition.

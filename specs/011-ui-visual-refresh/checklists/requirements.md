@@ -31,14 +31,14 @@
 
 ## Notes
 
-- All 16 items pass. No [NEEDS CLARIFICATION] markers were needed — the two literal asks
+- All 16 items pass. No [NEEDS CLARIFICATION] markers were needed - the two literal asks
   (icon spacing, Summary tile colors) are concrete and unambiguous, and the broader visual
   refresh (User Story 3) commits to a testable *direction* per FR-004–FR-006 without
   pinning down exact color/size values, which are left to planning per the Assumptions
   section.
 - One judgment call worth noting: User Story 1 was scoped to also cover the Epic Step
   Detail tile's rows, not just Action Items, since they share the exact same header shape
-  — see Assumptions. User Story 3's three specific enhancements (larger base text,
+  - see Assumptions. User Story 3's three specific enhancements (larger base text,
   accent-colored tile headings, semantic status-icon colors) were this session's own
-  proposals made in response to the open invitation for further ideas — confirmed via
+  proposals made in response to the open invitation for further ideas - confirmed via
   `/speckit-clarify` (Session 2026-09-08) rather than left as an unconfirmed Assumption.

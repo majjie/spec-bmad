@@ -1,4 +1,4 @@
-# Harbor — sample BMAD project
+# Harbor - sample BMAD project
 
 Fictional design-system ops console used as **seed data** for BMAD Browser. It is not
 product code; the CLI treats this folder as a target project because it contains `_bmad`

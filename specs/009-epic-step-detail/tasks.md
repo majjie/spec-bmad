@@ -10,7 +10,7 @@ description: "Task list template for feature implementation"
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: Included for the new derivation functions (`deriveStepDisplay`/`matchSpecFileName`)
-— genuine parsing/derivation logic under constitution Principle V's main clause (like
+- genuine parsing/derivation logic under constitution Principle V's main clause (like
 feature 006/007/008's `groupPrdFolders`/`parseSprintStatus`/`calculateActiveEpic`/
 `parseActionItems`), not just UI-adjacent pure logic. The existing `parseSprintStatus`
 tests are updated for its new signature and the `stories`→`steps` rename, not dropped.
@@ -31,7 +31,7 @@ testing of each story.
 Per `plan.md` § Project Structure: one new backend module
 (`src/navigator/step-detail.ts`), targeted edits to feature 006/007/008's existing
 sprint-status/Navigator/SprintStatusView plumbing, and a rename of `stories`/`StoryStatus`
-to `steps`/`StepDetail` across the server/client type-duplication boundary — no new routes.
+to `steps`/`StepDetail` across the server/client type-duplication boundary - no new routes.
 
 ---
 
@@ -49,7 +49,7 @@ Foundational.
 **Purpose**: The `stories`→`steps` rename and the new index/title/spec-matching
 derivation are used by all three user stories below (US1 needs the renamed field just to
 keep the view compiling; US2 needs the derived index/title; US3 needs the derived
-`specPath`) — none of them is a single story's exclusive concern, so this work is a
+`specPath`) - none of them is a single story's exclusive concern, so this work is a
 blocking prerequisite, not folded into any one story's phase.
 
 ### Tests for Foundational ⚠️
@@ -74,11 +74,11 @@ blocking prerequisite, not folded into any one story's phase.
       research.md §§ 1, 3, 6; must make T001 pass
 - [X] T003 Update the existing `parseSprintStatus()` calls and assertions in
       `tests/unit/navigator/sprint-status.test.ts` for its new third parameter
-      (`specFileNames: string[]`) and the `stories`→`steps` rename — assert the full
+      (`specFileNames: string[]`) and the `stories`→`steps` rename - assert the full
       `StepDetail` shape (`index`/`title`/`specPath`) for at least one well-formed key, one
       malformed key, and one key whose index has a matching filename in the fixture's
       `specFileNames`, asserting a correctly-built `specPath`; no dependency on T002 (a
-      separate module with its own tests) — must land before T004 (see Dependencies)
+      separate module with its own tests) - must land before T004 (see Dependencies)
 - [X] T004 Rename `EpicStatusGroup.stories` to `.steps` (`StepDetail[]`) in
       `src/navigator/sprint-status.ts`; extend `parseSprintStatus()`'s signature with the
       new `specFileNames: string[]` parameter, calling `buildStepDetails()` for each epic's
@@ -97,7 +97,7 @@ blocking prerequisite, not folded into any one story's phase.
       depends on T005
 
 **Checkpoint**: Backend derivation is complete and independently tested; the frontend type
-mirror is in place. No user-visible change yet — proceed to User Story 1.
+mirror is in place. No user-visible change yet - proceed to User Story 1.
 
 ---
 
@@ -109,18 +109,18 @@ independently of every other tile's own collapsed/expanded state.
 
 **Independent Test**: Open a Sprint Status view for a file with multiple epics, each with
 several steps; confirm every tile starts collapsed, expand one, confirm its steps and
-retrospective status appear, collapse it again, confirm they disappear — all without
+retrospective status appear, collapse it again, confirm they disappear - all without
 affecting any other tile's state.
 
 ### Implementation for User Story 1
 
 - [X] T008 [US1] In `web/src/components/SprintStatusView.tsx`: add a `useState<Set<string>>`
-      of expanded epic keys (default empty — every tile collapsed, research.md § 5); add a
+      of expanded epic keys (default empty - every tile collapsed, research.md § 5); add a
       top-right toggle control (`ExpandMore`/`ExpandLess` from `@mui/icons-material`) to
       each epic tile's header that adds/removes its own `epicKey` from that set; a
       collapsed tile (its key not in the set) renders only its key and overall status; an
       expanded tile renders its existing step list and retrospective status line exactly as
-      today, with `epic.stories` reference updated to `epic.steps` (T004's rename) — no
+      today, with `epic.stories` reference updated to `epic.steps` (T004's rename) - no
       change yet to how each step itself is displayed (that's User Story 2); depends on T006
 
 **Checkpoint**: User Story 1 should be fully functional and testable independently
@@ -130,8 +130,8 @@ affecting any other tile's state.
 
 ## Phase 4: User Story 2 - Readable step rows (Priority: P1)
 
-**Goal**: Once an epic tile is expanded, each step renders as a header/body row — its
-index and status on one line, a human-readable title below it — instead of its raw,
+**Goal**: Once an epic tile is expanded, each step renders as a header/body row - its
+index and status on one line, a human-readable title below it - instead of its raw,
 dash-separated key, with adjacent rows visually alternating.
 
 **Independent Test**: Expand an epic tile whose steps include at least one two-segment
@@ -143,7 +143,7 @@ status, and title render correctly and match the expected transformation of its 
 - [X] T009 [US2] Restructure the step-rendering branch inside
       `web/src/components/SprintStatusView.tsx`'s expanded-epic content (from T008): each `step` in `epic.steps` renders as a header
       line (`step.index`, then `step.status` via the existing `StatusText` component) with
-      a body line below it (`step.title`) — no magnifying-glass control yet (User Story 3);
+      a body line below it (`step.title`) - no magnifying-glass control yet (User Story 3);
       alternate each row's background shading ("candy stripe"), matching
       `ActionItemsTile.tsx`'s established per-row pattern (FR-004/FR-006/FR-011); depends
       on T008
@@ -189,7 +189,7 @@ quickstart.md's scenarios)
       by the change (including every remaining `stories`/`StoryStatus` reference this
       rename must have touched)
 - [X] T013 Execute `quickstart.md` Scenarios 1–5 in a real desktop browser and confirm
-      each matches its expected outcome — a headless Chromium is available via Playwright
+      each matches its expected outcome - a headless Chromium is available via Playwright
       in this environment (used for features 006/007/008's own quickstart verification);
       prefer actually driving the app with it over only disclosing that manual
       verification wasn't performed
@@ -199,13 +199,13 @@ quickstart.md's scenarios)
 ## Phase 7: Post-Implementation Design Feedback (2026-09-08)
 
 **Context**: User feedback after T001–T013 landed, corrected in the same session per
-feature 007/008's precedent — fix now, spec updated to match (spec.md's new
+feature 007/008's precedent - fix now, spec updated to match (spec.md's new
 Clarifications session, FR-002).
 
 - [X] T014 [US1] In `web/src/components/SprintStatusView.tsx`: make the entire epic-tile
       header clickable to toggle expand/collapse, not only the chevron icon (FR-002); the
-      chevron becomes a plain (non-button) icon so a click anywhere in the header — chevron
-      included — fires exactly one toggle, never two from event bubbling through a nested
+      chevron becomes a plain (non-button) icon so a click anywhere in the header - chevron
+      included - fires exactly one toggle, never two from event bubbling through a nested
       interactive element
 - [X] T015 Re-run `npm test`/`npm run typecheck` and manually verify in a real browser: a
       click anywhere on the header toggles the tile (not just the chevron), and clicking a
@@ -217,13 +217,13 @@ Clarifications session, FR-002).
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: Empty for this feature — no dependencies, no work
+- **Setup (Phase 1)**: Empty for this feature - no dependencies, no work
 - **Foundational (Phase 2)**: No dependency on Setup; MUST complete before any user story
   (all three depend on the renamed `steps` field, and US2/US3 depend on its derived fields)
 - **User Story 1 (Phase 3)**: Depends on Foundational; no dependency on User Story 2 or 3
-- **User Story 2 (Phase 4)**: Depends on User Story 1 — it restructures the step-rendering
+- **User Story 2 (Phase 4)**: Depends on User Story 1 - it restructures the step-rendering
   branch User Story 1's collapse/expand mechanism reveals
-- **User Story 3 (Phase 5)**: Depends on User Story 2 — its magnifying-glass control
+- **User Story 3 (Phase 5)**: Depends on User Story 2 - its magnifying-glass control
   extends the header line User Story 2 renders
 - **Polish (Phase 6)**: Depends on all three user stories being complete
 
@@ -249,7 +249,7 @@ Clarifications session, FR-002).
 ### Parallel Opportunities
 
 - T001 (derivation tests) and T006 (the frontend type mirror in `web/src/api.ts`) can run
-  in parallel — different files, no dependency between them
+  in parallel - different files, no dependency between them
 - T012 (typecheck) can run in parallel with T011 (test suite) and T013 (manual quickstart)
   in Polish
 
@@ -290,7 +290,7 @@ Task: "Rename StoryStatus to StepDetail in web/src/api.ts"
 - [Story] label maps task to specific user story for traceability
 - `deriveStepDisplay()`/`matchSpecFileName()`'s correctness (T001/T002), including the
   deterministic tie-break and the index-prefix-collision guard, matters as much as any
-  other backend test task in earlier features — it's genuine derivation logic, not
+  other backend test task in earlier features - it's genuine derivation logic, not
   UI-adjacent pure logic
 - Verify tests fail before implementing
 - Commit after each task or logical group

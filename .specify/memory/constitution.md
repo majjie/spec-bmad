@@ -34,7 +34,7 @@ development doesn't follow that process, it has no credibility as a viewer for i
 BMAD Browser observes and renders SDD artifacts (specs, plans, tasks, checklists,
 constitutions, etc.) found in the target project directory. It MUST NOT write, mutate, or
 delete any file in that directory. Any future editing/interactive-authoring capability is a
-distinct, explicitly-scoped feature requiring its own spec and user-facing opt-in — never a
+distinct, explicitly-scoped feature requiring its own spec and user-facing opt-in - never a
 silent default.
 Rationale: a viewer that mutates the very artifacts it inspects erodes trust and risks
 corrupting a user's SDD history; the safe default is strictly observational.

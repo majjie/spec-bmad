@@ -8,9 +8,9 @@ review_loop_iteration: 1
 context: []
 ---
 
-<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+<frozen-after-approval reason="human-owned intent - do not modify unless human renegotiates">
 
-# Spec 2-2 — Render sprint status
+# Spec 2-2 - Render sprint status
 
 ## Intent
 

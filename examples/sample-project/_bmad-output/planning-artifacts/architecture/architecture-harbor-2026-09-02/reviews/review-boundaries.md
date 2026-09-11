@@ -5,7 +5,7 @@ created: "2026-09-02"
 status: "complete"
 ---
 
-# Review — Boundaries
+# Review - Boundaries
 
 ## Confirmed
 

@@ -8,9 +8,9 @@ review_loop_iteration: 0
 context: []
 ---
 
-<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+<frozen-after-approval reason="human-owned intent - do not modify unless human renegotiates">
 
-# Spec 1-1 — Scaffold the workspace
+# Spec 1-1 - Scaffold the workspace
 
 ## Intent
 

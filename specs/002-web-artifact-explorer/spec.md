@@ -7,7 +7,7 @@
 **Status**: Draft
 
 **Input**: User description: "Desktop-only web UI (no mobile view), built on an off-the-shelf
-web framework rather than a bespoke renderer. Root layout is two tabs — '_bmad' aliased as
+web framework rather than a bespoke renderer. Root layout is two tabs - '_bmad' aliased as
 'Infra' and '_bmad-output' aliased as 'Output'. Each tab shows a Windows-Explorer-like
 folder tree on the left, bound to that tab's folder; folders expand/collapse and are
 clickable. The right-hand side shows the selected folder's contents as a table sortable by
@@ -20,7 +20,7 @@ material-like."
 ### Session 2026-09-07
 
 - Q: Should folders always be listed before files in the contents table regardless of which column is sorted, or should sorting mix files and folders together purely by the sorted value? → A: Folders always listed before files, sorted among themselves by the active column; files follow, sorted the same way.
-- Q: Does the folder contents table need to comfortably handle folders with hundreds or thousands of entries (requiring a virtualized/paginated list), or is a plain render-everything table acceptable? → A: Plain render is fine — no virtualization/pagination required, consistent with feature 001's expected project scale (tens to low thousands of entries).
+- Q: Does the folder contents table need to comfortably handle folders with hundreds or thousands of entries (requiring a virtualized/paginated list), or is a plain render-everything table acceptable? → A: Plain render is fine - no virtualization/pagination required, consistent with feature 001's expected project scale (tens to low thousands of entries).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -28,7 +28,7 @@ material-like."
 
 A user opens BMAD Browser in a desktop browser and lands on the "Infra" tab, which shows
 the project's `_bmad` folder as an expandable/collapsible tree on the left. Clicking a
-folder in the tree selects it and shows its direct contents — files and subfolders — as a
+folder in the tree selects it and shows its direct contents - files and subfolders - as a
 table on the right.
 
 **Why this priority**: This is the smallest slice that makes the web UI useful at all:
@@ -89,7 +89,7 @@ Created, Updated, or Size) to sort the visible entries by that column, and click
 to reverse the sort direction.
 
 **Why this priority**: Sorting adds real value once there's something to browse (US1/US2),
-but a small/unsorted list is still usable without it — this is a refinement, not a
+but a small/unsorted list is still usable without it - this is a refinement, not a
 blocker for the tool being useful.
 
 **Independent Test**: Open a folder with several mixed files and subfolders; click each
@@ -125,7 +125,7 @@ click the same header again and confirm the order reverses.
 - What happens when a selected folder has no children? The right-hand table shows an
   empty-state message rather than an empty or missing table.
 - What happens when the user clicks a file (not a folder) entry in the right-hand table?
-  Nothing is navigated to — files cannot be browsed into, and viewing file contents is out
+  Nothing is navigated to - files cannot be browsed into, and viewing file contents is out
   of scope for this feature (consistent with feature 001 never reading file contents).
 - What happens if the underlying project's artifact hierarchy changes while the UI is
   open? Reflecting live changes is out of scope for this feature; the UI shows whatever
@@ -169,9 +169,9 @@ click the same header again and confirm the order reverses.
 - **FR-015**: The UI MUST use a dark, clean, information-dense visual style, consistent
   across both tabs.
 - **FR-016**: The system MUST NOT provide any way to create, rename, move, or delete files
-  or folders through this UI — it remains strictly read-only, per the project
+  or folders through this UI - it remains strictly read-only, per the project
   constitution.
-- **FR-017**: The system is NOT required to virtualize or paginate the contents table —
+- **FR-017**: The system is NOT required to virtualize or paginate the contents table -
   rendering all of a selected folder's direct children at once is acceptable, consistent
   with feature 001's expected project scale (tens to low thousands of entries).
 
@@ -181,7 +181,7 @@ click the same header again and confirm the order reverses.
   expand/collapse state and currently selected folder, independent of the other tab.
 - **Tree Node**: A visual entry in the left-hand folder tree; represents a folder and
   whether it is currently expanded or collapsed. (Later features will introduce tree nodes
-  that don't correspond to a real filesystem folder — see Assumptions.)
+  that don't correspond to a real filesystem folder - see Assumptions.)
 - **Folder Contents Entry**: A single row in the right-hand table for one direct child of
   the selected folder; carries Name, Created, Updated, Size, and whether it is a file or a
   folder (which determines whether clicking it navigates further, per FR-007/FR-008).
@@ -191,16 +191,16 @@ click the same header again and confirm the order reverses.
 ### Measurable Outcomes
 
 - **SC-001**: A user can go from the Infra tab's root to any nested folder shown in the
-  tree, and see that folder's contents, using only mouse clicks — no typed paths or prior
+  tree, and see that folder's contents, using only mouse clicks - no typed paths or prior
   knowledge of the folder structure required.
 - **SC-002**: Sorting a folder's contents by any of the four columns changes the visible
   row order immediately, without a full page reload.
 - **SC-003**: Switching between the Infra and Output tabs never loses or mixes up either
-  tab's navigation state — each tab's expanded folders and selection are exactly as the
+  tab's navigation state - each tab's expanded folders and selection are exactly as the
   user left them when they return to it.
 - **SC-004**: Every file and folder shown in a tab's tree or table matches what feature
   001's access layer currently has cached for the corresponding `_bmad`/`_bmad-output`
-  folder — nothing is shown that isn't in the cache, and nothing cached is missing from
+  folder - nothing is shown that isn't in the cache, and nothing cached is missing from
   view.
 - **SC-005**: A reviewer can distinguish and read individual tree entries and table rows
   at a glance in the dark theme, even when a folder contains many entries, without needing
@@ -209,23 +209,23 @@ click the same header again and confirm the order reverses.
 ## Assumptions
 
 - This feature renders whatever feature 001's access layer currently has cached; it does
-  not add live-refresh, polling, or file-system-watching behavior — reflecting changes made
+  not add live-refresh, polling, or file-system-watching behavior - reflecting changes made
   on disk while the UI is open is out of scope here (consistent with feature 001 leaving
   "when to refresh" to the layer's consumer).
 - "Created" and "Updated" require filesystem timestamp metadata, and "Size" requires byte
-  size — neither is captured by feature 001's Artifact Node today (which deliberately holds
+  size - neither is captured by feature 001's Artifact Node today (which deliberately holds
   only name/path/type/children). Sourcing this additional metadata (whether by extending
   the access layer or reading it separately when rendering) is a planning-phase decision
   for this feature, not a scope change to feature 001.
 - The tree and table are designed so that a future feature can introduce "virtual" tree
   nodes that don't correspond to a real filesystem folder, without needing to redesign the
-  navigation/selection model — but building any such virtual folder is explicitly out of
+  navigation/selection model - but building any such virtual folder is explicitly out of
   scope for this feature.
 - Rendering is built on an existing, off-the-shelf web UI framework/library rather than a
   bespoke renderer, accepting a larger one-time package size in exchange for not building
   UI primitives (tabs, trees, sortable tables) from scratch. Which specific framework is a
   planning-phase decision, not a specification concern.
-- No search, filter, multi-select, or bulk actions are included — only the tree/table
+- No search, filter, multi-select, or bulk actions are included - only the tree/table
   browsing and column sorting described above.
 - This UI is only reached after feature 001's CLI has already resolved a valid project
   folder; handling an invalid folder is entirely feature 001's responsibility, not this

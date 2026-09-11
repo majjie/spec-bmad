@@ -31,7 +31,7 @@
 
 ## Notes
 
-- No [NEEDS CLARIFICATION] markers were needed — every ambiguity in the source description
+- No [NEEDS CLARIFICATION] markers were needed - every ambiguity in the source description
   (top-level PRD child ordering, the PRD root's own visibility condition, whether to surface
   `action_items`, the tab's own label, non-calendar-validated date matching) had a reasonable,
   low-risk default available, so each was resolved directly and recorded in Assumptions
@@ -41,5 +41,5 @@
 - `/speckit-clarify` pass (2026-09-08): no genuine two-sided ambiguities found needing user
   input. Tightened FR-013's epic/story prefix-matching rule (explicit delimiter-based match,
   so epic `1` can't be confused with `10`/`11`) and added an edge case for a sprint-status
-  file with no epics declared at all — both directly in spec.md, no `## Clarifications`
+  file with no epics declared at all - both directly in spec.md, no `## Clarifications`
   session recorded since neither was a fork with more than one reasonable answer.

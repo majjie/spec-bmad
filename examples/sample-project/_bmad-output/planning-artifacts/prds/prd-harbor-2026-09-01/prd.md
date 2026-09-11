@@ -8,9 +8,9 @@ review_loop_iteration: 2
 context: ["design-system", "ops-console"]
 ---
 
-<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+<frozen-after-approval reason="human-owned intent - do not modify unless human renegotiates">
 
-# Harbor — Product Requirements Document
+# Harbor - Product Requirements Document
 
 Harbor is an internal console for design-system operators: token health, component
 adoption, and release readiness in one place.
@@ -35,12 +35,12 @@ adoption, and release readiness in one place.
 
 ## User journeys
 
-### UJ-1 — Scanning token health
+### UJ-1 - Scanning token health
 
 An operator opens Harbor, selects the active brand, and reviews red/amber token deltas
 before a release freeze.
 
-### UJ-2 — Checking component adoption
+### UJ-2 - Checking component adoption
 
 A lead filters to experimental components, sorts by consumer count, and flags low-adoption
 candidates for deprecation review.
@@ -51,7 +51,7 @@ candidates for deprecation review.
 | --- | --- | --- |
 | Token dashboard | FR-1 | NFR-1 |
 | Adoption filters | FR-2 | UJ-2 |
-| Export checklist | FR-3 | — |
+| Export checklist | FR-3 | - |
 | Read-only guarantee | FR-12 | NFR-2 |
 
 ## Example integration sketch

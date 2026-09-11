@@ -9,7 +9,7 @@
 **Input**: User description: "This step will be navigator tab uplift. The navigator tab
 should be the default selected tab on load. The sprint status epic tiles should have
 relevant icons for step and epic status, covering done/review/backlog/in-progress. The
-epic tiles look messy in their current arrangement — have them the full width of the pane,
+epic tiles look messy in their current arrangement - have them the full width of the pane,
 stacked in order of appearance. Add a new calculated field in the summary, 'Active epic':
 all epics done → 'All complete'; all epics backlog → 'Not started'; otherwise the first
 epic whose status is in-progress; otherwise 'unknown'."
@@ -19,7 +19,7 @@ epic whose status is in-progress; otherwise 'unknown'."
 ### User Story 1 - Land on the Navigator tab (Priority: P1)
 
 A user opens the tool against a project that has a `_bmad-output` folder, and immediately
-sees the Navigator tab's tree and detail pane — not "Infra" — without needing to click
+sees the Navigator tab's tree and detail pane - not "Infra" - without needing to click
 anything first.
 
 **Why this priority**: The Navigator tab is this tool's curated, easier-to-scan entry
@@ -126,7 +126,7 @@ Summary tile's "Active Epic" field shows the expected value in each case.
 - What happens when a status (epic or story) isn't one of the four icon-mapped values?
   Its text label still shows; no icon is shown, and nothing errors (FR-005).
 - What happens when a sprint-status file declares no epics at all? "Active Epic" shows
-  "unknown" — it is not evaluated against the "all done"/"all backlog" rules, both of
+  "unknown" - it is not evaluated against the "all done"/"all backlog" rules, both of
   which would otherwise be vacuously true for an empty list (FR-010).
 - What happens to the Infra or Output tab when *their* backing folder is absent? Same as
   the Navigator tab (FR-002): the tab itself doesn't appear at all, not just its content
@@ -147,7 +147,7 @@ Summary tile's "Active Epic" field shows the expected value in each case.
   "in-progress".
 - **FR-004**: Each story listed within an epic tile MUST show its own status with a
   distinct icon, in addition to its existing text label, when that status is one of the
-  same four values in FR-003 — using the same icon for a given status value that epics
+  same four values in FR-003 - using the same icon for a given status value that epics
   use for that same value.
 - **FR-005**: A status value (epic or story) outside those four MUST still show as text,
   with no icon and no error.
@@ -155,10 +155,10 @@ Summary tile's "Active Epic" field shows the expected value in each case.
   vertically in a single column, instead of the wrapping multi-column arrangement used
   before this feature.
 - **FR-007**: Epic tiles MUST remain in the same order they already appear in (the
-  sprint-status file's own epic-declaration order, per feature 006's FR-013) — this
+  sprint-status file's own epic-declaration order, per feature 006's FR-013) - this
   feature changes only their arrangement, not their order.
 - **FR-008**: The Summary tile MUST keep its existing appearance and MUST remain the
-  first tile shown, above the epic-tile stack — FR-006's full-width rearrangement of the
+  first tile shown, above the epic-tile stack - FR-006's full-width rearrangement of the
   epic tiles MUST NOT otherwise reposition, resize, or restyle it.
 - **FR-009**: The Summary tile MUST include a new "Active Epic" field, calculated as:
   if every epic's status is "done", its value is "All complete"; otherwise if every
@@ -168,7 +168,7 @@ Summary tile's "Active Epic" field shows the expected value in each case.
 - **FR-010**: When a sprint-status file declares no epics at all, "Active Epic" MUST show
   "unknown" rather than being evaluated against FR-009's "all done"/"all backlog" rules.
 - **FR-011**: A tab whose backing folder is absent MUST NOT appear in the tab bar at all
-  (not merely be unselected/inactive) — found necessary during user review while
+  (not merely be unselected/inactive) - found necessary during user review while
   verifying FR-002's fallback: the tab bar was rendering all three tabs unconditionally
   regardless of availability, a latent defect from the tab bar's original implementation
   (feature 002/003) that both this feature's FR-002 and feature 006's FR-002 had already
@@ -189,8 +189,8 @@ Summary tile's "Active Epic" field shows the expected value in each case.
   Navigator tab's content in zero clicks.
 - **SC-002**: A user scanning a Sprint Status view can identify every "in-progress" item
   (epic or story) by icon alone, without reading its text label.
-- **SC-003**: A user can identify what to work on next — or that everything is done, or
-  that nothing has started — by reading a single Summary field, without opening or
+- **SC-003**: A user can identify what to work on next - or that everything is done, or
+  that nothing has started - by reading a single Summary field, without opening or
   reading every epic tile individually.
 - **SC-004**: A user scanning epic tiles never needs to look in more than one column to
   find a specific epic.
@@ -203,15 +203,15 @@ Summary tile's "Active Epic" field shows the expected value in each case.
 - The user's own description said "three types" but then listed four (done, review,
   backlog, in-progress); the explicit list is treated as authoritative, and this feature
   covers all four.
-- Icons apply only to epic and story ("step") statuses, per the user's own scope — a
+- Icons apply only to epic and story ("step") statuses, per the user's own scope - a
   retrospective's status (already shown as text, e.g. "not started") is unchanged by this
   feature.
 - "Active Epic"'s value for the "first in-progress epic" case is that epic's own key
   (e.g. "epic-2"), matching how epic tiles already identify epics elsewhere in this view
-  — not a paraphrase or a friendlier label.
+  - not a paraphrase or a friendlier label.
 - This feature only changes which tab is active and how the Sprint Status view renders;
-  it does not change what data is fetched, when, or from where — every tab's data
+  it does not change what data is fetched, when, or from where - every tab's data
   continues to load the same way it already does on mount.
 - No new interactivity is introduced anywhere (no clickable icons, no way to change a
-  status) — this remains a strictly read-only view, consistent with the project's
+  status) - this remains a strictly read-only view, consistent with the project's
   read-only principle.

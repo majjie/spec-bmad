@@ -17,7 +17,7 @@ too."
 
 - Q: When the refresh control is used, should it refresh the cached folder structure for
   every tab, or only for the tab that's currently active? → A: Every tab at once
-  (Navigator, Infra, and Output) — a single global refresh, not scoped to whichever tab
+  (Navigator, Infra, and Output) - a single global refresh, not scoped to whichever tab
   happens to be active.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -26,7 +26,7 @@ too."
 
 A user looking at the screen sees a refresh control in the top-right corner, sitting on
 the same row as the main Navigator/Infra/Output tabs and sized to match their height, with
-a conventional refresh icon — so it reads as part of that header row rather than an
+a conventional refresh icon - so it reads as part of that header row rather than an
 unrelated, oddly-placed element.
 
 **Why this priority**: This is the concrete placement/appearance the user asked for, and a
@@ -34,7 +34,7 @@ prerequisite for the control being discoverable at all.
 
 **Independent Test**: Load the tool in a browser; confirm a refresh control renders in the
 top-right corner, vertically aligned with the tab row and close to its height, showing a
-recognizable refresh icon — independently checkable by inspection, even before its click
+recognizable refresh icon - independently checkable by inspection, even before its click
 behavior (User Story 2) is wired up.
 
 **Acceptance Scenarios**:
@@ -53,10 +53,10 @@ behavior (User Story 2) is wired up.
 
 A user who knows files have changed on disk since the tool started selects the refresh
 control and sees the currently displayed tree, listing, or derived view update to reflect
-the current on-disk state — without restarting the tool or losing their place if the item
+the current on-disk state - without restarting the tool or losing their place if the item
 they had selected still exists.
 
-**Why this priority**: This is the actual value behind the request — the folder structure
+**Why this priority**: This is the actual value behind the request - the folder structure
 is cached, so without this, a user has no way to pick up on-disk changes short of
 restarting the whole tool.
 
@@ -91,12 +91,12 @@ currently displayed tree/listing without restarting the tool.
 ### Edge Cases
 
 - What happens if the user clicks the control while a refresh is already running? The
-  second click has no additional effect — no overlapping refreshes are triggered.
+  second click has no additional effect - no overlapping refreshes are triggered.
 - What happens if the target project folder no longer exists or becomes inaccessible at
   refresh time? A clear error is surfaced rather than silently showing stale or blank
   content.
 - What happens to an already-open file-viewer dialog when a refresh occurs? It is
-  unaffected — refresh only applies to tree/listing/derived views, not content already
+  unaffected - refresh only applies to tree/listing/derived views, not content already
   open in a dialog.
 - What happens when Sprint Status is the active view during a refresh? Its own derived
   data (epics, action items) is re-read too, since it's itself derived from an on-disk
@@ -113,17 +113,17 @@ currently displayed tree/listing without restarting the tool.
 - **FR-003**: That control MUST use a conventional refresh/reload icon, not a text-only
   label.
 - **FR-004**: Selecting the control MUST cause the tool to re-read the target project's
-  on-disk folder structure for every tab at once (Navigator, Infra, and Output) — not
-  scoped to whichever tab is currently active — rather than continuing to serve a
+  on-disk folder structure for every tab at once (Navigator, Infra, and Output) - not
+  scoped to whichever tab is currently active - rather than continuing to serve a
   previously cached scan (Clarifications).
-- **FR-005**: After a refresh, whatever is currently displayed — the active tab's tree,
+- **FR-005**: After a refresh, whatever is currently displayed - the active tab's tree,
   its open folder's contents listing, and (when Navigator is active) its PRD grouping
-  and/or Sprint Status view — MUST update to reflect the freshly re-read structure,
+  and/or Sprint Status view - MUST update to reflect the freshly re-read structure,
   without the user manually re-selecting or navigating away and back.
 - **FR-006**: A refresh MUST preserve the user's current selection and expanded tree state
   when the same item still exists afterward, and MUST fall back to the default unselected
   state when it no longer exists.
-- **FR-007**: A refresh MUST NOT alter any file on disk — it only re-reads existing state.
+- **FR-007**: A refresh MUST NOT alter any file on disk - it only re-reads existing state.
 - **FR-008**: While a refresh is in progress, the control MUST show a visible indication
   that it is working, and MUST NOT trigger an additional overlapping refresh if selected
   again before the current one completes.
@@ -156,11 +156,11 @@ currently displayed tree/listing without restarting the tool.
   comparable file-browsing tools; when it no longer exists, the view resets to its default
   unselected state rather than erroring.
 - An already-open file-viewer dialog's own content is intentionally left untouched by a
-  refresh — only tree/listing/derived views are in scope.
+  refresh - only tree/listing/derived views are in scope.
 - A "suitable icon" means a conventional refresh/reload icon (e.g. circular arrows),
   matching this tool's existing use of recognizable Material icons elsewhere.
-- No new persisted or derived data entity is introduced by this feature — it is a UI
+- No new persisted or derived data entity is introduced by this feature - it is a UI
   control plus a cache-invalidation behavior layered over structures this tool already
   reads.
-- This feature remains read-only, consistent with this tool's existing principle —
+- This feature remains read-only, consistent with this tool's existing principle -
   refreshing re-reads on-disk state; it never writes, reorders, or alters anything.

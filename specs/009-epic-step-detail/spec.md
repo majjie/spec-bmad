@@ -31,7 +31,7 @@ dashes and the step index removed (so '1-2-establish-the-visual-foundation' beco
 ### Session 2026-09-08 (post-implementation feedback)
 
 - Q: Should only the chevron icon toggle an epic tile, or the whole header? → A: The
-  whole header — clicking anywhere in it (not only the small chevron) toggles
+  whole header - clicking anywhere in it (not only the small chevron) toggles
   collapsed/expanded.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -48,13 +48,13 @@ foundation this feature's other value (readable step rows, jump-to-spec) sits on
 
 **Independent Test**: Open a Sprint Status view for a file with multiple epics, each with
 several steps; confirm every tile starts collapsed (header only), expand one, confirm its
-steps and retrospective status appear, collapse it again, confirm they disappear — all
+steps and retrospective status appear, collapse it again, confirm they disappear - all
 without affecting any other tile's collapsed/expanded state.
 
 **Acceptance Scenarios**:
 
 1. **Given** a Sprint Status view with one or more epics, **When** the view first renders,
-   **Then** every epic tile shows only its key and overall status — no steps, no
+   **Then** every epic tile shows only its key and overall status - no steps, no
    retrospective status.
 2. **Given** a collapsed epic tile, **When** the user selects its expand/collapse control,
    **Then** the tile reveals its full step list and retrospective status.
@@ -68,10 +68,10 @@ without affecting any other tile's collapsed/expanded state.
 ### User Story 2 - Readable step rows (Priority: P1)
 
 A user viewing an expanded epic tile sees each step as a row showing its index, its
-status, and a plain-language title — not the raw, dash-separated key the sprint-status
+status, and a plain-language title - not the raw, dash-separated key the sprint-status
 file stores it under.
 
-**Why this priority**: This is the core payload of the feature — today a step renders as
+**Why this priority**: This is the core payload of the feature - today a step renders as
 its raw key (e.g. "1-6a-walk-the-artifact-tree-safely"), which is harder to scan than a
 short index plus a readable phrase.
 
@@ -98,10 +98,10 @@ status, and title render correctly and match the expected transformation of its 
 
 A user viewing an expanded epic tile clicks a step's magnifying-glass control and the
 spec document that corresponds to that step opens in the same file viewer used elsewhere
-in this tool — and the control simply isn't there for a step that has no such document yet.
+in this tool - and the control simply isn't there for a step that has no such document yet.
 
 **Why this priority**: A valuable shortcut once steps are visible and readable (User
-Stories 1 and 2) — every step is already fully identifiable without it.
+Stories 1 and 2) - every step is already fully identifiable without it.
 
 **Independent Test**: Expand an epic tile containing a step whose index has a matching
 `spec-<index>-*` file under the project's implementation artifacts, and one whose index has
@@ -126,8 +126,8 @@ and the second shows no such control at all.
 - What happens when an epic has no steps at all? Expanding it shows no step rows and the
   existing retrospective status line, unchanged from today's behavior.
 - What happens when a step's key doesn't have a recognizable `<epic>-<story>` index (an
-  unusual, malformed entry)? The step still renders — its raw key stands in for both the
-  index and the title — rather than being hidden or causing an error (FR-013).
+  unusual, malformed entry)? The step still renders - its raw key stands in for both the
+  index and the title - rather than being hidden or causing an error (FR-013).
 - What happens when more than one spec document matches the same step's index? Exactly one
   is used, chosen deterministically, rather than showing more than one control or an
   unstable choice from render to render (FR-012).
@@ -137,7 +137,7 @@ and the second shows no such control at all.
 - What happens when a step's spec document existed at render time but can't be read when
   the user actually selects the control (deleted or moved in between)? The file viewer
   opens anyway and shows the same error state it already shows for any other unreadable
-  document — not a broken view, not nothing happening (consistent with FR-009's reuse of
+  document - not a broken view, not nothing happening (consistent with FR-009's reuse of
   the existing dialog).
 
 ## Requirements *(mandatory)*
@@ -148,15 +148,15 @@ and the second shows no such control at all.
   overall status.
 - **FR-002**: Every epic tile MUST provide a control that toggles it between collapsed and
   expanded. The entire header (not only the chevron shown in its top-right corner) MUST be
-  clickable — the chevron is a visual indicator of the current state, not the only way to
+  clickable - the chevron is a visual indicator of the current state, not the only way to
   toggle it (post-implementation Clarifications).
 - **FR-003**: An expanded epic tile MUST show its full step list and its retrospective
-  status, in addition to its header — its existing content, unchanged.
+  status, in addition to its header - its existing content, unchanged.
 - **FR-004**: Each step MUST render as a row with a header line (its index and its status)
   followed by a body line (its human-readable title), matching the header-then-body
   pattern already used by the Action Items tile.
 - **FR-005**: A step's displayed index MUST be the leading `<epic>-<story>` portion of its
-  declared key (e.g. "1-1", "2-1", "1-6a" — the story segment may carry a trailing letter),
+  declared key (e.g. "1-1", "2-1", "1-6a" - the story segment may carry a trailing letter),
   not the key's full text.
 - **FR-006**: A step's displayed title MUST be derived by removing its leading index (and
   the dash immediately following it) from its declared key, then replacing every remaining
@@ -167,13 +167,13 @@ and the second shows no such control at all.
   disabled).
 - **FR-008**: A spec document MUST be considered a match for a step when its filename
   starts with `spec-<index>-` (index plus its own trailing dash), never by matching the
-  step's full descriptive text — this prevents index "1-1" from matching a document meant
+  step's full descriptive text - this prevents index "1-1" from matching a document meant
   for index "1-10" or "1-1a".
 - **FR-009**: Selecting a step's magnifying-glass control MUST open its matched spec
   document in the same file-viewing dialog already used elsewhere in this tool (the Infra
   and Output tabs, and the existing Action Items tile), with the same close behavior.
 - **FR-010**: Steps MUST continue to render in the same order they do today (file-declared
-  order within their epic) — this feature changes how each step is displayed, not its
+  order within their epic) - this feature changes how each step is displayed, not its
   order.
 - **FR-011**: Step rows MUST alternate background shading ("candy stripe"), matching the
   Action Items tile's existing per-row pattern.
@@ -185,7 +185,7 @@ and the second shows no such control at all.
 
 ### Key Entities
 
-- **Step Detail**: An extension of an epic's existing per-step data — a declared key (already
+- **Step Detail**: An extension of an epic's existing per-step data - a declared key (already
   present), plus a derived index, a derived human-readable title, and an optional resolved
   spec document path (present only when a match exists).
 
@@ -205,15 +205,15 @@ and the second shows no such control at all.
 ## Assumptions
 
 - Each epic tile's collapsed/expanded state is independent of every other tile's, and is
-  not persisted across page reloads — consistent with this tool's existing read-only,
+  not persisted across page reloads - consistent with this tool's existing read-only,
   session-local view state.
 - The step-index pattern already established elsewhere in this tool's sprint-status
   parsing (an epic number, a dash, a story number optionally followed by a single letter)
-  is the same pattern this feature matches against — real sprint-status data already
+  is the same pattern this feature matches against - real sprint-status data already
   follows it (e.g. "1-1", "2-1", "1-6a", "10-1").
 - Spec documents live under the same implementation-artifacts location already used for
   the sprint-status file itself, matched by filename prefix only (not by folder scanning
   beyond that single location).
 - This feature only adds a new read path over data already present in the sprint-status
-  file and its sibling implementation-artifacts documents — no editing, checking off, or
+  file and its sibling implementation-artifacts documents - no editing, checking off, or
   reordering of any kind, consistent with this tool's read-only principle.

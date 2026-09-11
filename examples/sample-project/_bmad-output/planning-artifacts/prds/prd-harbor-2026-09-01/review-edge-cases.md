@@ -5,7 +5,7 @@ created: "2026-09-01"
 status: "complete"
 ---
 
-# Review — Edge Cases
+# Review - Edge Cases
 
 ## Findings
 

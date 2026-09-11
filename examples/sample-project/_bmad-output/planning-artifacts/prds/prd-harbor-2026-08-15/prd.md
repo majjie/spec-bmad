@@ -5,7 +5,7 @@ created: "2026-08-15"
 status: "superseded"
 ---
 
-# Harbor — Early PRD (2026-08-15)
+# Harbor - Early PRD (2026-08-15)
 
 Initial problem framing for an internal design-system ops console. Superseded by the
 2026-09-01 run.
@@ -17,4 +17,4 @@ Initial problem framing for an internal design-system ops console. Superseded by
 
 ## Notes
 
-No addendum or reviews in this older folder — kept thin on purpose for Navigator grouping.
+No addendum or reviews in this older folder - kept thin on purpose for Navigator grouping.

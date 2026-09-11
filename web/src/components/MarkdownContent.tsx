@@ -10,19 +10,19 @@ interface MarkdownContentProps {
 }
 
 // A `className` match only ever occurs for a fenced code block whose fence actually
-// declared a language — never for an inline span (no wrapping `pre`, no `className` at
+// declared a language - never for an inline span (no wrapping `pre`, no `className` at
 // all) and never for an undeclared-language block (wrapped in `pre`, but still no
-// `className`) — so this is already a fully reliable signal with no need to separately
+// `className`) - so this is already a fully reliable signal with no need to separately
 // detect "am I inside a pre" (research.md § 2/§ 3).
 const FENCE_LANGUAGE_PATTERN = /language-(\w+)/;
 
 // The same `Prism`/`vscDarkPlus` pairing FileViewerDialog.tsx's own whole-file "syntax"
 // mode already uses (FR-005). `PreTag="div"` swaps the highlighter's own default internal
 // `<pre>` for a `<div>`, so the result nests as this component's own `<pre>` (carrying the
-// plain-block background/padding above) around a `<div>` — valid markup, and the
+// plain-block background/padding above) around a `<div>` - valid markup, and the
 // highlighter's own `vscDarkPlus` background simply paints over the outer one with no
 // visible seam (research.md § 3). An unrecognized `language` value degrades to plain,
-// uncolored text via Prism's own existing behavior — never an error (research.md § 4).
+// uncolored text via Prism's own existing behavior - never an error (research.md § 4).
 const CodeBlock: NonNullable<Components["code"]> = ({ className, children, ...rest }) => {
   const match = FENCE_LANGUAGE_PATTERN.exec(className ?? "");
   if (!match) {
@@ -40,7 +40,7 @@ const CodeBlock: NonNullable<Components["code"]> = ({ className, children, ...re
 };
 
 /**
- * The shared Markdown-rendering piece (feature 017) — extracted out of
+ * The shared Markdown-rendering piece (feature 017) - extracted out of
  * `FileViewerDialog.tsx`'s own "markdown" mode, `PrdDetailView.tsx`, and
  * `ArchitectureDetailView.tsx`, which each inlined this exact `Typography`/`ReactMarkdown`
  * pair and its own table/code `sx` styling identically (plan.md, Structure Decision). A

@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/ui-behavior.md, quickstart.md
 
-**Tests**: The new server-side route handler gets a test-first unit test — thin, but
+**Tests**: The new server-side route handler gets a test-first unit test - thin, but
 genuine, logic (its first real caller of `HierarchyCache.invalidate()`), per constitution
 Principle V's main clause. Everything else in this feature reuses existing, already-tested
 fetch functions and introduces no new client-side derivation logic, so it's covered by
@@ -36,14 +36,14 @@ Single project: backend route code lives under `src/server/`; frontend code unde
 **Purpose**: Confirm the feature needs no new dependencies before touching any code.
 
 - [X] T001 Verify `@mui/icons-material/Refresh` is already available in
-      `node_modules` (it is — the package is already installed and used elsewhere in this
-      app) — no `npm install` required.
+      `node_modules` (it is - the package is already installed and used elsewhere in this
+      app) - no `npm install` required.
 
-**Checkpoint**: No dependency work needed — proceed directly to User Story 1.
+**Checkpoint**: No dependency work needed - proceed directly to User Story 1.
 
-**Note**: This feature has no Foundational phase — its two stories share no blocking
+**Note**: This feature has no Foundational phase - its two stories share no blocking
 prerequisite beyond Setup. (User Story 2 does depend on User Story 1's own button
-existing to wire a click handler onto — see Dependencies below — but that's a
+existing to wire a click handler onto - see Dependencies below - but that's a
 story-to-story dependency, not shared foundational work blocking both up front.)
 
 ---
@@ -56,7 +56,7 @@ Navigator/Infra/Output tabs and close to their height, showing a conventional re
 
 **Independent Test**: Load the tool in a browser; confirm a refresh control renders in the
 top-right corner, vertically aligned with the tab row and close to its height, showing a
-recognizable refresh icon — checkable by inspection alone, even before its click behavior
+recognizable refresh icon - checkable by inspection alone, even before its click behavior
 (User Story 2) is wired up.
 
 ### Implementation for User Story 1
@@ -71,7 +71,7 @@ recognizable refresh icon — checkable by inspection alone, even before its cli
       renders in the top-right corner, on the same row as the tabs, close to their height,
       with a recognizable refresh icon.
 
-**Checkpoint**: User Story 1 is fully functional and independently testable — the control
+**Checkpoint**: User Story 1 is fully functional and independently testable - the control
 exists and looks right, even though selecting it does nothing yet.
 
 ---
@@ -89,7 +89,7 @@ currently displayed tree/listing without restarting the tool.
 
 ### Tests for User Story 2 ⚠️
 
-> Genuine (if thin) logic — the first real caller of `HierarchyCache.invalidate()` — write
+> Genuine (if thin) logic - the first real caller of `HierarchyCache.invalidate()` - write
 > this first and confirm it fails before implementing T005.
 
 - [X] T004 [P] [US2] Write a failing unit test in `tests/unit/server/refresh.test.ts` for
@@ -112,7 +112,7 @@ currently displayed tree/listing without restarting the tool.
       itemId)`, moved from its current unexported, local definition in
       `NavigatorDetailPane.tsx` (research.md § 3).
 - [X] T009 [US2] In `web/src/components/NavigatorDetailPane.tsx`, remove its own local
-      `findPrdFolderEntry` and import the shared one from `navigatorApi.ts` instead — no
+      `findPrdFolderEntry` and import the shared one from `navigatorApi.ts` instead - no
       behavior change (depends on T008).
 - [X] T010 [P] [US2] In `web/src/components/NavigatorView.tsx`, accept a new
       `refreshToken: number` prop and apply it as `key={refreshToken}` on
@@ -127,7 +127,7 @@ currently displayed tree/listing without restarting the tool.
       `navigatorSelectedItemId` to `null` if it no longer resolves; then increments
       `refreshToken` (depends on T007, T008, T010; FR-004/FR-005/FR-006, research.md
       §§ 2/3/4). Each of these re-fetches applies its own state update independently as it
-      resolves — no rollback if a sibling re-fetch later fails (contracts/ui-behavior.md
+      resolves - no rollback if a sibling re-fetch later fails (contracts/ui-behavior.md
       "Partial-failure semantics").
 - [X] T012 [US2] Wire User Story 1's `IconButton` (T002) to call the T011 handler: sets
       `refreshing = true` and disables the button with a rotating icon (`sx` keyframe)
@@ -141,7 +141,7 @@ currently displayed tree/listing without restarting the tool.
       selection resetting when the selected item disappears; no overlapping refreshes; and
       failure feedback.
 
-**Checkpoint**: Both user stories are fully functional — the control exists, looks right,
+**Checkpoint**: Both user stories are fully functional - the control exists, looks right,
 and selecting it genuinely refreshes every tab's data.
 
 ---
@@ -156,7 +156,7 @@ and selecting it genuinely refreshes every tab's data.
       untouched by a refresh; history (back/forward) still works; the requirement-code
       index column (feature 012) and the reviews/addendum/memory-log tiles (feature 013)
       still behave exactly as before (FR-011, SC-005); and that triggering a refresh
-      creates, modifies, or deletes no file anywhere under the project root (FR-007) —
+      creates, modifies, or deletes no file anywhere under the project root (FR-007) -
       confirmed by construction (`HierarchyCache.invalidate()` is a pure in-memory
       operation, feature 001) but never previously checked explicitly for this feature's
       own new code.
@@ -167,10 +167,10 @@ and selecting it genuinely refreshes every tab's data.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
+- **Setup (Phase 1)**: No dependencies - start immediately.
 - **User Story 1 (Phase 2)**: Depends on Setup only.
 - **User Story 2 (Phase 3)**: Depends on Setup; its final wiring task (T012) also depends
-  on User Story 1's own button (T002) already existing to attach a click handler to — so
+  on User Story 1's own button (T002) already existing to attach a click handler to - so
   in practice, complete Phase 2 before Phase 3, even though both are P1.
 - **Polish (Phase 4)**: Depends on both user stories being complete.
 
@@ -191,7 +191,7 @@ and selecting it genuinely refreshes every tab's data.
 ## Parallel Example: User Story 2 (after T006 completes)
 
 ```bash
-# Launch T007, T008, and T010 together — different files, no shared dependency:
+# Launch T007, T008, and T010 together - different files, no shared dependency:
 Task: "Add fetchRefresh() in web/src/api.ts"
 Task: "Export findPrdFolderEntry from web/src/navigatorApi.ts"
 Task: "Accept refreshToken prop in web/src/components/NavigatorView.tsx"
@@ -206,7 +206,7 @@ Task: "Accept refreshToken prop in web/src/components/NavigatorView.tsx"
 1. Complete Phase 1: Setup.
 2. Complete Phase 2: User Story 1.
 3. **STOP and VALIDATE**: Run quickstart.md Scenario 1 independently.
-4. This alone already gives the control its correct look and placement — a meaningful,
+4. This alone already gives the control its correct look and placement - a meaningful,
    inspectable increment even before it does anything on click.
 
 ### Incremental Delivery
@@ -220,7 +220,7 @@ Task: "Accept refreshToken prop in web/src/components/NavigatorView.tsx"
 
 - [P] tasks = different files, no dependencies.
 - [Story] label maps task to specific user story for traceability.
-- This feature's core backend enabler — `HierarchyCache.invalidate()` — already existed
+- This feature's core backend enabler - `HierarchyCache.invalidate()` - already existed
   and was already tested before this feature began (feature 001); T004/T005 are about
   exposing it, not building it from scratch.
 - Commit after each task or logical group.

@@ -5,7 +5,7 @@ created: "2026-09-06"
 status: "done"
 ---
 
-# Retrospective — Epic 1 (Foundation)
+# Retrospective - Epic 1 (Foundation)
 
 ## Went well
 

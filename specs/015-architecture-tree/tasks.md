@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/ui-behavior.md, quickstart.md
 
-**Tests**: No new pure derivation logic is introduced — `groupPrdFolders` is reused
+**Tests**: No new pure derivation logic is introduced - `groupPrdFolders` is reused
 unmodified and already has full test-first coverage (feature 006). This feature adds one
 integration test to `/api/navigator/tree`'s own wiring (which had none before), written
 test-first per constitution Principle V. Tree rendering and dispatch are UI, covered by
@@ -36,11 +36,11 @@ frontend code under `web/src/`; the modified integration test lives under
 
 **Purpose**: Confirm the feature needs no new dependencies before touching any code.
 
-- [X] T001 Verify no new package is needed — this feature only reuses the already-existing
+- [X] T001 Verify no new package is needed - this feature only reuses the already-existing
       `groupPrdFolders` (feature 006) and the same `@mui/x-tree-view` components
       `NavigatorTree.tsx` already renders "PRD" with.
 
-**Checkpoint**: No dependency work needed — proceed directly to Foundational.
+**Checkpoint**: No dependency work needed - proceed directly to Foundational.
 
 ---
 
@@ -58,7 +58,7 @@ stories (and the feature-014 regression fix) depend on.
 
 ### Test for the route's new wiring ⚠️
 
-> The route's own wiring has no prior direct test (research.md § 4) — write this first
+> The route's own wiring has no prior direct test (research.md § 4) - write this first
 > and confirm it fails before implementing T005.
 
 - [X] T004 Extend `tests/integration/web-server.test.ts`: add
@@ -73,21 +73,21 @@ stories (and the feature-014 regression fix) depend on.
 - [X] T005 In `src/server/routes/navigator-tree.ts`, add an `architecturePath`/
       `architectureNode`/`subfolders` lookup mirroring the existing `prdsPath` sequence,
       pointed at `planning-artifacts/architecture`, and call the existing
-      `groupPrdFolders(subfolders)` again to populate the new `architecture` field — to
+      `groupPrdFolders(subfolders)` again to populate the new `architecture` field - to
       make T004 pass (depends on T002, T004; research.md § 1).
 - [X] T006 In `web/src/navigatorApi.ts`, generalize `findPrdFolderEntry(tree, itemId)`
       into `findFolderEntry(grouping: PrdGroupingResult | null, itemId: string)`, taking a
       grouping result directly instead of the whole tree; update its two existing call
-      sites — `NavigatorDetailPane.tsx`'s PRD-leaf lookup (now `findFolderEntry(tree?.prd
-      ?? null, selectedItemId)`) and `App.tsx`'s refresh handler (feature 014) — the
+      sites - `NavigatorDetailPane.tsx`'s PRD-leaf lookup (now `findFolderEntry(tree?.prd
+      ?? null, selectedItemId)`) and `App.tsx`'s refresh handler (feature 014) - the
       latter now checking `findFolderEntry(tree.prd, current) || findFolderEntry(tree
       .architecture, current)` before resetting the selection, closing the gap
       research.md § 3 identifies. Update the `import { ..., findPrdFolderEntry } from
-      "../navigatorApi.js"` statement in both files to import `findFolderEntry` instead —
+      "../navigatorApi.js"` statement in both files to import `findFolderEntry` instead -
       easy to miss alongside the invocation-site changes (depends on T003;
       contracts/ui-behavior.md).
 
-**Checkpoint**: Foundation ready — User Stories 1 and 2 can now both start.
+**Checkpoint**: Foundation ready - User Stories 1 and 2 can now both start.
 
 ---
 
@@ -105,12 +105,12 @@ grouping organized by project and date, matching the PRD grouping's own structur
 
 - [X] T007 [US1] In `web/src/components/NavigatorTree.tsx`, render an "Architecture" root
       (itemId `"architecture"`) between the existing "PRD" and "Sprint Status" roots,
-      structured identically to "PRD"'s own JSX — one `TreeItem` per project group (itemId
+      structured identically to "PRD"'s own JSX - one `TreeItem` per project group (itemId
       `` `architecture:${project}` ``) containing one `TreeItem` per date entry (itemId
       its own `path`), followed by one `TreeItem` per non-conforming entry. Also update
       this component's own early-return guard (`if (!tree || (tree.prd === null &&
       !tree.sprintStatusAvailable))`) to also account for `tree.architecture`, i.e.
-      `tree.prd === null && tree.architecture === null && !tree.sprintStatusAvailable` —
+      `tree.prd === null && tree.architecture === null && !tree.sprintStatusAvailable` -
       otherwise a project with only architecture folders (no PRD, no sprint-status.yaml)
       would incorrectly show "Nothing to show yet" instead of the Architecture grouping
       (depends on T005; FR-001/FR-002/FR-003, contracts/ui-behavior.md).
@@ -125,9 +125,9 @@ grouping organized by project and date, matching the PRD grouping's own structur
       structure and its non-conforming folder shown; the root and project nodes are
       non-interactive; no Architecture root appears when no architecture folders exist;
       and the Architecture grouping still renders (not the tree's "Nothing to show yet"
-      empty state) when it's the *only* thing present — no PRD folders, no Sprint Status.
+      empty state) when it's the *only* thing present - no PRD folders, no Sprint Status.
 
-**Checkpoint**: User Story 1 is fully functional and independently testable — the grouping
+**Checkpoint**: User Story 1 is fully functional and independently testable - the grouping
 renders correctly, even though selecting a leaf shows nothing yet.
 
 ---
@@ -154,7 +154,7 @@ item continues to work exactly as before.
       refresh; a deleted architecture leaf falls back to the default unselected state
       after a refresh (confirming the T006 regression fix).
 
-**Checkpoint**: Both user stories are fully functional — the grouping renders, selection
+**Checkpoint**: Both user stories are fully functional - the grouping renders, selection
 shows the folder name, and refresh integration behaves consistently with PRD.
 
 ---
@@ -176,10 +176,10 @@ shows the folder name, and refresh integration behaves consistently with PRD.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS both user stories.
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS both user stories.
 - **User Story 1 (Phase 3)**: Depends on Foundational only.
-- **User Story 2 (Phase 4)**: Depends on Foundational only — independent of Phase 3, can
+- **User Story 2 (Phase 4)**: Depends on Foundational only - independent of Phase 3, can
   run in parallel with it (unlike feature 012, neither story here produces output the
   other consumes).
 - **Polish (Phase 5)**: Depends on both user stories being complete.
@@ -187,7 +187,7 @@ shows the folder name, and refresh integration behaves consistently with PRD.
 ### Within Each Phase
 
 - T004 (the integration test) MUST be written and confirmed failing before T005.
-- T004 (the integration test) doesn't need T002 to exist first — it parses the response
+- T004 (the integration test) doesn't need T002 to exist first - it parses the response
   with its own inline local type, the same way the existing PRD test already does, so it
   can be written and confirmed failing before any type change lands. It does need T005 to
   make it pass.
@@ -205,7 +205,7 @@ shows the folder name, and refresh integration behaves consistently with PRD.
 ## Parallel Example: Foundational Phase
 
 ```bash
-# Launch T002 and T003 together — different files, no shared dependency:
+# Launch T002 and T003 together - different files, no shared dependency:
 Task: "Add architecture field to NavigatorTree in src/server/types.ts"
 Task: "Add architecture field to NavigatorTree in web/src/api.ts"
 ```
@@ -217,10 +217,10 @@ Task: "Add architecture field to NavigatorTree in web/src/api.ts"
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup.
-2. Complete Phase 2: Foundational (CRITICAL — blocks both stories).
+2. Complete Phase 2: Foundational (CRITICAL - blocks both stories).
 3. Complete Phase 3: User Story 1.
 4. **STOP and VALIDATE**: Run quickstart.md Scenarios 1 and 3 independently.
-5. This alone already makes architecture artifacts visible and navigable in the tree — a
+5. This alone already makes architecture artifacts visible and navigable in the tree - a
    meaningful increment even before leaf selection shows anything.
 
 ### Incremental Delivery
@@ -234,10 +234,10 @@ Task: "Add architecture field to NavigatorTree in web/src/api.ts"
 
 - [P] tasks = different files, no dependencies.
 - [Story] label maps task to specific user story for traceability.
-- Unlike feature 012, this feature's two stories are genuinely independent of each other —
+- Unlike feature 012, this feature's two stories are genuinely independent of each other -
   either order, or full parallelism, is safe once Foundational is done.
 - The Foundational phase's `findFolderEntry` generalization (T006) fixes a real,
-  pre-existing gap in feature 014's own refresh handler — worth flagging in review even
+  pre-existing gap in feature 014's own refresh handler - worth flagging in review even
   though it's framed here as infrastructure for *this* feature.
 - Commit after each task or logical group.
 - Stop at any checkpoint to validate a story independently.

@@ -8,7 +8,7 @@ import type { RouteResponse } from "../http-server.js";
 
 /**
  * Reads and parses `implementation-artifacts/sprint-status.yaml` fresh on every request
- * (no caching — the file's own content, not just its existence, is what this route
+ * (no caching - the file's own content, not just its existence, is what this route
  * serves) per contracts/http-api.md.
  */
 export async function getNavigatorSprintStatusResponse(root: ProjectRoot): Promise<RouteResponse> {
@@ -37,7 +37,7 @@ export async function getNavigatorSprintStatusResponse(root: ProjectRoot): Promi
   }
 
   // Step-detail spec-file matching (research.md § 2 of feature 009) needs this same
-  // folder's file listing — reusing `listRealEntries` keeps the symlink-exclusion
+  // folder's file listing - reusing `listRealEntries` keeps the symlink-exclusion
   // guarantee it already provides for the Infra/Output content routes.
   const entries = await listRealEntries(implementationArtifactsPath);
   const specFileNames = entries.filter((entry) => !entry.isDirectory).map((entry) => entry.name);

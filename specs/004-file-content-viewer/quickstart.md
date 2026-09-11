@@ -29,7 +29,7 @@ UI-rendering carve-out.
 - Start the CLI against `/tmp/bmad-file-viewer/project` and open the printed URL in a
   full-size desktop browser.
 
-## Scenario 1 — Plain text file, X to close (User Story 1)
+## Scenario 1 - Plain text file, X to close (User Story 1)
 
 Double-click `notes.txt`.
 
@@ -39,21 +39,21 @@ Click the "X" icon in the top-right.
 
 **Expected**: the dialog closes; the contents table underneath is unchanged from before.
 
-## Scenario 2 — Double-clicking a folder does nothing extra (User Story 1)
+## Scenario 2 - Double-clicking a folder does nothing extra (User Story 1)
 
 Double-click the `_bmad` root row itself, or any subfolder if present.
 
-**Expected**: nothing new opens — the same single-click folder navigation happens (or
+**Expected**: nothing new opens - the same single-click folder navigation happens (or
 nothing, if double-clicking just re-selects the already-selected folder).
 
-## Scenario 3 — Unreadable/binary file shows an error (User Story 1)
+## Scenario 3 - Unreadable/binary file shows an error (User Story 1)
 
 Double-click `binary.dat`.
 
 **Expected**: the dialog opens showing an error/unsupported message, not garbled
 characters.
 
-## Scenario 4 — Escape and Back both close the dialog (User Story 2)
+## Scenario 4 - Escape and Back both close the dialog (User Story 2)
 
 Double-click `notes.txt` again. Press Escape.
 
@@ -62,25 +62,25 @@ action.
 
 **Expected**: the dialog closes the same way.
 
-## Scenario 5 — Forward after Back reopens; Forward after X/Escape does not (User Story 2)
+## Scenario 5 - Forward after Back reopens; Forward after X/Escape does not (User Story 2)
 
 With the dialog closed via Back (previous scenario), press Forward.
 
 **Expected**: the dialog reopens showing `notes.txt` again. Close it via the "X" icon this
 time, then press Forward.
 
-**Expected**: nothing reopens — Forward has nothing to go to, since closing via "X"
+**Expected**: nothing reopens - Forward has nothing to go to, since closing via "X"
 already stepped history back in sync.
 
-## Scenario 6 — Markdown renders as formatted HTML (User Story 3)
+## Scenario 6 - Markdown renders as formatted HTML (User Story 3)
 
 Double-click `readme.md`.
 
 **Expected**: "Title" appears as a real heading, "item one"/"item two" as a real bulleted
-list, and the two-column table as an actual HTML table — not raw `#`/`-`/`|` characters.
+list, and the two-column table as an actual HTML table - not raw `#`/`-`/`|` characters.
 No line numbers are shown.
 
-## Scenario 7 — Syntax highlighting for YAML, TOML, and Python (User Story 4)
+## Scenario 7 - Syntax highlighting for YAML, TOML, and Python (User Story 4)
 
 Double-click `config.yaml`, then `config.toml`, then `script.py` in turn.
 
@@ -88,14 +88,14 @@ Double-click `config.yaml`, then `config.toml`, then `script.py` in turn.
 YAML file's keys colored differently from its values; the Python file's `def`/keywords
 colored differently from identifiers).
 
-## Scenario 8 — Unrecognized extension and CSV fall back to plain text (Edge Cases)
+## Scenario 8 - Unrecognized extension and CSV fall back to plain text (Edge Cases)
 
 Double-click `file.unknownext`, then `data.csv`.
 
-**Expected**: both render exactly like Scenario 1 — plain monospace text with line
+**Expected**: both render exactly like Scenario 1 - plain monospace text with line
 numbers, no highlighting.
 
-## Scenario 9 — `.gitignore` renders as plain text (Edge Cases)
+## Scenario 9 - `.gitignore` renders as plain text (Edge Cases)
 
 Double-click `.gitignore`.
 

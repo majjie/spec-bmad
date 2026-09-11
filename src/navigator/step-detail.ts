@@ -16,7 +16,7 @@ const STEP_INDEX_PATTERN = /^(\d+-\d+[a-zA-Z]?)-(.+)$/;
 /**
  * Splits a step's raw key into its index and a human-readable title (FR-005/FR-006).
  * Falls back to the raw key for both when it doesn't match the expected
- * `<epic>-<story>[letter]-<descriptive-text>` shape (FR-013) — never hidden, never an
+ * `<epic>-<story>[letter]-<descriptive-text>` shape (FR-013) - never hidden, never an
  * error.
  */
 export function deriveStepDisplay(key: string): { index: string; title: string } {
@@ -42,10 +42,10 @@ export function matchSpecFileName(index: string, fileNames: string[]): string | 
 }
 
 /**
- * Builds each step's full `StepDetail` — index/title derivation plus spec-file matching —
+ * Builds each step's full `StepDetail` - index/title derivation plus spec-file matching -
  * from an epic's raw stories and the implementation-artifacts folder's file listing.
  * `specPath` is an absolute path built the same way the sprint-status route itself already
- * locates that folder (research.md § 1) — never guessed or reconstructed a different way.
+ * locates that folder (research.md § 1) - never guessed or reconstructed a different way.
  */
 export function buildStepDetails(
   stories: { key: string; status: string }[],

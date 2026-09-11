@@ -1,6 +1,6 @@
 # Phase 1 Data Model: CSV Spreadsheet View
 
-Derived from `spec.md` § Key Entities. Nothing here is persisted — parsing happens
+Derived from `spec.md` § Key Entities. Nothing here is persisted - parsing happens
 client-side, fresh, each time a `.csv` file is opened (research.md § 1).
 
 ## ParsedCsv
@@ -23,11 +23,11 @@ interface ParsedCsv {
 | A header line plus *n* data lines | The header line's fields | *n* arrays, one per data line |
 
 **Validation rules**:
-- A data row's array length MAY be less than the widest row's — `parseCsvGrid` does not
+- A data row's array length MAY be less than the widest row's - `parseCsvGrid` does not
   pad; padding for display is `CsvGrid.tsx`'s job at render time (FR-010).
 - Quoted fields (commas, escaped quotes, embedded newlines) are always resolved to a
   single string per field, never split across array entries or across two `rows` entries
-  (FR-006) — this is `papaparse`'s responsibility, exercised through `parseCsvGrid`.
+  (FR-006) - this is `papaparse`'s responsibility, exercised through `parseCsvGrid`.
 
 ## FileRenderMode (extended)
 
@@ -41,7 +41,7 @@ type FileRenderMode =
   | { kind: "plain" };
 ```
 
-`.csv` now maps to `{ kind: "csv-grid" }` instead of `{ kind: "plain" }` — the only change
+`.csv` now maps to `{ kind: "csv-grid" }` instead of `{ kind: "plain" }` - the only change
 to `getFileRenderMode`'s derivation table (research.md § 4).
 
 ## Spreadsheet Grid (rendering-time shape, not a stored entity)

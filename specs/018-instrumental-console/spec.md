@@ -9,7 +9,7 @@
 **Input**: Redesign BMAD Browser as a polished instrumental developer console: token-driven
 visual system, product shell with clearer IA (Overview / Requirements / Architecture /
 Sprint / Method files / Generated files), Overview as default first paint, and a first-run
-welcome modal with a skippable guided tour — aimed at developers who may not know BMAD.
+welcome modal with a skippable guided tour - aimed at developers who may not know BMAD.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -18,7 +18,7 @@ welcome modal with a skippable guided tour — aimed at developers who may not k
 A developer opens the tool against a project with `_bmad-output` and immediately sees a
 named product header, a sidebar with human labels (not Infra/Output jargon), and an
 Overview that shows what is in progress and which requirement/architecture documents exist
-— without an empty “select something” void.
+- without an empty “select something” void.
 
 **Acceptance Scenarios**:
 
@@ -44,7 +44,7 @@ later use; Help can replay the tour.
 2. **Given** the user chooses Skip, **When** they reload, **Then** the modal does not
    reappear.
 3. **Given** the user chooses Start the tour, **When** the tour runs, **Then** 4–5 anchored
-   steps explain sidebar, Overview, document stage, refresh, and Help — with Esc/Skip
+   steps explain sidebar, Overview, document stage, refresh, and Help - with Esc/Skip
    always available.
 
 ---
@@ -52,12 +52,12 @@ later use; Help can replay the tour.
 ### User Story 3 - Instrumental visual system (Priority: P2)
 
 The UI uses cool-tinted charcoal surfaces, amber accent sparingly, IBM Plex Sans/Mono, and
-semantic tokens — not default MUI dark + Roboto + cyan accent.
+semantic tokens - not default MUI dark + Roboto + cyan accent.
 
 **Acceptance Scenarios**:
 
 1. **Given** any screen, **When** inspected, **Then** colours come from semantic tokens /
-   theme mapping — not ad-hoc `#90caf9` or `info.light`/`warning.light` for label/value.
+   theme mapping - not ad-hoc `#90caf9` or `info.light`/`warning.light` for label/value.
 2. **Given** status chips, **When** rendered, **Then** status is icon + human label (Done /
    In review / In progress / Backlog), not colour alone.
 

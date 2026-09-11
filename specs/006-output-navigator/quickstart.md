@@ -49,49 +49,49 @@ validated manually here, per constitution Principle V's UI-rendering carve-out.
 - Start the CLI against `/tmp/bmad-navigator/project` and open the printed URL in a
   full-size desktop browser.
 
-## Scenario 1 — Tab appears only when `_bmad-output` exists (FR-002)
+## Scenario 1 - Tab appears only when `_bmad-output` exists (FR-002)
 
 With the fixture above, confirm a "Navigator" tab appears first, before "Infra" and
 "Output". Then point the CLI at a project with no `_bmad-output` folder at all and confirm
 no "Navigator" tab appears.
 
-## Scenario 2 — PRDs grouped by project, newest date first (FR-005–FR-007)
+## Scenario 2 - PRDs grouped by project, newest date first (FR-005–FR-007)
 
 Open the Navigator tab and expand "PRD". Confirm: a `prd-foo` node containing
 `2028-08-30`, `2028-08-29`, `2028-08-28` in that order; a `prd-bar` node containing
 `2028-09-14`, `2028-09-01`, `2028-08-30` in that order; and a `not-following-convention`
 node as its own sibling.
 
-## Scenario 3 — Selecting a PRD folder shows its name (FR-009, FR-010)
+## Scenario 3 - Selecting a PRD folder shows its name (FR-009, FR-010)
 
 Select the `2028-08-30` node under `prd-foo`. **Expected**: the right-hand pane shows
 `prd-foo-2028-08-30` (the folder's full name, not just the date). Then click the "PRD"
-root and the `prd-foo` node themselves. **Expected**: each only expands/collapses — the
+root and the `prd-foo` node themselves. **Expected**: each only expands/collapses - the
 right-hand pane's content doesn't change.
 
-## Scenario 4 — Sprint Status Summary and epic disambiguation (FR-011–FR-013)
+## Scenario 4 - Sprint Status Summary and epic disambiguation (FR-011–FR-013)
 
 Select "Sprint Status". **Expected**: a Summary tile shows all six fields from the
 fixture's YAML. A Status tile for epic 1 shows status `done`, stories `1-1-run-the-command`
 and `1-6a-walk-safely` (both `done`), and retrospective `done`. A Status tile for epic 2
 shows status `in-progress`, one story `2-1-serve-every-response` (`review`), and no
 retrospective (no `epic-2-retrospective` key exists). A Status tile for epic 10 shows only
-`10-1-something` — **not** `1-1-run-the-command` or `1-6a-walk-safely` — proving the
+`10-1-something` - **not** `1-1-run-the-command` or `1-6a-walk-safely` - proving the
 delimiter-based match keeps epic 1 and epic 10 separate. `orphan-entry-not-numbered`
 appears in none of the tiles (FR-015).
 
-## Scenario 5 — Malformed sprint-status file (FR-014)
+## Scenario 5 - Malformed sprint-status file (FR-014)
 
 Replace `sprint-status.yaml`'s content with `key: [unclosed` and reselect "Sprint Status".
 **Expected**: the right-hand pane shows an error message, not a broken or blank view.
 
-## Scenario 6 — No epics declared
+## Scenario 6 - No epics declared
 
 Replace `development_status:` with nothing (remove the whole key, keeping the six summary
 fields). **Expected**: the Summary tile still renders correctly; an empty-state message
 stands in for Status tiles, not an error.
 
-## Scenario 7 — Empty Navigator (edge case)
+## Scenario 7 - Empty Navigator (edge case)
 
 Point the CLI at a project whose `_bmad-output` folder exists but is otherwise empty (no
 `prds` subfolders, no `sprint-status.yaml`). **Expected**: the "Navigator" tab still
