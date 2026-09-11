@@ -26,16 +26,26 @@ export function StatusChip({ status }: { status: string }) {
   return (
     <Chip
       size="small"
-      icon={<meta.Icon sx={{ color: `${meta.color} !important`, fontSize: "14px !important" }} />}
+      icon={<meta.Icon sx={{ color: `${meta.color} !important`, fontSize: "16px !important" }} />}
       label={label}
       sx={{
-        height: 22,
+        height: 28,
         borderRadius: "var(--radius-control)",
         bgcolor: "transparent",
         border: "1px solid var(--color-border-default)",
         color: "var(--color-text-muted)",
-        "& .MuiChip-label": { px: 0.75, fontSize: "0.7rem", fontWeight: 500 },
-        "& .MuiChip-icon": { ml: 0.5 },
+        "& .MuiChip-icon": {
+          ml: "var(--space-2)",
+          mr: "var(--space-1)",
+        },
+        "& .MuiChip-label": {
+          pl: "var(--space-1)",
+          pr: "var(--space-2)",
+          fontSize: "0.8125rem",
+          fontWeight: 500,
+          letterSpacing: "0.01em",
+          lineHeight: 1.2,
+        },
       }}
     />
   );

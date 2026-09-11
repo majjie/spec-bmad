@@ -7,3 +7,4 @@
 - Overview uses the same StageFrame/StatStrip/Panel rhythm as Sprint for consistent spacing and hierarchy.
 - Matched Overview “Open file” to the outlined “Open sprint” button and pill-rounded all MUI buttons.
 - Softened the shell: bound-document logo, rounded corners and elevation, clearer left-nav hierarchy, and project accordions that stay closed after collapse.
+- Polished status pills: larger type (0.8125rem), taller chip, and clearer icon–label spacing.
