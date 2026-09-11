@@ -105,6 +105,12 @@
 
   --color-focus-ring: var(--color-amber-400);
 
+  /* Scrims. `soft` is for overlays that teach rather than block - the guided tour still
+     needs the interface behind it legible. Against a near-black canvas a heavy scrim is
+     barely perceptible, which is why these were easy to get wrong before they were named. */
+  --color-scrim: color-mix(in srgb, var(--color-neutral-950) 72%, transparent);
+  --color-scrim-soft: color-mix(in srgb, var(--color-neutral-950) 52%, transparent);
+
   --radius-control: var(--radius-sm);
   --radius-nav-item: 0;
   --radius-card: var(--radius-lg);
@@ -163,6 +169,11 @@
   --color-status-error: var(--color-red-600);
 
   --color-focus-ring: var(--color-slate-blue-600);
+
+  /* Warm ink rather than black, and lighter: over a sand page a heavy black wash reads as
+     muddy rather than as depth. */
+  --color-scrim: color-mix(in srgb, var(--color-ink-900) 40%, transparent);
+  --color-scrim-soft: color-mix(in srgb, var(--color-ink-900) 26%, transparent);
 
   --shadow-sm:
     0 2px 8px -2px color-mix(in oklch, var(--color-shadow) 10%, transparent),

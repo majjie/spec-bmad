@@ -268,7 +268,9 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 
 - **FR-027**: All colour and typography MUST derive from a single named design-token system
   rather than one-off values chosen per component, so appearance stays consistent and can be
-  retargeted in one place.
+  retargeted in one place. This includes **overlay and scrim colours**, which are the easiest
+  to overlook: a dimming layer looks acceptable against a dark page at almost any value, so an
+  un-tokenised one is invisible until the second appearance exists.
 - **FR-028**: The interface MUST provide a control that moves keyboard focus directly to the
   main content, and MUST expose navigation, header, and main regions as identifiable
   landmarks.

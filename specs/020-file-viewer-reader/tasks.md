@@ -126,12 +126,17 @@ content.
       to read for no gain - the corpus represents well-formed BMAD output, which is what makes
       it useful as a demo. `quickstart.md` § A now says this instead of asking a verifier to
       construct one by hand.
-- [ ] T014 Verify §§ B-E of `quickstart.md` against the **light** appearance as well as dark.
-      This feature and feature 019 were developed in parallel and the panel's surface treatment
-      and elevation were tuned largely in dark. **This is the one remaining item that cannot be
-      closed from the specification side**: it is a human looking at a running browser, which
-      is exactly what constitution Principle V asks for and the one thing no artifact can
-      assert on its behalf.
+- [X] T014 **DONE - verified in a running browser by the maintainer**, the one check no
+      artifact can perform on its own behalf. The reading surface, its measure and its
+      elevation all hold up in the light appearance.
+      Two things were confirmed correct while checking: both syntax highlighters switch
+      appearance (`oneLight` / `vscDarkPlus` selected from `useColorScheme`, in
+      `MarkdownContent.tsx` **and** `FileViewerDialog.tsx`) - a dark code theme stranded on a
+      light page was the main suspicion - and `CsvGrid.tsx` styles entirely through theme
+      slots, so it follows too.
+      It also surfaced a defect **outside** this feature: the modal and guided-tour scrims
+      were hardcoded `rgba(0, 0, 0, …)`, identical in both appearances, which is feature 018's
+      FR-027. Fixed there, not here.
 - [X] T015 **CLOSED as a settled decision, not a deferral.** The panel sizes stay in their own
       module rather than moving to the token layer: the renderer's measure is conditional logic
       rather than a value, so a token would still need the flag passed alongside it, leaving

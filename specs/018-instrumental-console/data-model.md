@@ -200,7 +200,7 @@ Three tiers, with a hard rule that **components reference the semantic tier only
 | Tier | Contents | Consumed by |
 |---|---|---|
 | Primitives | Raw ramps - neutrals, accent, status hues, shadow | The semantic tier only |
-| Semantic | Roles: `--color-bg-*`, `--color-border-*`, `--color-text-*`, `--color-accent*`, `--color-status-*`, `--color-focus-ring`, plus spacing/radius/duration/easing | Components, and `theme.ts` |
+| Semantic | Roles: `--color-bg-*`, `--color-border-*`, `--color-text-*`, `--color-accent*`, `--color-status-*`, `--color-focus-ring`, `--color-scrim` / `--color-scrim-soft`, plus spacing/radius/duration/easing | Components, and `theme.ts` |
 | Theme mapping | `createAppTheme(mode)` in `web/src/theme.ts` | The component library's own chrome |
 
 The semantic tier is the seam feature 019 remaps to produce a second appearance; nothing in

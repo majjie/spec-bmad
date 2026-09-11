@@ -111,7 +111,11 @@ the existing tab identifiers, not a rename of them.
 ## Appearance, motion and accessibility
 
 - All colour and typography resolve through the semantic token layer. No component defines a
-  raw colour of its own (FR-027).
+  raw colour of its own (FR-027) - including the scrim behind a modal or the guided tour,
+  which is tokenised per appearance so a light page gets warm ink rather than the black that
+  suits a dark one.
+- Overlays that **block** and overlays that **teach** use different scrims: the tour's is
+  lighter, because the interface it is describing has to stay legible behind it.
 - The first focusable element offers to skip to the main content (FR-028).
 - Header, navigation, and main regions are exposed as landmarks with accessible names.
 - The focused element is always visibly indicated, using the focus token (FR-030).

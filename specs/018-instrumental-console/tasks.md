@@ -365,6 +365,25 @@ next reader meets a decision rather than a discrepancy.
       added alongside to capture the absent-anchor rule from T039a, which had been implemented
       and contract-documented but never stated as a requirement.
 
+- [X] T042 **FR-027, third and final miss - found by eye during light-appearance review,
+      then closed mechanically.** `MemoryLogDialog.tsx` and `GuidedTour.tsx` each hardcoded an
+      `rgba(0, 0, 0, …)` scrim, identical in both appearances and differing from each other
+      (0.6 and 0.45) for no recorded reason. Against a near-black page a black scrim looks
+      like nothing in particular, which is why two audits and a full light-mode pass all
+      walked past it; over a warm sand page it reads as muddy.
+      Now `--color-scrim` and `--color-scrim-soft`, defined per appearance - warm ink at lower
+      alpha for light, near-black for dark. The two values are kept distinct **on purpose** and
+      the distinction is now stated: an overlay that blocks and an overlay that teaches want
+      different weights, because the tour has to leave the interface it describes legible.
+      **The durable fix is `tests/unit/web/tokenDiscipline.test.ts`**, not the token. FR-027
+      had now been declared satisfied twice while it was not: the first audit grepped hex and
+      missed `info.light`; the second grepped hex and palette slots and missed `rgba()`. Both
+      were caught by a person noticing, which does not scale. The test walks every file under
+      `web/src/components/` and fails on any hex, `rgb()`/`rgba()`, `hsl()`/`hsla()` literal or
+      borrowed status palette slot, with `theme.ts` and `tokens.css` excluded as the places
+      colour is supposed to live. It also asserts the component tree it scanned is non-empty,
+      so the check cannot pass by finding nothing.
+
 ---
 
 ## Dependencies

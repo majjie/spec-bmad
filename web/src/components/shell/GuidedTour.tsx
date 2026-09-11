@@ -116,7 +116,7 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
         sx={{
           position: "absolute",
           inset: 0,
-          bgcolor: "rgba(0, 0, 0, 0.45)",
+          bgcolor: "var(--color-scrim-soft)",
           pointerEvents: "auto",
           transition: "opacity var(--duration-normal) var(--ease-out)",
         }}

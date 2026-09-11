@@ -117,7 +117,7 @@ export default function MemoryLogDialog({
           zIndex: 10,
           padding: "4px",
           borderRadius: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: "var(--color-scrim)",
           display: "flex",
           alignItems: "center",
           gap: 0.5,
