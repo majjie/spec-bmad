@@ -220,6 +220,7 @@ export function ListRow({
         gap: "var(--space-3)",
         width: "100%",
         boxSizing: "border-box",
+        px: "var(--space-3)",
         py: "var(--space-3)",
         borderBottom: "1px solid var(--color-border-subtle)",
         bgcolor: selected ? "var(--color-bg-subtle)" : "transparent",

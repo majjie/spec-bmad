@@ -8,3 +8,6 @@
 - Matched Overview “Open file” to the outlined “Open sprint” button and pill-rounded all MUI buttons.
 - Softened the shell: bound-document logo, rounded corners and elevation, clearer left-nav hierarchy, and project accordions that stay closed after collapse.
 - Polished status pills: larger type (0.8125rem), taller chip, and clearer icon–label spacing.
+
+- Removed curved inset left-nav selection: full-bleed square selected rows, no floating pill margins or accent side-border.
+- Added horizontal padding to ListRow (and Overview project captions) so date/Latest labels aren’t flush to the row highlight.

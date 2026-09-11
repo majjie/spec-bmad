@@ -31,7 +31,14 @@ export function LeafList({
     <Box sx={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
       {rows.map((project) => (
         <Box key={`${kind}-${project.key}`}>
-          <Typography variant="caption" sx={{ color: "var(--color-text-subtle)", fontWeight: 600 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "var(--color-text-subtle)",
+              fontWeight: 600,
+              px: "var(--space-3)",
+            }}
+          >
             {project.title}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 0.5 }}>
