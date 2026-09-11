@@ -170,7 +170,10 @@ export default function App() {
   );
 
   function loadFileContent(tab: TabId, path: string) {
-    void fetchFileContent(tab, path).then(
+    // Navigator isn't a folder tab — its opened files live under `_bmad-output`, so
+    // content always goes through `/api/file/output` while history keeps `tab: "navigator"`.
+    const fileTab: FolderTabId = tab === "navigator" ? "output" : tab;
+    void fetchFileContent(fileTab, path).then(
       (content) => setOpenFile({ path, content, error: null }),
       (error: unknown) =>
         setOpenFile({
