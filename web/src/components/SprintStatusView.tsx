@@ -194,42 +194,6 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
         </Collapse>
       </Box>
 
-      <Paper
-        variant="outlined"
-        sx={{
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--elevation-card)",
-          bgcolor: "var(--color-bg-raised)",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          sx={{
-            px: "var(--space-5)",
-            py: "var(--space-4)",
-            borderBottom: "1px solid var(--color-border-subtle)",
-          }}
-        >
-          <Typography variant="overline" sx={{ color: "var(--color-accent)", display: "block", lineHeight: 1.2 }}>
-            Action items
-          </Typography>
-          <Typography variant="caption" sx={{ color: "var(--color-text-subtle)" }}>
-            Open work first; completed items stay available for audit.
-          </Typography>
-        </Box>
-        <Box sx={{ px: "var(--space-5)" }}>
-          {data.actionItems.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ py: "var(--space-4)" }}>
-              No action items declared in this sprint-status file.
-            </Typography>
-          ) : (
-            data.actionItems.map((item) => (
-              <ActionItemRow key={item.id} item={item} onOpenFile={onOpenFile} />
-            ))
-          )}
-        </Box>
-      </Paper>
-
       <Box sx={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
         <Typography
           variant="overline"
@@ -334,6 +298,42 @@ export default function SprintStatusView({ data, onOpenFile }: SprintStatusViewP
           })
         )}
       </Box>
+
+      <Paper
+        variant="outlined"
+        sx={{
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--elevation-card)",
+          bgcolor: "var(--color-bg-raised)",
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            px: "var(--space-5)",
+            py: "var(--space-4)",
+            borderBottom: "1px solid var(--color-border-subtle)",
+          }}
+        >
+          <Typography variant="overline" sx={{ color: "var(--color-accent)", display: "block", lineHeight: 1.2 }}>
+            Action items
+          </Typography>
+          <Typography variant="caption" sx={{ color: "var(--color-text-subtle)" }}>
+            Open work first; completed items stay available for audit.
+          </Typography>
+        </Box>
+        <Box sx={{ px: "var(--space-5)" }}>
+          {data.actionItems.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ py: "var(--space-4)" }}>
+              No action items declared in this sprint-status file.
+            </Typography>
+          ) : (
+            data.actionItems.map((item) => (
+              <ActionItemRow key={item.id} item={item} onOpenFile={onOpenFile} />
+            ))
+          )}
+        </Box>
+      </Paper>
     </StageFrame>
   );
 }

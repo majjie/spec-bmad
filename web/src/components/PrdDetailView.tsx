@@ -117,7 +117,9 @@ function ReviewsTile({
       slotProps={{
         tooltip: {
           sx: {
-            bgcolor: "grey.900",
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
             fontSize: "0.85rem",
             maxWidth: "none",
             maxHeight: "80vh",
@@ -238,7 +240,15 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
       leaveDelay={400}
       slotProps={{
         tooltip: {
-          sx: { bgcolor: "grey.900", fontSize: "0.85rem", maxWidth: "none", maxHeight: "80vh", overflowY: "auto" },
+          sx: {
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
+            fontSize: "0.85rem",
+            maxWidth: "none",
+            maxHeight: "80vh",
+            overflowY: "auto",
+          },
         },
       }}
     >
