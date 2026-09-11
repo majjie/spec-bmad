@@ -17,11 +17,11 @@ Principle V's manual-browser carve-out and is covered by `quickstart.md`.
 **Organization**: Tasks are grouped by user story to enable independent implementation and
 testing of each story.
 
-> **Retrospective task list.** Tasks T001-T024 reconstruct the work already delivered on
+> **Retrospective task list.** Tasks T001-T036 reconstruct the work already delivered on
 > `ux-polish-console` and are marked `[X]` because the code implementing them is present and
 > verified. They are recorded so the feature is traceable, not because they were worked from.
-> **Phase 8 is different**: those tasks are genuinely outstanding, were surfaced *by* writing
-> these artifacts, and are not done.
+> **Phase 8 is different**: those items were surfaced *by* writing these artifacts. T036a and
+> T037 were fixed in the course of the retrospective; T038-T041 remain open.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -43,6 +43,8 @@ Single project with a bundled web frontend (per plan.md): frontend code lives un
 - [X] T001 Verify `package.json` already provides React, MUI, and the test runner, and that
       this feature adds **no** new runtime dependency - the token layer is plain CSS custom
       properties and the theme uses MUI's existing `createTheme` (plan.md, Principle III).
+      (T037 later added two *build-time* font packages; they bundle into the built assets and
+      are not on the `npx` cold-start path the principle constrains.)
 
 **Checkpoint**: No dependency work needed - proceed to Foundational.
 
@@ -259,18 +261,24 @@ runs labelled and the accordion state machine respecting the user's collapses.
 
 ---
 
-## Phase 8: Outstanding - surfaced by this retrospective
+## Phase 8: Surfaced by this retrospective
 
-**These tasks are NOT done.** They were identified while reconstructing the artifacts above,
-and each cites the evidence.
+Identified while reconstructing the artifacts above; each cites its evidence. **T037 is
+done** - it was a constitution violation serious enough to fix immediately rather than
+schedule. The rest are genuinely outstanding, and T041 needs a decision before it is work.
 
-- [ ] T037 **[CRITICAL - constitution Principle III]** Remove the third-party font dependency
-      in `web/index.html`. The typeface is currently fetched from a remote font CDN at page
-      load, so the tool does not render as designed offline and the browser contacts an
-      external host every time a user opens their own private project documents on localhost -
-      which is the exact risk the principle's rationale names. Prefer option A in research § 6
-      (self-host the font files as build assets); option B (a system font stack) also
-      resolves it. Verify offline with the network disabled.
+- [X] T037 **[CRITICAL - constitution Principle III] - DONE during this retrospective.**
+      Removed the third-party font dependency. The typeface was fetched from a remote font CDN
+      at page load, so the tool did not render as designed offline and the browser contacted an
+      external host every time a user opened their own private project documents on localhost -
+      the exact risk the principle's rationale names. The intent had been to bundle the fonts
+      at build time, but no such step existed: there was no font dependency, no font file in
+      the repository, and the built `web/dist/index.html` still carried the live CDN links,
+      because a remote `<link href>` is passed through the build untouched by design.
+      Resolved by research § 6 option A - the font packages are now build-time dependencies and
+      `web/src/main.tsx` imports the **latin subset** of exactly the six weights `theme.ts`
+      maps. Built output now contains zero references to the CDN hosts and ~128 KB of bundled
+      woff2. Verified per `quickstart.md` § H.
 - [ ] T038 Restore a second project lineage and a non-conforming folder to
       `examples/sample-project` so the shipped demo exercises FR-008, FR-009 and SC-009. They
       were present in an earlier revision and removed when the sample was narrowed to one

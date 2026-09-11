@@ -120,6 +120,30 @@ cd - && npx tsx src/cli.ts /tmp/bmad-multi
 > follow-up task in `tasks.md` proposes restoring a second lineage to the sample corpus so
 > the demo covers its own requirements.
 
+## H. The tool works offline (constitution Principle III)
+
+Check the **built output**, not the source. This is the distinction the original defect turned
+on: the source always looked reasonable, and the remote font link was only visible in what the
+build actually emitted.
+
+```bash
+npm run build:web
+grep -r 'fonts.googleapis.com\|fonts.gstatic.com' web/dist/   # must return nothing
+ls web/dist/assets/*.woff2                                     # fonts are bundled
+```
+
+| # | Step | Expected |
+|---|---|---|
+| H1 | Run the grep above | No match anywhere in `web/dist/` |
+| H2 | List the bundled fonts | The weights `theme.ts` maps are present as build assets |
+| H3 | Disconnect the network entirely, then load the tool | The interface renders in IBM Plex, not a fallback stack |
+| H4 | With the network still off, open a document, switch appearance, replay the tour | Everything works; no request fails |
+| H5 | In devtools' network panel on a normal load, filter by domain | Every request is to `127.0.0.1` - nothing leaves the machine |
+
+> H5 is the one that matters most and is easiest to skip. The principle's rationale is that
+> this tool "renders potentially sensitive project documents"; an outbound request made while
+> those documents are on screen is the risk, independent of whether the page looks right.
+
 ---
 
 ## Done when

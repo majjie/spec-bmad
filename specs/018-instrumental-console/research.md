@@ -120,11 +120,14 @@ remapping one layer (feature 019) rather than auditing every component.
 - *A third-party design-token toolchain* - rejected on Principle III: a new dependency for
   what is about forty lines of CSS.
 
-## 6. Typography delivery - an unresolved Principle III violation
+## 6. Typography delivery - a Principle III violation, since resolved
 
-**Decision as implemented**: the intended typeface is fetched from a third-party font CDN at
-page load. **This is a defect, not a decision** - it is recorded here because the plan's
-Constitution Check flags it and remediation needs a written comparison.
+**As originally implemented**: the intended typeface was fetched from a third-party font CDN
+at page load. **That was a defect, not a decision** - the intent had been to bundle the fonts
+at build time, but no such step was ever added, and nothing in ordinary development would have
+revealed the gap, because CDN fonts load perfectly whenever the developer happens to be
+online. It is recorded here because the plan's Constitution Check flagged it and the
+remediation needed a written comparison.
 
 **Why it violates the principle**: Principle III requires the tool to "function fully offline
 once its own dependencies are fetched", and its stated rationale is that the tool "renders
@@ -141,13 +144,22 @@ user opens their own private documents on localhost.
 | **B. Drop the custom typeface** for a system font stack | Yes | Yes | Loses the typographic distinctiveness the redesign was partly about |
 | **C. Keep the CDN link with a local fallback stack** | No - falls back silently | No | Free, but is the current behavior and resolves nothing |
 
-**Recommendation**: **A**, because the typeface is load-bearing for this feature's stated
-purpose and B gives it up to fix a problem A also fixes. C is listed only to be explicit that
-the existing fallback stack does not make the current state compliant - a silent degradation
-is still a failure to "function fully offline as designed", and it does nothing about the
-outbound request, which is the more serious half.
+**Resolution**: **A**, adopted. The typeface is load-bearing for this feature's stated
+purpose, and B gives it up to fix a problem A also fixes. C is recorded only to be explicit
+that the existing fallback stack never made the original state compliant - a silent
+degradation is still a failure to "function fully offline as designed", and it does nothing
+about the outbound request, which is the more serious half.
 
-This is carried as remediation work in `tasks.md` rather than closed here.
+**As implemented** (T037): the font packages are build-time dependencies, and `web/src/main.tsx`
+imports the **latin subset** of exactly the six weights `theme.ts` maps - four sans, two mono.
+Subsetting matters here: importing the full weight files would have pulled latin-ext, cyrillic,
+greek and vietnamese for an interface that is entirely English. The bundled result is ~128 KB
+of woff2, against a script bundle of 1.37 MB.
+
+**Verification** is a search of the *built* output for the CDN hosts, not of the source. That
+distinction is the whole lesson of this defect: the source had always looked reasonable, and
+the remote link was only visible in what the build actually emitted. `quickstart.md` § H
+checks it that way.
 
 ## 7. Onboarding persistence and its versioned key
 
