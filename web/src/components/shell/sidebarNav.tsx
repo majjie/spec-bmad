@@ -58,9 +58,9 @@ interface NavRowProps {
   ariaExpanded?: boolean;
   ariaControls?: string;
   id?: string;
-  flush?: boolean;
 }
 
+/** Full-bleed square nav row — no inset pills or curved side gaps. */
 export function NavRow({
   label,
   secondary,
@@ -72,7 +72,6 @@ export function NavRow({
   ariaExpanded,
   ariaControls,
   id,
-  flush = false,
 }: NavRowProps) {
   const isProject = depth === 0 && ariaExpanded !== undefined;
   const open = ariaExpanded === true;
@@ -86,13 +85,13 @@ export function NavRow({
       aria-expanded={ariaExpanded}
       aria-controls={ariaControls}
       sx={{
-        mx: flush ? 0.5 : 1,
-        mb: 0.25,
+        mx: 0,
+        mb: 0,
         py: isProject ? 1 : 0.65,
         px: 2,
         pl: depth === 1 ? 3.5 : 2,
         minHeight: isProject ? 44 : 40,
-        borderRadius: "var(--radius-nav-item)",
+        borderRadius: 0,
         alignItems: secondary ? "flex-start" : "center",
         color: selected ? "var(--color-text-default)" : "var(--color-text-muted)",
         "&:hover": {
@@ -100,9 +99,10 @@ export function NavRow({
           color: "var(--color-text-default)",
         },
         "&.Mui-selected": {
-          bgcolor: "var(--color-accent-muted)",
+          bgcolor: "var(--color-bg-subtle)",
           color: "var(--color-text-default)",
-          boxShadow: depth === 1 || !isProject ? "var(--elevation-nav-inset)" : "none",
+          boxShadow: "none",
+          borderRadius: 0,
         },
         "&.Mui-selected:hover": {
           bgcolor: "var(--color-bg-hover)",

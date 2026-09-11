@@ -139,18 +139,17 @@ export default function AppSidebar({
                 <Box
                   key={project.key}
                   sx={{
-                    mx: 1,
-                    mb: 0.75,
+                    mx: 0,
+                    mb: 0.25,
                     overflow: "hidden",
-                    borderRadius: "calc(var(--radius-nav-item) + var(--space-1))",
-                    bgcolor: open ? "var(--color-bg-subtle)" : "transparent",
-                    boxShadow: open ? "var(--shadow-sm)" : "none",
+                    borderRadius: 0,
+                    bgcolor: open ? "var(--color-bg-raised)" : "transparent",
+                    boxShadow: "none",
                     transition: "background-color var(--duration-fast) var(--ease-out)",
                   }}
                 >
                   <NavRow
                     id={headerId}
-                    flush
                     label={project.title}
                     {...(summary ? { secondary: summary } : {})}
                     selected={!open && ownsSelection}
@@ -170,11 +169,8 @@ export default function AppSidebar({
                       dense
                       disablePadding
                       sx={{
-                        ml: 2.5,
-                        mr: 0.5,
-                        mb: 0.75,
-                        pl: 1,
-                        borderLeft: "1px solid var(--color-border-default)",
+                        mb: 0.5,
+                        borderTop: "1px solid var(--color-border-subtle)",
                       }}
                     >
                       {project.requirements.length > 0 && (
@@ -184,7 +180,6 @@ export default function AppSidebar({
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "prd", path: leaf.path })}
                               onClick={() => onSelect({ kind: "prd", path: leaf.path })}
@@ -199,7 +194,6 @@ export default function AppSidebar({
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "architecture", path: leaf.path })}
                               onClick={() => onSelect({ kind: "architecture", path: leaf.path })}
@@ -212,7 +206,6 @@ export default function AppSidebar({
                           <GroupLabel>Delivery</GroupLabel>
                           <NavRow
                             depth={1}
-                            flush
                             label="Sprint status"
                             selected={selection.kind === "sprint"}
                             onClick={() => onSelect({ kind: "sprint" })}
@@ -223,7 +216,6 @@ export default function AppSidebar({
                         <NavRow
                           key={entry.path}
                           depth={1}
-                          flush
                           label={entry.folderName}
                           selected={isSelected({ kind: "prd", path: entry.path })}
                           onClick={() => onSelect({ kind: "prd", path: entry.path })}

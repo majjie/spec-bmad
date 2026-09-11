@@ -17,12 +17,17 @@
   --color-amber-400: #e8b84a;
   --color-amber-500: #d4a017;
   --color-amber-600: #b8860b;
+  --color-amber-700: #8a6508;
 
   --color-teal-400: #5b9a9a;
   --color-green-400: #6bbf8a;
+  --color-green-600: #2f8a55;
   --color-red-400: #e07070;
+  --color-red-600: #c44747;
   --color-orange-400: #e09a5a;
+  --color-orange-600: #c56f2c;
   --color-blue-400: #6a9fd4;
+  --color-blue-600: #3b78b0;
 
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -49,7 +54,8 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Semantic */
+  /* Semantic — dark by default (instrumental console) */
+  color-scheme: dark;
   --color-bg-canvas: var(--color-neutral-950);
   --color-bg-surface: var(--color-neutral-900);
   --color-bg-raised: var(--color-neutral-850);
@@ -80,7 +86,7 @@
   --color-focus-ring: var(--color-amber-400);
 
   --radius-control: var(--radius-sm);
-  --radius-nav-item: var(--radius-sm);
+  --radius-nav-item: 0;
   --radius-card: var(--radius-lg);
   --radius-overlay: var(--radius-xl);
   --button-radius: var(--radius-full);
@@ -98,10 +104,56 @@
   --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
   --elevation-card: var(--shadow-sm);
   --elevation-overlay: var(--shadow-lg);
-  --elevation-nav-inset: inset 3px 0 0 var(--color-accent);
+  --elevation-nav-inset: none;
 
   --sidebar-width: 268px;
   --header-height: 56px;
+}
+
+/* Light appearance — only semantic layer remapped (token-architect three-tier rule). */
+:root[data-color-scheme="light"] {
+  color-scheme: light;
+  --color-shadow: #1a2230;
+
+  --color-bg-canvas: #eef1f5;
+  --color-bg-surface: #ffffff;
+  --color-bg-raised: #ffffff;
+  --color-bg-subtle: var(--color-neutral-100);
+  --color-bg-hover: var(--color-neutral-200);
+
+  --color-border-default: var(--color-neutral-200);
+  --color-border-subtle: var(--color-neutral-100);
+
+  --color-text-default: var(--color-neutral-900);
+  --color-text-muted: var(--color-neutral-600);
+  --color-text-subtle: var(--color-neutral-600);
+  --color-text-disabled: var(--color-neutral-400);
+
+  --color-accent: var(--color-amber-600);
+  --color-accent-strong: var(--color-amber-700);
+  --color-accent-muted: color-mix(in srgb, var(--color-amber-600) 14%, transparent);
+
+  --color-status-done: var(--color-green-600);
+  --color-status-review: var(--color-orange-600);
+  --color-status-progress: var(--color-blue-600);
+  --color-status-backlog: var(--color-neutral-600);
+  --color-status-error: var(--color-red-600);
+
+  --color-focus-ring: var(--color-amber-600);
+
+  --shadow-sm:
+    0 1px 2px color-mix(in srgb, var(--color-shadow) 8%, transparent),
+    0 1px 1px color-mix(in srgb, var(--color-shadow) 5%, transparent);
+  --shadow-md:
+    0 8px 24px color-mix(in srgb, var(--color-shadow) 10%, transparent),
+    0 2px 6px color-mix(in srgb, var(--color-shadow) 6%, transparent);
+  --shadow-lg:
+    0 20px 48px color-mix(in srgb, var(--color-shadow) 14%, transparent),
+    0 6px 16px color-mix(in srgb, var(--color-shadow) 8%, transparent);
+
+  --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
+  --elevation-card: var(--shadow-sm);
+  --elevation-overlay: var(--shadow-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {
