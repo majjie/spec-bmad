@@ -20,7 +20,7 @@ boundaries as a visible grid, instead of the table's rows and columns blurring t
 with no visual separation.
 
 **Why this priority**: Tables are currently rendered with no visible structure at all,
-making them hard to read correctly — a basic legibility problem affecting every document
+making them hard to read correctly - a basic legibility problem affecting every document
 that contains one.
 
 **Independent Test**: Open a Markdown document containing a table with at least two columns
@@ -69,7 +69,7 @@ A user viewing a rendered Markdown document containing a fenced code block whose
 fence declares a language (e.g. "```typescript") sees that code's syntax colored the same
 way it already looks when opening a file of that type directly in this tool.
 
-**Why this priority**: This builds on User Story 2's plain background with richer detail —
+**Why this priority**: This builds on User Story 2's plain background with richer detail -
 valuable, but a smaller step once the block is already visually set apart.
 
 **Independent Test**: Open a Markdown document containing a fenced code block whose opening
@@ -97,7 +97,7 @@ directly.
 
 - What happens when a code block's content is wider than the pane? It scrolls horizontally
   within its own block, without wrapping lines in a way that would break the code's
-  structure — matching how this tool already handles a whole code file that's too wide.
+  structure - matching how this tool already handles a whole code file that's too wide.
 - What happens when a fenced code block sits inside a list item or a blockquote? It still
   receives the same background (and syntax coloring, if applicable) as any other fenced
   code block.
@@ -114,26 +114,26 @@ directly.
   a visible border around each header and body cell, forming a complete grid.
 - **FR-002**: That border color MUST reuse this tool's existing neutral divider color
   (the same one already used for other visual separators in this tool), not a new,
-  hardcoded color — so it continues to fit whichever theme (light or dark) is active.
+  hardcoded color - so it continues to fit whichever theme (light or dark) is active.
 - **FR-003**: Every fenced (multi-line, triple-backtick) code block rendered from Markdown
   content anywhere in this tool MUST display a background visibly distinct from the
   surrounding prose, spanning the block's full width.
 - **FR-004**: Inline, single-backtick code spans MUST keep their own existing, smaller
-  inline background exactly as already established — unaffected by FR-003.
+  inline background exactly as already established - unaffected by FR-003.
 - **FR-005**: When a fenced code block's opening fence declares a language, its contents
   MUST render with syntax highlighting for that language, using the same established
   syntax-coloring scheme this tool already uses when a file of that type is opened
   directly.
 - **FR-006**: When a fenced code block's opening fence declares no language, or a language
   this tool's syntax highlighter doesn't recognize, its content MUST still receive FR-003's
-  background, with no syntax coloring applied — never an error, and never missing content.
+  background, with no syntax coloring applied - never an error, and never missing content.
 - **FR-007**: A code block's content MUST remain fully readable when wider than the pane,
   scrolling horizontally within the block itself rather than wrapping in a way that breaks
-  the code's structure — matching this tool's existing behavior for a whole code file
+  the code's structure - matching this tool's existing behavior for a whole code file
   that's too wide.
 - **FR-008**: FR-001 through FR-007 MUST apply consistently everywhere this tool renders
-  Markdown content for a user to read — including PRD documents, Architecture documents,
-  and any Markdown file opened through this tool's general file-viewer — not just one
+  Markdown content for a user to read - including PRD documents, Architecture documents,
+  and any Markdown file opened through this tool's general file-viewer - not just one
   specific view.
 - **FR-009**: None of these changes MUST alter this tool's read-only behavior, or any other
   Navigator, PRD, Architecture, Output, or Infra behavior unrelated to how a table or a
@@ -157,16 +157,16 @@ directly.
 ## Assumptions
 
 - This tool already provides syntax-highlighted rendering for viewing a whole code file
-  directly (e.g. opening a `.py` or `.yaml` file from the Output/Infra tabs) — this feature
+  directly (e.g. opening a `.py` or `.yaml` file from the Output/Infra tabs) - this feature
   reuses that same existing color scheme for fenced code blocks found *inside* rendered
   Markdown, rather than introducing a second, differently-colored scheme.
 - "Markdown rendering" in this feature's scope covers every place this tool turns Markdown
   content into a formatted view for a user to read: PRD documents, Architecture documents,
-  and any Markdown file opened through this tool's general file-viewer — not a new,
+  and any Markdown file opened through this tool's general file-viewer - not a new,
   separate renderer of its own.
 - Table and fenced-code-block parsing itself (how rows/columns or a fence's language tag
   are recognized) is already handled by this tool's existing Markdown rendering and is out
-  of scope — this feature only changes how the resulting cells and code blocks are
+  of scope - this feature only changes how the resulting cells and code blocks are
   visually styled, not how they're parsed.
-- This feature is read-only, consistent with this tool's existing principle — nothing
+- This feature is read-only, consistent with this tool's existing principle - nothing
   about a document's own content is written, edited, or reordered by viewing it.

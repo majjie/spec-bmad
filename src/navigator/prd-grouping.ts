@@ -24,7 +24,7 @@ const PROJECT_DATE_PATTERN = /^(.+)-(\d{4})-(\d{2})-(\d{2})$/;
 /**
  * Groups PRD folder names by project and date, per data-model.md and research.md § 3.
  * Project grouping is case-sensitive (exact string key); a folder name matches only when
- * a non-empty project prefix precedes the trailing YYYY-MM-DD digits — a bare date alone
+ * a non-empty project prefix precedes the trailing YYYY-MM-DD digits - a bare date alone
  * doesn't match, so it falls through to nonConforming.
  */
 export function groupPrdFolders(entries: { name: string; path: string }[]): PrdGroupingResult {

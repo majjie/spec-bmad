@@ -10,7 +10,7 @@ description: "Task list template for feature implementation"
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: Included for the new derivation module (`stripFrontmatter`/
-`stringifyPreambleValue`) — genuine parsing/derivation logic under constitution
+`stringifyPreambleValue`) - genuine parsing/derivation logic under constitution
 Principle V's main clause (like `getFileRenderMode`/`parseActionItems`/
 `deriveStepDisplay`), not just UI-adjacent pure logic. The info control's hover/click
 interaction and its color rendering are UI/rendering, manually verified per Principle V's
@@ -28,7 +28,7 @@ testing of each story.
 ## Path Conventions
 
 Per `plan.md` § Project Structure: one new frontend-only module
-(`web/src/frontmatter.ts`) and a targeted edit to the existing `FileViewerDialog.tsx` —
+(`web/src/frontmatter.ts`) and a targeted edit to the existing `FileViewerDialog.tsx` -
 no new routes, no backend changes.
 
 ---
@@ -45,8 +45,8 @@ Foundational.
 ## Phase 2: Foundational
 
 **Purpose**: `stripFrontmatter()` (and its sibling `stringifyPreambleValue()`, same
-module) is what both user stories build on — User Story 1 renders its `body`, User Story
-2 renders its `preamble` — so this derivation work is a blocking prerequisite, not either
+module) is what both user stories build on - User Story 1 renders its `body`, User Story
+2 renders its `preamble` - so this derivation work is a blocking prerequisite, not either
 story's exclusive concern.
 
 ### Tests for Foundational ⚠️
@@ -63,11 +63,11 @@ story's exclusive concern.
       tag is found later in the document → both tag lines removed, the content between and
       after them preserved in place (FR-002); **the same case but with one or more blank
       lines between the closing `---` and the opening tag, and again between the opening
-      tag and the content that follows it** — detection must not assume the opening tag
+      tag and the content that follows it** - detection must not assume the opening tag
       sits on the very next line (research.md § 3 step 4, matching quickstart.md's own
       fixture shape); **the same case but with a substantial block of ordinary Markdown
       (several paragraphs, not just blank lines) between the opening tag and its closing
-      tag** — the closing tag is found by scanning the rest of the document for a matching
+      tag** - the closing tag is found by scanning the rest of the document for a matching
       tag name, never assumed to be adjacent to the opening tag or near the top of the
       file (FR-002, per the file's own real-world shape: the closing tag can sit after a
       whole block of Markdown, arbitrarily far from the opening tag); an opening tag with
@@ -85,14 +85,14 @@ story's exclusive concern.
       research.md §§ 1-4; must make T001 pass
 
 **Checkpoint**: The frontmatter derivation module is complete and independently tested. No
-user-visible change yet — proceed to User Story 1.
+user-visible change yet - proceed to User Story 1.
 
 ---
 
 ## Phase 3: User Story 1 - Clean Markdown rendering (Priority: P1) 🎯 MVP
 
 **Goal**: A Markdown file's YAML preamble (and, when present, its wrapping marker
-element's tag lines) no longer appear in the rendered view — only the document's actual
+element's tag lines) no longer appear in the rendered view - only the document's actual
 content shows, exactly where it appears in the source.
 
 **Independent Test**: Open a Markdown file whose content starts with a YAML block
@@ -139,11 +139,11 @@ no preamble (or an empty one) and for any non-Markdown file.
       file's `stripFrontmatter(content).preamble` is non-null and has at least one key
       (FR-005/FR-006); depends on T003
 - [X] T005 [US2] Wire that control to a controlled tooltip/popover (hover *and* click both
-      open it — MUI's default `Tooltip` only opens on hover, so this needs an explicit
+      open it - MUI's default `Tooltip` only opens on hover, so this needs an explicit
       controlled `open` state per research.md § 5) listing one row per
       `Object.entries(preamble)`: the key in one theme palette color,
       `stringifyPreambleValue(value)` in a second, visually distinct theme palette color
-      (FR-007/FR-008); the marker element's own tag lines/attributes never appear here —
+      (FR-007/FR-008); the marker element's own tag lines/attributes never appear here -
       only the YAML mapping's own pairs (FR-009); depends on T004
 
 **Checkpoint**: Both user stories should now be independently functional (all of
@@ -160,7 +160,7 @@ quickstart.md's scenarios)
 - [X] T007 [P] Run `npm run typecheck` and resolve any strict-mode type errors introduced
       by the change
 - [X] T008 Execute `quickstart.md` Scenarios 1–6 in a real desktop browser and confirm
-      each matches its expected outcome — a headless Chromium is available via Playwright
+      each matches its expected outcome - a headless Chromium is available via Playwright
       in this environment (used for features 006–009's own quickstart verification);
       prefer actually driving the app with it over only disclosing that manual
       verification wasn't performed
@@ -169,13 +169,13 @@ quickstart.md's scenarios)
 
 ## Phase 6: Post-Implementation Design Feedback (2026-09-08)
 
-**Context**: User feedback after T001–T008 landed — the readout's default tooltip
+**Context**: User feedback after T001–T008 landed - the readout's default tooltip
 styling (translucent background, small text) was hard to read over varied Markdown
 content. Corrected in the same session per this project's established precedent (features
 007–009); spec.md updated to match (new Clarifications entry, FR-011).
 
 - [X] T009 In `web/src/components/FileViewerDialog.tsx`: override the `Tooltip`'s default
-      styling via `slotProps.tooltip.sx` — a fully opaque background (`bgcolor:
+      styling via `slotProps.tooltip.sx` - a fully opaque background (`bgcolor:
       "grey.900"`, not MUI's default translucent grey) and a larger `fontSize` (`"0.85rem"`
       vs. the default ~11px tooltip text), per FR-011; also removed the default `maxWidth`
       constraint, since it was truncating longer values (e.g. `baseline_commit`'s
@@ -187,11 +187,11 @@ content. Corrected in the same session per this project's established precedent 
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: Empty for this feature — no dependencies, no work
+- **Setup (Phase 1)**: Empty for this feature - no dependencies, no work
 - **Foundational (Phase 2)**: No dependency on Setup; MUST complete before any user story
   (both depend on `stripFrontmatter()`'s result shape)
 - **User Story 1 (Phase 3)**: Depends on Foundational; no dependency on User Story 2
-- **User Story 2 (Phase 4)**: Depends on User Story 1 — it extends the same
+- **User Story 2 (Phase 4)**: Depends on User Story 1 - it extends the same
   `FileViewerDialog.tsx` edit User Story 1 makes, adding the info control alongside it
 - **Polish (Phase 5)**: Depends on both user stories being complete
 
@@ -212,11 +212,11 @@ content. Corrected in the same session per this project's established precedent 
 
 ### Parallel Opportunities
 
-- None in Foundational or the user-story phases — every implementation task from T002
+- None in Foundational or the user-story phases - every implementation task from T002
   onward edits the same single file (`web/src/frontmatter.ts` then `FileViewerDialog.tsx`)
   sequentially, and T001 has no sibling task to run alongside it.
 - T007 (typecheck) can run in parallel with T006 (test suite) and T008 (manual
-  quickstart) in Polish — the only real parallel opportunity in this feature.
+  quickstart) in Polish - the only real parallel opportunity in this feature.
 
 ---
 
@@ -244,7 +244,7 @@ content. Corrected in the same session per this project's established precedent 
 - [Story] label maps task to specific user story for traceability
 - `stripFrontmatter()`'s correctness (T001/T002), including the tag-pair matching and its
   best-effort fallback, matters as much as any other backend test task in earlier
-  features — it's genuine derivation logic, not UI-adjacent pure logic
+  features - it's genuine derivation logic, not UI-adjacent pure logic
 - Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently

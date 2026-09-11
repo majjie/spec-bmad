@@ -37,7 +37,7 @@
   PRD's own `review-`-prefix naming, that memory log entries use the same YAML-frontmatter
   + categorized-bullet format PRD's own memory log already handles generically, and that
   requirement codes there are exclusively heading-style (no bullet-style codes were found
-  at all) — directly confirming the user's own stated scoping rather than assuming it.
+  at all) - directly confirming the user's own stated scoping rather than assuming it.
   This is unusually low-ambiguity as a result: almost every behavior mirrors an
   already-shipped PRD equivalent (features 012/013), with the differences explicitly
   called out by the user (reviews location, no memlog links, no addendum tile) already

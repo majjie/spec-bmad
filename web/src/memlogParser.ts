@@ -9,7 +9,7 @@ export interface MemlogEntry {
   segments: MemlogSegment[];
 }
 
-// A bullet's leading text is a single parenthetical word, e.g. "(decision)" — capitalized
+// A bullet's leading text is a single parenthetical word, e.g. "(decision)" - capitalized
 // on extraction; anything else (no parens, or multiple words inside them) falls back to
 // `category: null` (Edge Cases, data-model.md).
 const CATEGORY_PATTERN = /^\(([a-zA-Z]+)\)\s*/;
@@ -20,8 +20,8 @@ function capitalize(word: string): string {
 
 /**
  * Splits `text` into an ordered sequence of plain-text and requirement-code segments,
- * resolving each code's `referenceId` against `prdReferences` — the currently-open PRD's
- * own detected requirement codes (feature 012) — by exact code match, first occurrence in
+ * resolving each code's `referenceId` against `prdReferences` - the currently-open PRD's
+ * own detected requirement codes (feature 012) - by exact code match, first occurrence in
  * document order winning when a code matches more than one reference there (FR-015–FR-017,
  * Clarifications: every matching code in the text is resolved independently).
  */
@@ -50,7 +50,7 @@ function splitSegments(text: string, prdReferences: RequirementCodeReference[]):
 
 /**
  * Parses `.memlog.md`'s bullet-point body (already frontmatter-stripped) into an ordered
- * list of entries — one per top-level bullet line. Bullet-splitting is purely line-based:
+ * list of entries - one per top-level bullet line. Bullet-splitting is purely line-based:
  * every non-blank line starting with `- ` begins a new entry; no multi-line bullet
  * continuation is attempted (research.md § 5).
  */

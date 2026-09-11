@@ -13,7 +13,7 @@
 ### Session 2026-09-07
 
 - Q: Should the cached hierarchy include everything under the target project folder, or only what's inside its `_bmad` and `_bmad-output` subfolders? → A: Only cache the `_bmad` and `_bmad-output` subtrees (plus the folders themselves); unrelated content elsewhere in the target project folder is never scanned or cached.
-- Q: When walking up to the parent directory to search for a valid project nearby, should the parent directory itself also be checked for `_bmad`/`_bmad-output`, or only its children and grandchildren? → A: Check the parent directory itself, plus its children (level 1) and grandchildren (level 2) — 3 levels of candidates total.
+- Q: When walking up to the parent directory to search for a valid project nearby, should the parent directory itself also be checked for `_bmad`/`_bmad-output`, or only its children and grandchildren? → A: Check the parent directory itself, plus its children (level 1) and grandchildren (level 2) - 3 levels of candidates total.
 - Q: Should the discovery crawl skip conventionally-noisy directories (`.git`, `node_modules`, other hidden/dot folders), or crawl into everything within its two-level range? → A: Skip hidden (dot-prefixed) folders and common dependency/build folders (e.g. `node_modules`, `.git`) during the discovery crawl only.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -117,7 +117,7 @@ a suggested command pointing at the discovered project folder.
   under it, if it is a symlinked folder) is left out of the cached hierarchy entirely, as
   if it did not exist.
 - What happens when the only `_bmad` or `_bmad-output` entry in the target folder is
-  itself a symlink? Since symlinks are excluded, it does not count — the folder is still
+  itself a symlink? Since symlinks are excluded, it does not count - the folder is still
   treated as invalid.
 - What happens when a hierarchy refresh is triggered on a folder that no longer exists on
   disk at all? The system reports that the target folder can no longer be found rather
@@ -139,7 +139,7 @@ a suggested command pointing at the discovered project folder.
   target project folder. Other, unrelated content of the target project folder MUST NOT be
   scanned or included.
 - **FR-002**: The system MUST NOT read or interpret the contents of any file while building
-  or refreshing the hierarchy — only folder/file names, paths, and type are captured.
+  or refreshing the hierarchy - only folder/file names, paths, and type are captured.
 - **FR-003**: The system MUST exclude symlinked files and symlinked folders, and everything
   underneath a symlinked folder, from the cached hierarchy and from any folder-discovery
   crawl.
@@ -176,7 +176,7 @@ a suggested command pointing at the discovered project folder.
 ### Key Entities
 
 - **Artifact Node**: A single file or folder discovered within a project's hierarchy;
-  carries a name, a path, its type (file or folder), and — for folders — its child Artifact
+  carries a name, a path, its type (file or folder), and - for folders - its child Artifact
   Nodes.
 - **Project Root**: The target folder that has been confirmed to directly contain a
   `_bmad` and/or `_bmad-output` folder. It is used to locate those folders but is not
@@ -216,5 +216,5 @@ a suggested command pointing at the discovered project folder.
 - Only content inside `_bmad` and/or `_bmad-output` is cached; other files and folders in
   the target project folder (application source code, `node_modules`, `.git`, etc.) are
   never scanned or cached by this layer. Within a cached `_bmad`/`_bmad-output` subtree,
-  hidden folders are not treated specially — they are included like any other folder,
+  hidden folders are not treated specially - they are included like any other folder,
   unless they are symlinks.

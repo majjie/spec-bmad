@@ -37,6 +37,6 @@
   technologies, so they're recorded in Assumptions/FRs without naming a specific framework
   (framework selection is deferred to `/speckit-plan`).
 - The Created/Updated/Size columns require metadata feature 001's Artifact Node doesn't
-  currently capture — flagged explicitly in Assumptions as a planning-phase dependency
+  currently capture - flagged explicitly in Assumptions as a planning-phase dependency
   rather than treated as a spec gap, since sourcing it doesn't change this feature's scope
   or user-facing behavior.

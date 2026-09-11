@@ -18,7 +18,7 @@ side pane."
 ### Session 2026-09-07
 
 - Q: After the user navigates to just one folder (their first in-app action) and then presses Back, should that return them to the initial default view (Infra tab, root selected), or leave the application? → A: The app establishes a baseline history entry for its initial view on load, so Back after any number of navigations (including just one) always returns to a previous in-app state first, and only leaves the app once that baseline itself is reached.
-- Q: If the user reloads the browser tab while several folders deep, should the app restore that last-viewed folder/tab, or reset to the initial default view? → A: Reset to the initial default view (Infra tab, root selected) — a reload is treated the same as a fresh page load, consistent with this feature not requiring bookmarkable/shareable URLs.
+- Q: If the user reloads the browser tab while several folders deep, should the app restore that last-viewed folder/tab, or reset to the initial default view? → A: Reset to the initial default view (Infra tab, root selected) - a reload is treated the same as a fresh page load, consistent with this feature not requiring bookmarkable/shareable URLs.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -30,7 +30,7 @@ back button, or a mouse's back button), they expect to land on whichever folder/
 were just looking at, not to leave BMAD Browser entirely.
 
 **Why this priority**: Today, no in-app navigation is recorded on the browser's history
-stack, so the very first Back press exits the application — a surprising, disruptive
+stack, so the very first Back press exits the application - a surprising, disruptive
 failure for anyone using a standard navigation habit (mouse back button, Alt+Left, etc.).
 This is the most user-visible problem being fixed.
 
@@ -51,14 +51,14 @@ Forward and confirm it re-applies the selection that Back had just undone.
    **Then** the folder/tab selection that was undone by Back is shown again.
 4. **Given** the app has just loaded and the user has made exactly one navigation (e.g.,
    selected folder A), **When** they press Back, **Then** they return to the app's initial
-   default view (Infra tab, root selected) — not out of the application — because the
+   default view (Infra tab, root selected) - not out of the application - because the
    initial view itself was recorded as a baseline history entry when the app loaded.
 5. **Given** the user is already at the app's initial default view with no further
    in-app history behind it, **When** they press Back, **Then** standard browser behavior
    applies (there is nothing further of the app's own to return to).
 6. **Given** the user expands or collapses a tree folder without changing which folder is
    selected, **When** they press Back, **Then** that expand/collapse action is not treated
-   as a separate step — Back moves to the previous *selection*, not the previous tree
+   as a separate step - Back moves to the previous *selection*, not the previous tree
    expand/collapse state.
 
 ---
@@ -68,8 +68,8 @@ Forward and confirm it re-applies the selection that Back had just undone.
 When a tab is shown for the first time, its root folder's immediate child folders are
 already visible in the tree, without the user needing to click the root node first.
 
-**Why this priority**: A small orientation improvement — it saves one click and shows
-users there's something to explore — but the tool is still fully usable without it, since
+**Why this priority**: A small orientation improvement - it saves one click and shows
+users there's something to explore - but the tool is still fully usable without it, since
 one extra click reveals the same thing.
 
 **Independent Test**: Load the app against a project with at least one subfolder under
@@ -82,10 +82,10 @@ with no click needed. Switch to Output and confirm the same for `_bmad-output`.
    **Then** the root folder node is shown expanded, with its immediate child folders
    visible.
 2. **Given** the root node is expanded by default, **When** the tree renders, **Then** none
-   of the root's child folders are themselves expanded — only one level of expansion is
+   of the root's child folders are themselves expanded - only one level of expansion is
    applied automatically.
 3. **Given** the user manually collapses the root node, **When** they switch to the other
-   tab and back, **Then** the root remains exactly as the user left it (collapsed) — the
+   tab and back, **Then** the root remains exactly as the user left it (collapsed) - the
    automatic expansion only applies the first time a tab's tree is populated, not on every
    return visit.
 
@@ -93,7 +93,7 @@ with no click needed. Switch to Output and confirm the same for `_bmad-output`.
 
 ### User Story 3 - Folders are marked with an icon (Priority: P3)
 
-Folder entries — in both the left-hand tree and the right-hand contents table — are shown
+Folder entries - in both the left-hand tree and the right-hand contents table - are shown
 with a folder icon, so they're visually distinguishable from files at a glance.
 
 **Why this priority**: A clarity improvement for an information-dense view; useful but not
@@ -138,14 +138,14 @@ lines between rows and that adjacent rows alternate between two background shade
 
 - What happens on a Back press once the user is back at the app's own initial default
   view (baseline entry), with no further in-app history behind it? Standard browser
-  behavior applies — there is nothing further of the app's own to return to (User Story 1,
+  behavior applies - there is nothing further of the app's own to return to (User Story 1,
   Acceptance Scenario 5).
 - What happens if the user navigates to a new folder after having pressed Back one or more
   times? The now-obsolete "forward" history (from before the Back presses) is discarded,
-  per standard browser history behavior — pressing Forward no longer has anything past the
+  per standard browser history behavior - pressing Forward no longer has anything past the
   newly-visited folder to go to.
 - What happens to a folder's icon display for an empty folder (User Story 3)? It still
-  shows the folder icon — having no children doesn't change its type.
+  shows the folder icon - having no children doesn't change its type.
 - What happens to row striping (User Story 4) when the table shows only one row, or is
   empty? A single row uses its designated shade; the pre-existing empty-state message
   (from the Web Artifact Explorer feature) is shown instead of a table when there are no
@@ -169,9 +169,9 @@ lines between rows and that adjacent rows alternate between two background shade
 - **FR-006**: The first time a tab's tree is populated, the tab's root folder node MUST be
   rendered expanded, showing its immediate child folders.
 - **FR-007**: Automatic root expansion (FR-006) MUST apply only the first time a tab's
-  tree is populated — if the user subsequently collapses the root, that state MUST persist
+  tree is populated - if the user subsequently collapses the root, that state MUST persist
   across tab switches for the remainder of the session.
-- **FR-008**: Folders below the root MUST NOT be automatically expanded — only the root's
+- **FR-008**: Folders below the root MUST NOT be automatically expanded - only the root's
   immediate children are revealed by FR-006.
 - **FR-009**: Every folder entry shown in the left-hand tree or the right-hand contents
   table MUST display a folder icon; file entries MUST NOT display that icon.
@@ -181,7 +181,7 @@ lines between rows and that adjacent rows alternate between two background shade
   lines.
 - **FR-012**: When the app first loads, it MUST record its initial view (Infra tab, root
   selected) as a baseline history entry, so that a single subsequent navigation can still
-  be undone by Back — leaving the application only happens once the user is already back
+  be undone by Back - leaving the application only happens once the user is already back
   at this baseline with no further in-app history behind it.
 
 ### Key Entities
@@ -212,11 +212,11 @@ lines between rows and that adjacent rows alternate between two background shade
   history entry; expanding/collapsing a tree node on its own does not (User Story 1,
   Acceptance Scenario 6; FR-005).
 - Back/Forward restore which tab is active and which folder is selected; they do not
-  restore a full snapshot of tree expand/collapse state at that past moment — expand/
+  restore a full snapshot of tree expand/collapse state at that past moment - expand/
   collapse state simply reflects however the user currently has it, independent of
   Back/Forward navigation.
 - This feature does not require the app's URL to be independently bookmarkable or
-  shareable (e.g., pasting a copied URL into a new tab reconstructing the same view) —
+  shareable (e.g., pasting a copied URL into a new tab reconstructing the same view) -
   only that the browser's own Back/Forward actions work correctly during a single
   session. Deeper URL/deep-linking support is out of scope here.
 - Reloading the page (e.g., pressing F5) is treated the same as a fresh page load: it
@@ -226,5 +226,5 @@ lines between rows and that adjacent rows alternate between two background shade
   it does not change how any other folder's expand/collapse state behaves.
 - Which specific icon represents a folder, and the exact two shades used for row
   striping, are visual-design decisions for the planning phase, not specification
-  concerns — this spec only requires that a folder icon exists and is visually distinct
+  concerns - this spec only requires that a folder icon exists and is visually distinct
   from files, and that alternating shading (not divider lines) is used.

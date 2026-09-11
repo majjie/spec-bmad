@@ -28,7 +28,7 @@ here, per constitution Principle V's UI-rendering carve-out.
   context: []
   ---
 
-  <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+  <frozen-after-approval reason="human-owned intent - do not modify unless human renegotiates">
 
   # Copy the artifact's path
 
@@ -49,7 +49,7 @@ here, per constitution Principle V's UI-rendering carve-out.
   Body text after a bare YAML preamble.
   EOF
 
-  # Case 3: no preamble at all — an ordinary Markdown file.
+  # Case 3: no preamble at all - an ordinary Markdown file.
   cat > spec-1-3-no-preamble.md <<'EOF'
   # Ordinary document
 
@@ -60,20 +60,20 @@ here, per constitution Principle V's UI-rendering carve-out.
   cat > spec-1-4-horizontal-rule.md <<'EOF'
   ---
 
-  Not a preamble — just a Markdown file that happens to open with a horizontal rule.
+  Not a preamble - just a Markdown file that happens to open with a horizontal rule.
   EOF
   ```
 
 - Start the CLI against `/tmp/bmad-frontmatter/project` and open the printed URL in a
   full-size desktop browser. Open each file above via the Output tab.
 
-## Scenario 1 — Full example: YAML + wrapper marker element (FR-001/FR-002)
+## Scenario 1 - Full example: YAML + wrapper marker element (FR-001/FR-002)
 
 Open `spec-1-1-full-example.md`. **Expected**: the rendered view shows only the heading
-"Copy the artifact's path" and its body paragraph — no YAML syntax, no
+"Copy the artifact's path" and its body paragraph - no YAML syntax, no
 `<frozen-after-approval ...>` or `</frozen-after-approval>` line anywhere in the view.
 
-## Scenario 2 — Info control appears and shows the readout (FR-005–FR-008)
+## Scenario 2 - Info control appears and shows the readout (FR-005–FR-008)
 
 With the same file still open, **expected**: an informational "(i)" control sits next to
 the "X" close control, in the same translucent container. Hovering it shows a readout
@@ -82,27 +82,27 @@ listing every preamble key (`title`, `type`, `created`, `status`, `baseline_comm
 `[]`), with keys and values in two visually distinct colors. Clicking the control (instead
 of hovering) produces the same readout.
 
-## Scenario 3 — YAML-only preamble, no marker element (FR-001, Edge Cases)
+## Scenario 3 - YAML-only preamble, no marker element (FR-001, Edge Cases)
 
 Open `spec-1-2-yaml-only.md`. **Expected**: the rendered view shows only "YAML only" and
 its body paragraph; the info control still appears (a preamble was still detected) and its
 readout shows `title`/`status`.
 
-## Scenario 4 — No preamble at all (FR-006)
+## Scenario 4 - No preamble at all (FR-006)
 
 Open `spec-1-3-no-preamble.md`. **Expected**: renders exactly as it always has; no info
 control appears next to the close control.
 
-## Scenario 5 — A leading `---` that isn't this feature's preamble (FR-003/FR-004)
+## Scenario 5 - A leading `---` that isn't this feature's preamble (FR-003/FR-004)
 
-Open `spec-1-4-horizontal-rule.md`. **Expected**: renders exactly as it always has — the
+Open `spec-1-4-horizontal-rule.md`. **Expected**: renders exactly as it always has - the
 horizontal rule displays as a normal Markdown rule, nothing is stripped, and no info
 control appears.
 
-## Scenario 6 — Non-Markdown files are unaffected (FR-003)
+## Scenario 6 - Non-Markdown files are unaffected (FR-003)
 
 Open any non-Markdown file already used in prior features' quickstarts (e.g. a
 `sprint-status.yaml` or `.csv` file). **Expected**: renders exactly as it already does
-today (via its own syntax/CSV render mode) — no stripping, no info control. This holds
+today (via its own syntax/CSV render mode) - no stripping, no info control. This holds
 regardless of the file's own content shape, since FR-003 gates this feature entirely on
 render mode, never on what the content looks like.

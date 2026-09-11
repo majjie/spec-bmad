@@ -1,6 +1,6 @@
 # Data Model: Architecture Tree
 
-This feature introduces **no new entity shape** — it reuses the existing PRD grouping
+This feature introduces **no new entity shape** - it reuses the existing PRD grouping
 model (feature 006) verbatim for a second artifact type, a deliberate choice recorded in
 research.md § 2.
 
@@ -8,7 +8,7 @@ research.md § 2.
 
 | Type | Already defined in | Reused as |
 |---|---|---|
-| `PrdGroupingResult` (`{ projects, nonConforming }`) | `src/navigator/prd-grouping.ts` / `web/src/api.ts` | `NavigatorTree.architecture` — the exact same shape as `NavigatorTree.prd`, just for `planning-artifacts/architecture` instead of `planning-artifacts/prds`. |
+| `PrdGroupingResult` (`{ projects, nonConforming }`) | `src/navigator/prd-grouping.ts` / `web/src/api.ts` | `NavigatorTree.architecture` - the exact same shape as `NavigatorTree.prd`, just for `planning-artifacts/architecture` instead of `planning-artifacts/prds`. |
 | `PrdProjectGroup` (`{ project, dates }`) | same | One entry per unique `<project>` prefix found among architecture subfolder names. |
 | `PrdDateEntry` (`{ date, folderName, path }`) | same | One entry per architecture subfolder matching the `<project>-YYYY-MM-DD` pattern. |
 | `PrdNonConformingEntry` (`{ folderName, path }`) | same | One entry per architecture subfolder that doesn't match that pattern. |
@@ -30,7 +30,7 @@ the four digit groups become its `date` (joined as `YYYY-MM-DD`, not calendar-va
 per this feature's own Edge Cases); a non-match becomes a `PrdNonConformingEntry`. Projects
 are sorted alphabetically; each project's dates are sorted descending (newest first);
 non-conforming entries are sorted alphabetically by folder name. None of this logic is new
-or modified — this feature only supplies it a second input (architecture subfolders
+or modified - this feature only supplies it a second input (architecture subfolders
 instead of PRD subfolders).
 
 ## Relationship to existing entities
@@ -38,5 +38,5 @@ instead of PRD subfolders).
 No existing entity's *shape* changes. `NavigatorDetailPane.tsx`'s dispatch logic gains one
 new branch (an architecture-leaf match, alongside its existing PRD-leaf and Sprint Status
 branches), and `App.tsx`'s refresh handler (feature 014) is updated to validate a selection
-against *both* `tree.prd` and `tree.architecture` — see research.md § 3 for why this
+against *both* `tree.prd` and `tree.architecture` - see research.md § 3 for why this
 integration point matters.

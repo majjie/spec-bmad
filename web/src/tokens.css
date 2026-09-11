@@ -1,0 +1,204 @@
+/* BMAD Browser - three-tier tokens (primitives → semantic). Components use semantic only. */
+
+:root {
+  /* Primitives - cool-tinted charcoal + amber accent */
+  --color-neutral-950: #0c0f12;
+  --color-neutral-900: #12161b;
+  --color-neutral-850: #171c22;
+  --color-neutral-800: #1c2229;
+  --color-neutral-700: #2a323c;
+  --color-neutral-600: #3d4652;
+  --color-neutral-400: #8b95a3;
+  --color-neutral-300: #a8b1bd;
+  --color-neutral-200: #c5ccd5;
+  --color-neutral-100: #e8ebef;
+  --color-neutral-50: #f4f6f8;
+
+  /* Warm light-theme foundations + cool mist for chrome */
+  --color-sand-50: oklch(98% 0.012 85);
+  --color-sand-100: oklch(95.5% 0.018 85);
+  --color-sand-200: oklch(90.5% 0.022 85);
+  --color-mist-50: oklch(96.5% 0.015 240);
+  --color-mist-100: oklch(92.5% 0.025 240);
+  --color-mist-200: oklch(86% 0.032 240);
+  --color-ink-900: oklch(24% 0.025 65);
+  --color-ink-700: oklch(39% 0.025 65);
+  --color-ink-600: oklch(47% 0.025 65);
+  --color-ink-400: oklch(64% 0.02 65);
+  --color-ochre-600: oklch(49% 0.1 78);
+  --color-ochre-700: oklch(40% 0.085 78);
+  --color-slate-blue-600: oklch(48% 0.08 245);
+  --color-slate-blue-700: oklch(40% 0.07 245);
+  --color-shadow-warm: oklch(31% 0.03 55);
+
+  --color-amber-400: #e8b84a;
+  --color-amber-500: #d4a017;
+  --color-amber-600: #b8860b;
+  --color-amber-700: #8a6508;
+
+  --color-teal-400: #5b9a9a;
+  --color-green-400: #6bbf8a;
+  --color-green-600: #2f8a55;
+  --color-red-400: #e07070;
+  --color-red-600: #c44747;
+  --color-orange-400: #e09a5a;
+  --color-orange-600: #c56f2c;
+  --color-blue-400: #6a9fd4;
+  --color-blue-600: #3b78b0;
+
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --color-shadow: #05070a;
+
+  --duration-fast: 150ms;
+  --duration-normal: 280ms;
+  --duration-slow: 400ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Semantic - dark by default (instrumental console) */
+  color-scheme: dark;
+  --color-bg-canvas: var(--color-neutral-950);
+  --color-bg-surface: var(--color-neutral-900);
+  --color-bg-raised: var(--color-neutral-850);
+  --color-bg-subtle: var(--color-neutral-800);
+  --color-bg-hover: var(--color-neutral-700);
+  --color-bg-header: var(--color-bg-surface);
+  --color-bg-sidebar: var(--color-bg-surface);
+
+  --color-border-default: var(--color-neutral-700);
+  --color-border-subtle: var(--color-neutral-800);
+
+  --color-text-default: var(--color-neutral-100);
+  --color-text-muted: var(--color-neutral-300);
+  --color-text-subtle: var(--color-neutral-400);
+  --color-text-disabled: var(--color-neutral-600);
+
+  --color-accent: var(--color-amber-400);
+  --color-accent-strong: var(--color-amber-500);
+  --color-accent-muted: color-mix(in srgb, var(--color-amber-400) 18%, transparent);
+  --color-brand: var(--color-blue-400);
+
+  --color-label: var(--color-text-subtle);
+  --color-value: var(--color-text-default);
+
+  --color-status-done: var(--color-green-400);
+  --color-status-review: var(--color-orange-400);
+  --color-status-progress: var(--color-blue-400);
+  --color-status-backlog: var(--color-neutral-400);
+  --color-status-error: var(--color-red-400);
+
+  --color-focus-ring: var(--color-amber-400);
+
+  /* Scrims. `soft` is for overlays that teach rather than block - the guided tour still
+     needs the interface behind it legible. Against a near-black canvas a heavy scrim is
+     barely perceptible, which is why these were easy to get wrong before they were named. */
+  --color-scrim: color-mix(in srgb, var(--color-neutral-950) 72%, transparent);
+  --color-scrim-soft: color-mix(in srgb, var(--color-neutral-950) 52%, transparent);
+
+  --radius-control: var(--radius-sm);
+  --radius-nav-item: 0;
+  --radius-card: var(--radius-lg);
+  --radius-overlay: var(--radius-xl);
+  --button-radius: var(--radius-full);
+
+  --shadow-sm:
+    0 1px 2px color-mix(in srgb, var(--color-shadow) 45%, transparent),
+    0 1px 1px color-mix(in srgb, var(--color-shadow) 25%, transparent);
+  --shadow-md:
+    0 8px 24px color-mix(in srgb, var(--color-shadow) 42%, transparent),
+    0 2px 6px color-mix(in srgb, var(--color-shadow) 28%, transparent);
+  --shadow-lg:
+    0 20px 48px color-mix(in srgb, var(--color-shadow) 50%, transparent),
+    0 6px 16px color-mix(in srgb, var(--color-shadow) 32%, transparent);
+
+  --elevation-header: 0 1px 0 var(--color-border-default), var(--shadow-sm);
+  --elevation-card: var(--shadow-sm);
+  --elevation-overlay: var(--shadow-lg);
+  --elevation-nav-inset: none;
+
+  --sidebar-width: 268px;
+  --header-height: 56px;
+}
+
+/* Light appearance - only semantic layer remapped (token-architect three-tier rule). */
+:root[data-color-scheme="light"] {
+  color-scheme: light;
+  --color-shadow: var(--color-shadow-warm);
+
+  --color-bg-canvas: var(--color-sand-100);
+  --color-bg-surface: var(--color-sand-50);
+  --color-bg-raised: var(--color-sand-50);
+  --color-bg-subtle: var(--color-mist-100);
+  --color-bg-hover: var(--color-mist-200);
+  --color-bg-header: var(--color-sand-50);
+  --color-bg-sidebar: var(--color-mist-50);
+
+  --color-border-default: var(--color-sand-200);
+  --color-border-subtle: var(--color-mist-100);
+
+  --color-text-default: var(--color-ink-900);
+  --color-text-muted: var(--color-ink-700);
+  --color-text-subtle: var(--color-ink-600);
+  --color-text-disabled: var(--color-ink-400);
+
+  --color-accent: var(--color-slate-blue-600);
+  --color-accent-strong: var(--color-slate-blue-700);
+  --color-accent-muted: color-mix(in oklch, var(--color-slate-blue-600) 14%, transparent);
+  --color-brand: var(--color-slate-blue-600);
+
+  --color-status-done: var(--color-green-600);
+  --color-status-review: var(--color-orange-600);
+  --color-status-progress: var(--color-blue-600);
+  --color-status-backlog: var(--color-neutral-600);
+  --color-status-error: var(--color-red-600);
+
+  --color-focus-ring: var(--color-slate-blue-600);
+
+  /* Warm ink rather than black, and lighter: over a sand page a heavy black wash reads as
+     muddy rather than as depth. */
+  --color-scrim: color-mix(in srgb, var(--color-ink-900) 40%, transparent);
+  --color-scrim-soft: color-mix(in srgb, var(--color-ink-900) 26%, transparent);
+
+  --shadow-sm:
+    0 2px 8px -2px color-mix(in oklch, var(--color-shadow) 10%, transparent),
+    0 1px 2px color-mix(in oklch, var(--color-shadow) 6%, transparent);
+  --shadow-md:
+    0 12px 32px -10px color-mix(in oklch, var(--color-shadow) 16%, transparent),
+    0 3px 10px -3px color-mix(in oklch, var(--color-shadow) 9%, transparent),
+    0 1px 2px color-mix(in oklch, var(--color-shadow) 5%, transparent);
+  --shadow-lg:
+    0 28px 64px -18px color-mix(in oklch, var(--color-shadow) 18%, transparent),
+    0 10px 24px -8px color-mix(in oklch, var(--color-shadow) 11%, transparent),
+    0 2px 6px -2px color-mix(in oklch, var(--color-shadow) 6%, transparent);
+
+  --elevation-header: 0 1px 0 var(--color-border-subtle), var(--shadow-sm);
+  --elevation-card:
+    0 14px 36px -14px color-mix(in oklch, var(--color-shadow) 14%, transparent),
+    0 4px 12px -4px color-mix(in oklch, var(--color-shadow) 8%, transparent),
+    0 1px 3px color-mix(in oklch, var(--color-shadow) 4%, transparent);
+  --elevation-overlay: var(--shadow-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-normal: 0.01ms;
+    --duration-slow: 0.01ms;
+  }
+}

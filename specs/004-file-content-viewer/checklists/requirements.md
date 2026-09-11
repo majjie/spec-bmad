@@ -37,5 +37,5 @@
   `.yaml`, Markdown feature coverage, very-large-file handling) all had clear, low-risk
   reasonable defaults, documented in Assumptions/Edge Cases instead.
 - This feature reads file *contents* for the first time (feature 001's access layer
-  deliberately never does) — a new backend capability, not just a UI change. Flagged here
+  deliberately never does) - a new backend capability, not just a UI change. Flagged here
   so `/speckit-plan` doesn't treat it as UI-only the way feature 003 was.

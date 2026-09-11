@@ -13,18 +13,22 @@ export interface PrefixGroup {
   references: RequirementCodeReference[];
 }
 
-// The shape of a requirement code itself — two-or-more uppercase letters, a dash,
-// one-or-more digits (Assumptions, spec.md) — exported so other modules (e.g. feature
+// The shape of a requirement code itself - two-or-more uppercase letters, a dash,
+// one-or-more digits (Assumptions, spec.md) - exported so other modules (e.g. feature
 // 013's memlogParser.ts, which detects bare inline mentions with no wrapping syntax) reuse
 // this exact definition rather than a second, potentially-drifting copy.
 export const REQUIREMENT_CODE_PATTERN = /\b[A-Z]{2,}-\d+\b/g;
 
 // Bullet style: two-or-more letters, a dash, one-or-more digits, wrapped in **...** (e.g.
 // `**FR-25**`). Header style: a level-3 heading starting with the same code shape,
-// followed by a space and an em dash (e.g. `### UJ-1 — Verifying a completed stage`).
+// followed by a space and an em dash or hyphen (e.g. `### UJ-1 - Verifying a completed
+// stage`); both separators are accepted, since BMAD documents use either.
 // Both require the letter portion to be uppercase (Assumptions, spec.md).
 const BULLET_PATTERN = /\*\*([A-Z]{2,})-(\d+)\*\*/g;
-const HEADER_PATTERN = /^###[ \t]+([A-Z]{2,})-(\d+)[ \t]+—/gm;
+// NOTE: the — in this character class is DATA, not prose - it is one of the two
+// separators a heading may use. Do not include it in a punctuation sweep; replacing it
+// collapses the class to a hyphen and silently stops indexing em-dash headings.
+const HEADER_PATTERN = /^###[ \t]+([A-Z]{2,})-(\d+)[ \t]+[—-]/gm;
 
 interface RawMatch {
   index: number;
@@ -48,9 +52,9 @@ function collectMatches(content: string, pattern: RegExp, style: RequirementCode
 
 /**
  * Scans the (already frontmatter-stripped) Markdown text left to right for the requested
- * requirement-code style(s) — defaulting to both, PRD's own established behavior —
- * returning one reference per occurrence in document order. Duplicates — the same code
- * appearing twice, or appearing in both styles — each get their own distinct reference;
+ * requirement-code style(s) - defaulting to both, PRD's own established behavior -
+ * returning one reference per occurrence in document order. Duplicates - the same code
+ * appearing twice, or appearing in both styles - each get their own distinct reference;
  * this feature never assumes codes are unique (data-model.md, Edge Cases). Feature 016
  * (Architecture Detail View) calls this with `["header"]` only, since architecture
  * documents never use bullet-style codes (spec.md FR-005).
@@ -76,7 +80,7 @@ export function buildRequirementCodeIndex(
 /**
  * Groups references by prefix, sorting each group's references ascending by numeric value
  * (not lexical, so `FR-9` sorts before `FR-25`), and ordering the groups themselves by
- * their prefix's first appearance in the original (ungrouped) array — not alphabetically
+ * their prefix's first appearance in the original (ungrouped) array - not alphabetically
  * (data-model.md, Assumptions).
  */
 export function groupByPrefix(references: RequirementCodeReference[]): PrefixGroup[] {

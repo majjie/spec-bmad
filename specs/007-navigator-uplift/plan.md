@@ -23,26 +23,26 @@ sprint-status parsing logic it already depends on.
 **Primary Dependencies**: None new. Status icons use `@mui/icons-material`, already a
 dependency since feature 002 (e.g. `FolderIcon`, `CloseIcon`).
 
-**Storage**: N/A — no new data sources; this feature only changes how already-fetched
+**Storage**: N/A - no new data sources; this feature only changes how already-fetched
 Navigator/Sprint-Status data is defaulted-to and rendered.
 
 **Testing**: Node's built-in test runner for the one new piece of genuine derivation
-logic this feature introduces — `calculateActiveEpic` (FR-009/FR-010) — following feature
+logic this feature introduces - `calculateActiveEpic` (FR-009/FR-010) - following feature
 006's `parseSprintStatus`/`groupPrdFolders` precedent, not just a UI-adjacent afterthought.
 `createBaselineState`'s generalization (below) gets its existing unit test updated rather
 than dropped. Everything else (default-tab wiring, icons, tile layout) is UI/rendering,
 manually verified per constitution Principle V's carve-out (`quickstart.md`).
 
-**Target Platform**: Same as prior features — localhost server + full-size desktop
+**Target Platform**: Same as prior features - localhost server + full-size desktop
 browsers only.
 
 **Project Type**: Frontend-only extension of the existing `web/src/` tree, plus one
 small addition to feature 006's existing backend derivation module
-(`src/navigator/sprint-status.ts`) — no new routes, no new backend modules.
+(`src/navigator/sprint-status.ts`) - no new routes, no new backend modules.
 
-**Performance Goals**: None mandated — same small, in-memory data as feature 006.
+**Performance Goals**: None mandated - same small, in-memory data as feature 006.
 
-**Constraints**: No editing capability of any kind (constitution Principle II) — every
+**Constraints**: No editing capability of any kind (constitution Principle II) - every
 change here is either a default/fallback choice or a rendering change. Must extend, not
 duplicate, feature 006's existing `parseSprintStatus`/`SprintStatusView`/`App.tsx`
 structures.
@@ -56,12 +56,12 @@ structures.
 | Principle | Applies? | Assessment |
 |---|---|---|
 | I. Spec-First Development | Yes | Spec approved and clarified (`spec.md`) before this plan; every requirement traces to an FR-###. |
-| II. Read-Only Artifact Viewer | Yes | No new route, no new capability that writes anything — a default-tab choice and three rendering changes over already-read-only data. |
+| II. Read-Only Artifact Viewer | Yes | No new route, no new capability that writes anything - a default-tab choice and three rendering changes over already-read-only data. |
 | III. Zero-Install, Local-First Operation | Yes | No new dependency of any kind, runtime or otherwise. |
 | IV. TypeScript CLI & Web Interface Standards | Yes | `calculateActiveEpic` is a plain, DOM-independent TypeScript function, unit-testable without a browser, alongside `parseSprintStatus` in the same module. |
-| V. Test-First for Parsing & Rendering Logic | Yes | `calculateActiveEpic` is genuine derivation logic (FR-009/FR-010's rules) — full test-first coverage, like `parseSprintStatus` before it. Icon rendering, tile layout, and default-tab wiring are UI/rendering, manually verified per the carve-out. |
+| V. Test-First for Parsing & Rendering Logic | Yes | `calculateActiveEpic` is genuine derivation logic (FR-009/FR-010's rules) - full test-first coverage, like `parseSprintStatus` before it. Icon rendering, tile layout, and default-tab wiring are UI/rendering, manually verified per the carve-out. |
 
-**Result**: PASS — no violations, no entries needed in Complexity Tracking.
+**Result**: PASS - no violations, no entries needed in Complexity Tracking.
 
 **Post-Phase 1 re-check**: Design artifacts introduce no new dependency, no new route, and
 no editing affordance. PASS confirmed unchanged.
@@ -85,27 +85,27 @@ specs/007-navigator-uplift/
 ```text
 src/
 └── navigator/
-    └── sprint-status.ts          # MODIFIED — adds calculateActiveEpic() and the
+    └── sprint-status.ts          # MODIFIED - adds calculateActiveEpic() and the
                                     # activeEpic field on SprintStatusSummary
 
 web/
 └── src/
-    ├── api.ts                     # MODIFIED — SprintStatusSummary gains activeEpic
-    ├── App.tsx                    # MODIFIED — default-tab-on-load + fallback (FR-001/002),
+    ├── api.ts                     # MODIFIED - SprintStatusSummary gains activeEpic
+    ├── App.tsx                    # MODIFIED - default-tab-on-load + fallback (FR-001/002),
     │                               # generalizes the baseline-history call site
-    ├── navigationHistory.ts        # MODIFIED — createBaselineState(tab, path), generalized
+    ├── navigationHistory.ts        # MODIFIED - createBaselineState(tab, path), generalized
     │                               # from its Infra-only signature
     └── components/
-        └── SprintStatusView.tsx    # MODIFIED — status icons (FR-003/004/005), full-width
+        └── SprintStatusView.tsx    # MODIFIED - status icons (FR-003/004/005), full-width
                                      # stacked epic tiles (FR-006/007/008), renders
                                      # Active Epic via the existing SUMMARY_FIELDS loop
 
 tests/
 └── unit/
     ├── navigator/
-    │   └── sprint-status.test.ts   # MODIFIED — add calculateActiveEpic() cases
+    │   └── sprint-status.test.ts   # MODIFIED - add calculateActiveEpic() cases
     └── web/
-        └── navigationHistory.test.ts # MODIFIED — createBaselineState()'s existing test
+        └── navigationHistory.test.ts # MODIFIED - createBaselineState()'s existing test
                                        # updated for its new (tab, path) signature
 ```
 
@@ -119,4 +119,4 @@ longer be hardcoded to Infra.
 
 ## Complexity Tracking
 
-*No violations — Constitution Check passed cleanly, so this section is intentionally empty.*
+*No violations - Constitution Check passed cleanly, so this section is intentionally empty.*

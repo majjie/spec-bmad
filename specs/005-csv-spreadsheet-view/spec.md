@@ -13,7 +13,7 @@ files. I want them to look like a read-only Excel spreadsheet in dark mode."
 
 ### Session 2026-09-07
 
-- Q: Should the CSV's own first row be treated as a header (shown distinguished from the data below it, and frozen in place like the column letters), or should every row — including the first — be treated identically as plain numbered data rows? → A: Treat the first row as a header: shown with distinguished styling, frozen alongside the column letters; row numbers 1, 2, 3... label the data rows that follow it.
+- Q: Should the CSV's own first row be treated as a header (shown distinguished from the data below it, and frozen in place like the column letters), or should every row - including the first - be treated identically as plain numbered data rows? → A: Treat the first row as a header: shown with distinguished styling, frozen alongside the column letters; row numbers 1, 2, 3... label the data rows that follow it.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -23,10 +23,10 @@ A user double-clicks a `.csv` file. Instead of the plain-text view every other f
 gets, it opens showing its data arranged in a grid: lettered column headers (A, B, C, ...)
 across the top, the CSV's own first row shown as a distinguished, frozen header beneath
 them, numbered row headers (1, 2, 3, ...) labeling the data rows that follow, and each
-field from the file in its own cell — matching the familiar look of a read-only
+field from the file in its own cell - matching the familiar look of a read-only
 spreadsheet, in the application's existing dark theme.
 
-**Why this priority**: This is the entire feature — seeing CSV data arranged like a
+**Why this priority**: This is the entire feature - seeing CSV data arranged like a
 spreadsheet instead of as raw comma-separated text. Every other story is a refinement of
 this grid's behavior.
 
@@ -51,9 +51,9 @@ uses the dark theme.
    grid renders that row, **Then** the entire quoted value appears in a single cell within
    a single grid row, not split across two grid rows.
 4. **Given** the CSV grid is open, **When** it renders, **Then** it uses the same dark
-   theme as the rest of the application — no light/white background.
+   theme as the rest of the application - no light/white background.
 5. **Given** the CSV grid is open, **When** the user looks for a way to edit a cell or add/
-   remove rows or columns, **Then** no such control exists — the grid is strictly
+   remove rows or columns, **Then** no such control exists - the grid is strictly
    view-only.
 
 ---
@@ -66,7 +66,7 @@ a spreadsheet's frozen header rows/column), so the user never loses track of whi
 or row they're looking at, or what each column means.
 
 **Why this priority**: A real usability improvement for anything but a tiny CSV, but the
-grid from User Story 1 is already fully readable without it — a user can still scroll back
+grid from User Story 1 is already fully readable without it - a user can still scroll back
 up to check a header.
 
 **Independent Test**: Open a CSV with enough rows and columns to require both vertical and
@@ -94,7 +94,7 @@ CSV's own header row, and the row-number column all remain visible throughout.
   numbered rows (FR-012).
 - What happens when a `.csv` file's content can't actually be read as text (e.g. it's
   secretly a binary file)? The existing unreadable/binary-file handling from the File
-  Content Viewer feature applies before this feature's rendering is ever reached — see
+  Content Viewer feature applies before this feature's rendering is ever reached - see
   Assumptions.
 - What happens with a CSV that has an unusually large number of columns? The grid scrolls
   horizontally like any other overflowing content; no special handling beyond User Story
@@ -112,23 +112,23 @@ CSV's own header row, and the row-number column all remain visible throughout.
   immediately below the column-letter headers, with styling that visually distinguishes
   it from data rows (e.g. bold).
 - **FR-004**: The grid MUST show sequential row numbers (1, 2, 3, ...) down the left side,
-  one per CSV data row (the rows after the header line) — the header line itself is not
+  one per CSV data row (the rows after the header line) - the header line itself is not
   assigned a data row number.
-- **FR-005**: Each field from the CSV — both the header row's and every data row's — MUST
+- **FR-005**: Each field from the CSV - both the header row's and every data row's - MUST
   appear in its own grid cell, at the intersection of its row and column letter.
-- **FR-006**: The system MUST correctly parse standard CSV quoting/escaping rules —
+- **FR-006**: The system MUST correctly parse standard CSV quoting/escaping rules -
   quoted fields containing commas, escaped quote characters, and quoted fields spanning
-  multiple lines — so a quoted field's contents are never split across multiple cells or
+  multiple lines - so a quoted field's contents are never split across multiple cells or
   multiple grid rows.
 - **FR-007**: The grid MUST be rendered in a dark theme consistent with the rest of the
   application (File Content Viewer feature, FR-017).
-- **FR-008**: The grid MUST be strictly read-only — no cell may be edited, and no control
+- **FR-008**: The grid MUST be strictly read-only - no cell may be edited, and no control
   may add, remove, or reorder rows or columns, consistent with the project's read-only
   principle.
 - **FR-009**: The column-letter header row, the CSV's own header row, and the row-number
   column MUST all remain visible while the user scrolls through a CSV that doesn't fully
   fit on screen, and MUST visually occlude (not merely coexist with) any data row
-  scrolling behind them — found necessary during user review, after an implementation gap
+  scrolling behind them - found necessary during user review, after an implementation gap
   (a padding inset between the scroll container's own clip boundary and the point where
   the frozen header actually became stuck) let scrolled-past rows stay briefly visible
   above the header instead of being fully hidden by it.
@@ -143,18 +143,18 @@ CSV's own header row, and the row-number column all remain visible throughout.
   other file type's existing rendering (plain text, Markdown, syntax-highlighted) is
   unaffected.
 - **FR-014**: Grid cells MUST have a visible border separating adjacent columns (a vertical
-  gridline), consistent with a real spreadsheet's appearance — found necessary during user
+  gridline), consistent with a real spreadsheet's appearance - found necessary during user
   review; the original design left cell borders unspecified and the grid rendered
   borderless.
 - **FR-015**: Hovering over a data row MUST highlight it using a distinct accent color,
   rather than a grayscale lightening or darkening of its existing shade, so the hover state
   stays visually distinguishable from the grid's alternating row-striping regardless of
-  whether the hovered row is a striped or non-striped row — found necessary during user
+  whether the hovered row is a striped or non-striped row - found necessary during user
   review, after a grayscale hover treatment was shown to make a hovered row converge toward
   the same shade regardless of its striping.
 - **FR-016**: The file viewer dialog's close ("X") icon (File Content Viewer feature,
   FR-012) MUST remain visually on top of a CSV grid's frozen header cells, regardless of
-  any stacking layers the grid's own sticky positioning introduces — found necessary
+  any stacking layers the grid's own sticky positioning introduces - found necessary
   during user review, after the CSV grid's frozen cells were found to render above the
   close icon.
 
@@ -173,11 +173,11 @@ CSV's own header row, and the row-number column all remain visible throughout.
   (lettered columns, a distinguished header row, numbered data rows) rather than as raw
   comma-separated text.
 - **SC-002**: A field containing a comma or line break inside quotes is always shown as a
-  single, unsplit cell — never separated into extra cells or rows.
+  single, unsplit cell - never separated into extra cells or rows.
 - **SC-003**: A user can scroll through a CSV larger than the visible area while always
   being able to see which column and row they're looking at.
 - **SC-004**: The spreadsheet view is visually consistent with the application's dark
-  theme — no light/white background at any point.
+  theme - no light/white background at any point.
 - **SC-005**: A user can tell at a glance which row their pointer is over, and which column
   a value belongs to, without it being confused with the grid's other visual cues (row
   striping, adjacent columns).
@@ -185,10 +185,10 @@ CSV's own header row, and the row-number column all remain visible throughout.
 ## Assumptions
 
 - No cell-selection, copying, or other spreadsheet-app interactivity is included beyond
-  scrolling and a passive row-hover highlight (FR-015) — this is a purely visual, read-only
+  scrolling and a passive row-hover highlight (FR-015) - this is a purely visual, read-only
   grid, not an interactive spreadsheet (no formulas, no persisted selection state). A future
   feature could add that.
-- No virtualization or pagination is required — full CSVs are rendered in full, consistent
+- No virtualization or pagination is required - full CSVs are rendered in full, consistent
   with the precedent already set for the folder contents table (Web Artifact Explorer
   feature's clarification). Performance handling for extremely large CSVs, if ever needed,
   is future work.
@@ -196,11 +196,11 @@ CSV's own header row, and the row-number column all remain visible throughout.
   truncated rather than wrapped, keeping row heights uniform like a real spreadsheet.
 - A `.csv` file whose content can't be read as text at all (e.g., it's actually binary) is
   handled entirely by the File Content Viewer feature's existing unreadable-file error
-  path, which runs before any rendering-mode decision is made — this feature only changes
+  path, which runs before any rendering-mode decision is made - this feature only changes
   how successfully-read CSV text is displayed.
 - This feature only changes the rendering mode used for `.csv` files; the plain-text
   fallback used for `.txt` and any other unrecognized file type is unchanged.
-- The CSV's first line is always treated as its header, unconditionally — there is no
+- The CSV's first line is always treated as its header, unconditionally - there is no
   attempt to detect whether a given file actually has a semantic header row versus data
   starting on line one; this keeps the rule simple and predictable rather than relying on
   guesswork.

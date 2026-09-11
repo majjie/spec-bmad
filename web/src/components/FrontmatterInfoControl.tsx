@@ -10,17 +10,17 @@ interface FrontmatterInfoControlProps {
 }
 
 // FR-007/FR-008 (feature 010): one row per preamble entry, key and value in two distinct
-// theme palette colors — no hardcoded hex, consistent with this app's existing
+// theme palette colors - no hardcoded hex, consistent with this app's existing
 // theme-driven styling.
 function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
       {Object.entries(preamble).map(([key, value]) => (
         <Box key={key} sx={{ display: "flex", gap: 1 }}>
-          <Box component="span" sx={{ color: "info.light", fontWeight: 600 }}>
+          <Box component="span" sx={{ color: "var(--color-label)", fontWeight: 600 }}>
             {key}:
           </Box>
-          <Box component="span" sx={{ color: "warning.light" }}>
+          <Box component="span" sx={{ color: "var(--color-value)", fontFamily: "var(--font-mono)", fontSize: "0.85em" }}>
             {stringifyPreambleValue(value)}
           </Box>
         </Box>
@@ -31,7 +31,7 @@ function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
 
 /**
  * The (i)-icon + hover-or-click controlled tooltip showing a Markdown file's frontmatter
- * key/value pairs — extracted out of `FileViewerDialog.tsx` (feature 010) so this same
+ * key/value pairs - extracted out of `FileViewerDialog.tsx` (feature 010) so this same
  * control can also be reused, unmodified, by the non-modal PRD detail pane (feature 012),
  * which needs it without an accompanying close button.
  */
@@ -47,10 +47,10 @@ export default function FrontmatterInfoControl({ preamble }: FrontmatterInfoCont
       slotProps={{
         tooltip: {
           sx: {
-            // Opaque (not MUI's default translucent grey) and a larger base font size,
-            // per feedback — the readout was hard to read against varied Markdown content
-            // showing through it.
-            bgcolor: "grey.900",
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
+            boxShadow: "var(--shadow-md)",
             fontSize: "0.85rem",
             maxWidth: "none",
           },
@@ -61,7 +61,7 @@ export default function FrontmatterInfoControl({ preamble }: FrontmatterInfoCont
         onClick={() => setInfoOpen(true)}
         aria-label="Frontmatter info"
         size="small"
-        sx={{ color: "common.white" }}
+        sx={{ color: "var(--color-text-muted)" }}
       >
         <InfoOutlinedIcon fontSize="small" />
       </IconButton>

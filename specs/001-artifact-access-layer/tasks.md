@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Included — constitution Principle V (Test-First for Parsing & Rendering Logic)
+**Tests**: Included - constitution Principle V (Test-First for Parsing & Rendering Logic)
 requires tests before implementation for this feature's scanning/discovery logic.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and
@@ -52,11 +52,11 @@ implemented
       `ProjectRoot`, `CacheEntry`, `HierarchyCache`, `DiscoveryResult`) in
       `src/artifacts/types.ts`
 - [X] T004 [P] Implement a symlink-safe directory entry listing helper in
-      `src/artifacts/fs-entries.ts` — lists a directory's entries via
+      `src/artifacts/fs-entries.ts` - lists a directory's entries via
       `readdir(path, { withFileTypes: true })` and filters out anything where
       `dirent.isSymbolicLink()` is true, per FR-003 and research.md § 1
 - [X] T005 Implement `buildProjectRoot(folderPath): Promise<ProjectRoot | null>` in
-      `src/artifacts/project-root.ts` — returns a populated `ProjectRoot` when
+      `src/artifacts/project-root.ts` - returns a populated `ProjectRoot` when
       `folderPath` directly contains a real (non-symlink) `_bmad` and/or `_bmad-output`
       directory (FR-007), or `null` otherwise; depends on T003 (types) and T004
       (symlink-safe listing)
@@ -91,11 +91,11 @@ request does not re-read the file system.
 ### Implementation for User Story 1
 
 - [X] T008 [US1] Implement `scan(folderPath): Promise<ArtifactNode>` in
-      `src/artifacts/scan.ts` — recursively builds the tree for one folder (a `_bmad` or
+      `src/artifacts/scan.ts` - recursively builds the tree for one folder (a `_bmad` or
       `_bmad-output` folder) using the T004 symlink-safe listing helper, capturing only
       `name`/`path`/`type`/`children` (FR-001, FR-002); depends on T003, T004, and must
       make T006 pass
-- [X] T009 [US1] Implement `HierarchyCache` in `src/artifacts/cache.ts` — `get(root)`
+- [X] T009 [US1] Implement `HierarchyCache` in `src/artifacts/cache.ts` - `get(root)`
       resolves one `ArtifactNode` per existing `_bmad`/`_bmad-output` folder of `root` via
       T008's `scan()`, caches each as `{ tree, status: 'fresh' }` keyed by folder path, and
       returns the cached entries unchanged on repeat calls (FR-004); depends on T005, T008,
@@ -129,7 +129,7 @@ requested hierarchy reflects exactly the additions and removals made.
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Implement `HierarchyCache.invalidate(root)` in `src/artifacts/cache.ts` —
+- [X] T012 [US2] Implement `HierarchyCache.invalidate(root)` in `src/artifacts/cache.ts` -
       marks `root`'s cache entries `'stale'` without touching the file system (FR-005,
       research.md § 2); depends on T009
 - [X] T013 [US2] Implement stale-triggered rebuild and the FR-012 not-found rejection in
@@ -137,7 +137,7 @@ requested hierarchy reflects exactly the additions and removals made.
       and marked `'fresh'` again on the next `get()`, and `get()` rejects if `root`'s
       folder can no longer be found on disk; depends on T012, and must make T011 pass
       (both were already satisfied by T009's stale-check branch and scan()'s natural
-      ENOENT propagation — verified by the T011 tests passing with no further code needed)
+      ENOENT propagation - verified by the T011 tests passing with no further code needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 (quickstart.md Scenario 3)
@@ -211,7 +211,7 @@ conventions that apply regardless of which user story's flow is running
       errors across `src/`, per constitution Principle IV
 - [X] T021 Execute `quickstart.md` Scenarios 1–7 manually against real fixture directories
       and confirm each matches its expected outcome (quickstart.md's own commands were
-      also corrected during this run — see Notes)
+      also corrected during this run - see Notes)
 
 ---
 
@@ -223,9 +223,9 @@ conventions that apply regardless of which user story's flow is running
 - **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
 - **User Story 1 (Phase 3)**: Depends on Foundational; no dependency on US2/US3
 - **User Story 2 (Phase 4)**: Depends on Foundational and on `cache.ts` existing from US1
-  (T009) — extends the same file, so implement after US1 rather than in parallel with it
+  (T009) - extends the same file, so implement after US1 rather than in parallel with it
 - **User Story 3 (Phase 5)**: Depends on Foundational and on `cli.ts` existing from US1
-  (T010) — extends the same file, so implement after US1
+  (T010) - extends the same file, so implement after US1
 - **Polish (Phase 6)**: T018 and T019 depend on `cli.ts` existing from User Story 3 (T017);
   T020/T021 depend on all three user stories being complete
 
@@ -233,10 +233,10 @@ conventions that apply regardless of which user story's flow is running
 
 - **User Story 1 (P1)**: Independently testable once Foundational is done
 - **User Story 2 (P2)**: Independently testable on its own once implemented, but its
-  implementation tasks land in `src/artifacts/cache.ts`, the same file US1 creates —
+  implementation tasks land in `src/artifacts/cache.ts`, the same file US1 creates -
   sequence after US1 to avoid file conflicts
 - **User Story 3 (P3)**: Independently testable on its own once implemented, but its
-  implementation tasks land in `src/cli.ts`, the same file US1 creates — sequence after
+  implementation tasks land in `src/cli.ts`, the same file US1 creates - sequence after
   US1 to avoid file conflicts
 
 ### Within Each User Story
@@ -248,11 +248,11 @@ conventions that apply regardless of which user story's flow is running
 
 ### Parallel Opportunities
 
-- T003 and T004 (Foundational) can run in parallel — different files, no dependency
+- T003 and T004 (Foundational) can run in parallel - different files, no dependency
   between them
-- T006 and T007 (US1 tests) can run in parallel — different files
-- T014 and T015 (US3 tests) can run in parallel — different files
-- T018 and T019 (Polish) can run in parallel — different files, both only need T017
+- T006 and T007 (US1 tests) can run in parallel - different files
+- T014 and T015 (US3 tests) can run in parallel - different files
+- T018 and T019 (Polish) can run in parallel - different files, both only need T017
 - T020 (typecheck) can run in parallel with T018, T019, and T021 (manual quickstart run) in
   Polish
 
@@ -300,7 +300,7 @@ Task: "Unit test HierarchyCache.get() in tests/unit/artifacts/cache.test.ts"
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - US2 and US3 extend files US1 creates (`cache.ts`, `cli.ts`); this is a deliberate,
-  minimal-file-count design per the feature's "keep it simple" brief — not a cross-story
+  minimal-file-count design per the feature's "keep it simple" brief - not a cross-story
   coupling of behavior, since each story's tests exercise only that story's requirements
 - Verify tests fail before implementing
 - Commit after each task or logical group
@@ -308,4 +308,4 @@ Task: "Unit test HierarchyCache.get() in tests/unit/artifacts/cache.test.ts"
 - quickstart.md's Scenario 1/4/5/6/7 commands were updated during T021 to invoke
   `src/cli.ts` directly via its shebang (absolute path) instead of `node --import tsx
   src/cli.ts`, which fails when the CLI's cwd (the argument being tested) has no
-  `node_modules` of its own — the same class of issue as finding F1 in `/speckit-analyze`
+  `node_modules` of its own - the same class of issue as finding F1 in `/speckit-analyze`

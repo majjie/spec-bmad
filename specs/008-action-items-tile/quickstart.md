@@ -61,14 +61,14 @@ UI-rendering carve-out.
 - Start the CLI against `/tmp/bmad-action-items/project` and open the printed URL in a
   full-size desktop browser.
 
-## Scenario 1 — Tile appears beside Summary, same height (FR-001/FR-002)
+## Scenario 1 - Tile appears beside Summary, same height (FR-001/FR-002)
 
 Open the Navigator tab, select "Sprint Status". **Expected**: an "Action Items" tile
 appears immediately to the right of the Summary tile, matching its height, filling the
 rest of that row's width; the epic tile(s) still render as a full-width stack below this
 row (feature 007, unaffected).
 
-## Scenario 2 — Per-item icons and hiding (FR-004–FR-008)
+## Scenario 2 - Per-item icons and hiding (FR-004–FR-008)
 
 **Expected**, reading top to bottom:
 - `item-1-full`: computer-like owner icon (tooltip "dev loop"), a filled tick-box, a jump
@@ -79,19 +79,19 @@ row (feature 007, unaffected).
 - `item-4-missing-owner`: **no owner icon at all**; tick-box, jump icon, epic, and action
   text all still show normally.
 
-## Scenario 3 — Jump icon opens the file viewer, same close behavior (FR-010/FR-011)
+## Scenario 3 - Jump icon opens the file viewer, same close behavior (FR-010/FR-011)
 
 Click `item-1-full`'s jump icon. **Expected**: the same full-screen file viewer used by
 the Infra/Output tabs opens, showing `retro.md`'s contents. Close it via the "X" icon;
 confirm it closes and the Navigator tab (Sprint Status still selected) is what's left
-showing. Reopen it and close it via Escape, then again via the browser's Back button —
+showing. Reopen it and close it via Escape, then again via the browser's Back button -
 both should behave identically to closing a file opened from the Infra/Output tabs.
 
 Click `item-5-broken-ref`'s jump icon. **Expected**: the dialog still opens, showing an
 error message in place of file contents (the same error state already used for any other
-unreadable file) — not a broken view, not nothing happening.
+unreadable file) - not a broken view, not nothing happening.
 
-## Scenario 4 — No action items (FR-012)
+## Scenario 4 - No action items (FR-012)
 
 Remove the `action_items` key entirely from `sprint-status.yaml` and reselect "Sprint
 Status". **Expected**: the Action Items tile still appears, beside the Summary tile, at

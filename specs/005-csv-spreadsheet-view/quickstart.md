@@ -6,7 +6,7 @@ visual layout, sticky headers, and dark theme are validated manually here, per c
 Principle V's UI-rendering carve-out.
 
 This **supersedes** feature 004's own quickstart.md Scenario 8, which described `.csv`
-falling back to plain text — that's exactly the "later step" this feature implements.
+falling back to plain text - that's exactly the "later step" this feature implements.
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ falling back to plain text — that's exactly the "later step" this feature impl
 - Start the CLI against `/tmp/bmad-csv-view/project` and open the printed URL in a
   full-size desktop browser.
 
-## Scenario 1 — Typical CSV renders as a grid with a distinguished header (User Story 1)
+## Scenario 1 - Typical CSV renders as a grid with a distinguished header (User Story 1)
 
 Double-click `people.csv`.
 
@@ -46,40 +46,40 @@ header row (`Name`, `Age`, `City`) shown immediately below in bold (or otherwise
 distinguished); then two numbered data rows (1, 2) with `Smith, John` appearing intact in
 a single cell (not split at its internal comma) in row 1. The whole view is dark-themed.
 
-## Scenario 2 — Quoted field with an embedded newline (User Story 1)
+## Scenario 2 - Quoted field with an embedded newline (User Story 1)
 
 Double-click `multiline.csv`.
 
 **Expected**: row 1's "Notes" cell contains both "Line one" and "Line two" together in one
-cell — the grid does not create an extra row for the second line.
+cell - the grid does not create an extra row for the second line.
 
-## Scenario 3 — Ragged row shows an empty cell (Edge Cases)
+## Scenario 3 - Ragged row shows an empty cell (Edge Cases)
 
 Double-click `ragged.csv`.
 
 **Expected**: row 2 (`4,5`) shows an empty cell in column C rather than any error or a
 misaligned grid.
 
-## Scenario 4 — Header-only CSV (Edge Cases)
+## Scenario 4 - Header-only CSV (Edge Cases)
 
 Double-click `header-only.csv`.
 
 **Expected**: the header row (`OnlyHeader`, `Col2`) still renders normally; the data area
 below it shows an empty-state message instead of any numbered rows.
 
-## Scenario 5 — Completely empty CSV (Edge Cases)
+## Scenario 5 - Completely empty CSV (Edge Cases)
 
 Double-click `empty.csv`.
 
 **Expected**: the dialog shows an empty-state message; no grid, no header row, no error.
 
-## Scenario 6 — No editing affordances (User Story 1)
+## Scenario 6 - No editing affordances (User Story 1)
 
 With any CSV open, look for any way to edit a cell or add/remove a row or column.
 
 **Expected**: none exists anywhere in the dialog.
 
-## Scenario 7 — Sticky headers while scrolling (User Story 2)
+## Scenario 7 - Sticky headers while scrolling (User Story 2)
 
 Create a larger CSV and open it:
 

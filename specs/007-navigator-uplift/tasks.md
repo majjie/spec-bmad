@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Included for `calculateActiveEpic` — genuine derivation logic under
+**Tests**: Included for `calculateActiveEpic` - genuine derivation logic under
 constitution Principle V's main clause (like feature 006's `parseSprintStatus`/
 `groupPrdFolders`), not just UI-adjacent pure logic. `createBaselineState`'s existing test
 is updated for its generalized signature rather than dropped. Icons, tile layout, and
@@ -29,7 +29,7 @@ testing of each story.
 
 Per `plan.md` § Project Structure: this feature only touches existing files from feature
 006 (`web/src/{App,api,navigationHistory}.ts(x)`, `web/src/components/SprintStatusView.tsx`,
-`src/navigator/sprint-status.ts`) and their existing tests — no new files.
+`src/navigator/sprint-status.ts`) and their existing tests - no new files.
 
 ---
 
@@ -42,7 +42,7 @@ Technical Context: no new libraries). Proceed directly to User Story 1.
 
 ## Phase 2: Foundational
 
-No cross-story blocking work is needed — each of the four user stories below is
+No cross-story blocking work is needed - each of the four user stories below is
 independent (spec.md's own per-story Independent Tests confirm this); several touch the
 same file sequentially (noted in Dependencies below), but none blocks another's start.
 
@@ -74,11 +74,11 @@ feature.
       (optimistic default, research.md § 1); in the mount effect, once `fetchTabs()`
       resolves, explicitly `setActiveTab("infra")` when `tabs.navigator` is `false`
       (FR-002); establish the baseline via the now-generalized `createBaselineState` as
-      soon as the resolved default tab is known — `{tab: "navigator", path: ""}`
+      soon as the resolved default tab is known - `{tab: "navigator", path: ""}`
       immediately once `tabs.navigator` is `true` (no further fetch needed), or the
       existing `{tab: "infra", path: tree.path}` once Infra's tree resolves, when falling
       back. Extend the existing `baselineEstablishedRef` guard to cover *both* paths (not
-      just the Infra one) — it exists to prevent establishing the baseline twice (e.g.
+      just the Infra one) - it exists to prevent establishing the baseline twice (e.g.
       under React 18 Strict Mode's double-invoked effects in development), and that
       applies equally to the new Navigator-baseline path; depends on T002
 
@@ -101,7 +101,7 @@ consistent icon and the unrelated one shows text only, with no error.
 - [X] T004 [US2] In `web/src/components/SprintStatusView.tsx`, add a status→icon mapping
       for `done`/`review`/`backlog`/`in-progress` using `@mui/icons-material` (no new
       dependency, research.md § 3) and a small rendering helper that returns the icon (or
-      nothing, for any other status — FR-005); apply it next to both an epic's own status
+      nothing, for any other status - FR-005); apply it next to both an epic's own status
       (FR-003) and each of its stories' statuses (FR-004), using the identical mapping in
       both places
 
@@ -124,7 +124,7 @@ with the Summary tile unaffected.
       keep the Summary tile's existing appearance/position (FR-008), and render epic
       tiles in a full-width vertical stack (`flexDirection: "column"`, each tile
       `width: "100%"`) instead of the current wrapping grid (FR-006), preserving their
-      existing file-declared order (FR-007); same file as T004 — sequential, not
+      existing file-declared order (FR-007); same file as T004 - sequential, not
       parallel, with it
 
 **Checkpoint**: User Stories 1–3 all work independently (quickstart.md Scenario 3)
@@ -158,11 +158,11 @@ each time.
       pass
 - [X] T008 [US4] Add `activeEpic: string` to `SprintStatusSummary` in `web/src/api.ts`
       (mirroring the backend interface, this project's established server/client
-      type-duplication convention — see feature 006's `PrdGroupingResult`/
+      type-duplication convention - see feature 006's `PrdGroupingResult`/
       `SprintStatusResult` precedent), and add an "Active Epic" entry to
       `web/src/components/SprintStatusView.tsx`'s existing `SUMMARY_FIELDS` list so it
       renders through the existing loop with no special-casing; depends on T007; same
-      file as T004/T005 — sequential, not parallel, with them
+      file as T004/T005 - sequential, not parallel, with them
 - [X] T009 [US4] Extend the existing `GET /api/navigator/sprint-status` integration test
       in `tests/integration/web-server.test.ts` to also assert `body.summary.activeEpic`
       for that test's fixture; depends on T007
@@ -174,7 +174,7 @@ each time.
 ## Phase 7: Polish & Cross-Cutting Concerns
 
 **Purpose**: Verification that spans all four stories, plus one post-implementation
-correction found during user review (T013) — added to `spec.md` as new FR-011 and an
+correction found during user review (T013) - added to `spec.md` as new FR-011 and an
 Edge Cases bullet before being fixed here, per constitution Principle I
 
 - [X] T010 Run `npm test` (the full automated suite) and confirm everything passes: the
@@ -183,13 +183,13 @@ Edge Cases bullet before being fixed here, per constitution Principle I
 - [X] T011 [P] Run `npm run typecheck` and resolve any strict-mode type errors introduced
       by the change
 - [X] T012 Execute `quickstart.md` Scenarios 1–4 in a real desktop browser and confirm
-      each matches its expected outcome — a headless Chromium is available via Playwright
+      each matches its expected outcome - a headless Chromium is available via Playwright
       in this environment (used for feature 006's own quickstart verification); prefer
       actually driving the app with it over only disclosing that manual verification
       wasn't performed. All four scenarios passed on the first real-browser pass.
 - [X] T013 Post-implementation correction (new FR-011): while verifying Scenario 1's
       fallback case with Playwright, found that `web/src/App.tsx`'s tab bar rendered all
-      three tabs (`TAB_IDS.map(...)`) unconditionally — the `TabAvailability` fetched from
+      three tabs (`TAB_IDS.map(...)`) unconditionally - the `TabAvailability` fetched from
       `/api/tabs` was stored (`setAvailability(tabs)`) but its read value was discarded
       (`const [, setAvailability] = useState(...)`), so an unavailable tab (e.g. Output
       with no `_bmad-output`, or Navigator) still appeared in the bar and was clickable, a
@@ -206,23 +206,23 @@ Edge Cases bullet before being fixed here, per constitution Principle I
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: Empty for this feature — no dependencies, no work
-- **Foundational (Phase 2)**: Empty for this feature — no cross-story blocking work exists
+- **Setup (Phase 1)**: Empty for this feature - no dependencies, no work
+- **Foundational (Phase 2)**: Empty for this feature - no cross-story blocking work exists
 - **User Story 1 (Phase 3)**: No dependency on Setup/Foundational completing anything; no
   dependency on the other three stories
 - **User Story 2 (Phase 4)**: Independent of User Story 1; no dependency on User Stories
   3/4 either, though it shares a file with both (see below)
 - **User Story 3 (Phase 5)**: Independent of User Stories 1/2/4 in behavior, but its one
-  task edits the same file as User Story 2's task — sequence after US2
+  task edits the same file as User Story 2's task - sequence after US2
 - **User Story 4 (Phase 6)**: Independent of User Stories 1/2/3 in behavior, but its
-  `SprintStatusView.tsx` task edits the same file as US2/US3's tasks — sequence after
+  `SprintStatusView.tsx` task edits the same file as US2/US3's tasks - sequence after
   both
 - **Polish (Phase 7)**: Depends on all four user stories being complete
 
 ### User Story Dependencies
 
 - All four user stories are behaviorally independent (per spec.md's own Independent
-  Tests) — the sequencing below is a **file-conflict** ordering, not a functional one
+  Tests) - the sequencing below is a **file-conflict** ordering, not a functional one
 
 ### Within Each User Story
 
@@ -259,15 +259,15 @@ Task: "Unit tests for calculateActiveEpic() in tests/unit/navigator/sprint-statu
 1. Complete Phase 3: User Story 1 (Phases 1/2 are empty for this feature)
 2. **STOP and VALIDATE**: Run quickstart.md Scenario 1 in a real browser
 3. This is the smallest usable slice: the Navigator tab opens by default, with a correct
-   fallback — independent of icons, layout, or the Active Epic field
+   fallback - independent of icons, layout, or the Active Epic field
 
 ### Incremental Delivery
 
-1. Add User Story 1 → validate independently (MVP — default tab)
+1. Add User Story 1 → validate independently (MVP - default tab)
 2. Add User Story 2 → validate independently (status icons)
 3. Add User Story 3 → validate independently (stacked tiles)
 4. Add User Story 4 → validate independently (Active Epic field)
-5. Each story adds value without breaking the previous ones — though 2, 3, and 4 touch
+5. Each story adds value without breaking the previous ones - though 2, 3, and 4 touch
    the same file in sequence, so apply them in that order even though nothing about their
    *behavior* depends on one another
 
@@ -278,7 +278,7 @@ Task: "Unit tests for calculateActiveEpic() in tests/unit/navigator/sprint-statu
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - `calculateActiveEpic`'s correctness (T006/T007) matters as much as any backend test
-  task in earlier features — it's genuine derivation logic, not UI-adjacent pure logic
+  task in earlier features - it's genuine derivation logic, not UI-adjacent pure logic
 - Verify tests fail (or fail to compile, for T001's signature change) before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently

@@ -70,7 +70,7 @@ export default function CsvGrid({ content }: CsvGridProps) {
       size="small"
       sx={{
         // `position: sticky` on table cells does not clip/occlude scrolling content
-        // properly under the default `border-collapse: collapse` (MUI's own default) —
+        // properly under the default `border-collapse: collapse` (MUI's own default) -
         // it requires `separate`. This, not any z-index arrangement, was the actual cause
         // of scrolled rows staying visible in front of the frozen header.
         borderCollapse: "separate",

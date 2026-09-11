@@ -27,7 +27,7 @@ type LoadState =
   | { kind: "ready"; content: string };
 
 // FR-002/FR-004/FR-006: hovering (or clicking) reveals a tooltip listing each review by
-// its friendly name, alphabetically — the same controlled-Tooltip configuration
+// its friendly name, alphabetically - the same controlled-Tooltip configuration
 // (leaveDelay/opaque/scrollable sx) PrefixTile already uses for the requirement-code
 // index, kept as a separate component since a review's shape (alphabetic sort, opens a
 // dialog) differs enough from a RequirementCodeReference's (numeric sort, scrolls to an
@@ -45,12 +45,12 @@ function ReviewsTile({
   const [tileWidth, setTileWidth] = useState<number | null>(null);
 
   // Matches the tooltip's width to the tile's own rendered width (feedback: the tooltip
-  // felt too small/narrow) — tracked live via ResizeObserver, the same technique
+  // felt too small/narrow) - tracked live via ResizeObserver, the same technique
   // SprintStatusView.tsx already uses to match Action Items' height to Summary's, since
   // this tile's own width is itself dynamic (a flex:1 sibling in the tile row, not a fixed
   // pixel value). Depends on whether `reviews` is empty: the disabled and enabled states
   // below return structurally different elements, so `tileRef` points at a different DOM
-  // node once the fetch resolves and this tile switches from one to the other — without
+  // node once the fetch resolves and this tile switches from one to the other - without
   // this dependency, the effect's one-time (empty-deps) run would have already captured
   // (and permanently missed) a still-null ref from before that switch.
   useLayoutEffect(() => {
@@ -59,7 +59,7 @@ function ReviewsTile({
       return;
     }
     // el.offsetWidth (not entry.contentRect.width, which excludes padding/border) is what
-    // matches the tile's own visual width — the Paper's horizontal padding and outlined
+    // matches the tile's own visual width - the Paper's horizontal padding and outlined
     // border would otherwise be double-counted as a gap between the tooltip and the tile.
     const observer = new ResizeObserver(() => {
       setTileWidth(el.offsetWidth);
@@ -77,7 +77,7 @@ function ReviewsTile({
       >
         <RateReviewIcon fontSize="small" color="disabled" />
         <Typography variant="body2" color="text.disabled">
-          reviews
+          Reviews
         </Typography>
       </Paper>
     );
@@ -134,13 +134,13 @@ function ReviewsTile({
         sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1, cursor: "pointer" }}
       >
         <RateReviewIcon fontSize="small" color="primary" />
-        <Typography variant="body2">reviews</Typography>
+        <Typography variant="body2">Reviews</Typography>
       </Paper>
     </Tooltip>
   );
 }
 
-// FR-007/FR-008/FR-009/FR-010: a single-file tile — enabled with onClick when the target
+// FR-007/FR-008/FR-009/FR-010: a single-file tile - enabled with onClick when the target
 // file exists, disabled (no onClick) otherwise. No tooltip: with only one file, there's
 // nothing to list (research.md).
 function SingleFileTile({
@@ -158,6 +158,8 @@ function SingleFileTile({
     <Paper
       variant="outlined"
       onClick={enabled ? onClick : undefined}
+      aria-disabled={!enabled}
+      title={enabled ? undefined : "Not in this folder"}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -170,7 +172,7 @@ function SingleFileTile({
     >
       <Icon fontSize="small" color={enabled ? "primary" : "disabled"} />
       <Typography variant="body2" color={enabled ? "text.primary" : "text.disabled"}>
-        {title}
+        {enabled ? title : `${title} · not in this folder`}
       </Typography>
     </Paper>
   );
@@ -183,12 +185,15 @@ function textOf(children: ReactNode): string {
   return typeof children === "string" ? children : "";
 }
 
-// Full-code-only match, for bullet-style `**FR-25**` — the whole <strong> text must be
+// Full-code-only match, for bullet-style `**FR-25**` - the whole <strong> text must be
 // exactly the code, nothing else (data-model.md).
 const STRONG_CODE_PATTERN = /^([A-Z]{2,})-(\d+)$/;
-// Prefix match, for header-style `### UJ-1 — Verifying a completed stage` — the code sits
-// at the start of the heading's text, followed by the title (data-model.md).
-const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s—/;
+// Prefix match, for header-style `### UJ-1 - Verifying a completed stage` - the code sits
+// at the start of the heading's text, followed by the title (data-model.md). The separator
+// may be an em dash or a hyphen.
+// NOTE: the — here is DATA, not prose - one of the two accepted separators.
+// Never include it in a punctuation sweep (see prdIndex.ts).
+const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s[—-]/;
 
 interface PrefixTileProps {
   prefix: string;
@@ -228,9 +233,9 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
       onOpen={onOpen}
       onClose={onClose}
       // FR-011: the pointer moving from this tile onto the tooltip's own list must keep it
-      // open — MUI's Tooltip is interactive (disableInteractive defaults to false) already
+      // open - MUI's Tooltip is interactive (disableInteractive defaults to false) already
       // gives this for free, so that prop must never be set here. leaveDelay gives the
-      // pointer a grace period to actually reach the tooltip's content before it closes —
+      // pointer a grace period to actually reach the tooltip's content before it closes -
       // MUI's own default is 0ms (closes instantly on mouseleave); set to 400ms per
       // feedback that it felt too abrupt.
       leaveDelay={400}
@@ -295,7 +300,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
     };
   }, [entry.path]);
 
-  // Every tile's enabled/disabled state reads from this one shared listing — a fetch
+  // Every tile's enabled/disabled state reads from this one shared listing - a fetch
   // failure here is treated the same as "no matching files" (contracts/ui-behavior.md),
   // since prd.md's own fetch already owns this pane's primary error/loading states.
   useEffect(() => {
@@ -348,7 +353,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
   }
 
   // Reset once per render, before ReactMarkdown's own custom-renderer callbacks run
-  // (during this same synchronous render pass) — each one consumes the next entry from
+  // (during this same synchronous render pass) - each one consumes the next entry from
   // `references`, in document order, matching how buildRequirementCodeIndex assembled that
   // same order from a plain string scan (research.md § 3).
   const anchorIndexRef = useRef(0);
@@ -374,13 +379,13 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
         <Box sx={{ display: "flex", gap: 1, p: 1, flexShrink: 0 }}>
           <ReviewsTile reviews={reviews} onSelectReview={onOpenFile} />
           <SingleFileTile
-            title="addendum"
+            title="Addendum"
             Icon={PostAddIcon}
             enabled={hasAddendum}
             onClick={() => onOpenFile(`${entry.path}/addendum.md`)}
           />
           <SingleFileTile
-            title="memory log"
+            title="Memory log"
             Icon={HistoryIcon}
             enabled={hasMemlog}
             onClick={handleOpenMemlog}
@@ -398,7 +403,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
       <Box sx={{ flex: 1, minHeight: 0, display: "flex" }}>
         <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           {hasPreamble && (
-            // A sibling of the scrolling Box below, not a descendant of it — an
+            // A sibling of the scrolling Box below, not a descendant of it - an
             // absolutely-positioned descendant of the element that itself scrolls would
             // scroll away with it (the bug this fixed); staying outside that box, anchored
             // to this shared position:relative ancestor instead, is what keeps it fixed in
@@ -426,6 +431,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
               </Typography>
             )}
             {state.kind === "ready" && body !== null && (
+              <Box sx={{ maxWidth: "65ch", px: 3, py: 2 }}>
               <MarkdownContent
                 content={body}
                 components={{
@@ -449,6 +455,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
                   },
                 }}
               />
+              </Box>
             )}
           </Box>
         </Box>

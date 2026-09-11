@@ -26,6 +26,8 @@ const COLUMNS: { id: SortColumn; label: string }[] = [
 
 function formatSize(size: number | null): string {
   if (size === null) {
+    // Em dash is the conventional "not applicable" glyph, matching Stage.tsx,
+    // SprintStatusView.tsx and OverviewView.tsx. A hyphen here reads as a stray minus.
     return "—";
   }
   if (size < 1024) {

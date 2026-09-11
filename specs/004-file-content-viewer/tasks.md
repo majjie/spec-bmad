@@ -10,7 +10,7 @@ description: "Task list template for feature implementation"
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: Included for server/data logic (`file.ts`'s binary detection, `getFileRenderMode`,
-`statesEqual`'s extension) — constitution Principle V's main clause. The dialog itself, its
+`statesEqual`'s extension) - constitution Principle V's main clause. The dialog itself, its
 three rendering modes, and its history-close behavior are UI/rendering, validated manually
 per Principle V's explicit carve-out (`quickstart.md`), matching features 002/003.
 
@@ -39,9 +39,9 @@ and `src/server/http-server.ts`/`api-router.ts`.
 
 - [X] T001 Add `react-markdown`, `remark-gfm`, `react-syntax-highlighter`, and
       `@types/react-syntax-highlighter` to root `package.json` devDependencies
-      (build-time only, bundled into `web/dist/` — research.md § 3/§4); run `npm install`
+      (build-time only, bundled into `web/dist/` - research.md § 3/§4); run `npm install`
       (pinned `react-syntax-highlighter` to `^16.1.1` rather than the initially-planned
-      `^15.x` — `npm audit` flagged a moderate PrismJS DOM-clobbering advisory in the
+      `^15.x` - `npm audit` flagged a moderate PrismJS DOM-clobbering advisory in the
       `refractor`/`prismjs` transitive dependency chain at 15.x, fixed in 16.1.1; verified
       compatible with React 18 and with the `@types/react-syntax-highlighter` module
       declarations, which still match v16's `dist/esm/*` layout)
@@ -50,7 +50,7 @@ and `src/server/http-server.ts`/`api-router.ts`.
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: The one piece of logic all four user stories need — deciding how a file
+**Purpose**: The one piece of logic all four user stories need - deciding how a file
 should render at all
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
@@ -112,7 +112,7 @@ contents are unchanged underneath (per spec.md's own Independent Test for this s
       `contracts/http-api-addendum.md`, reusing `isTabId`/`getTabRootPath`/`isWithinRoot`
       from `src/server/tab-tree.ts`. `:tab` being a recognized value whose folder doesn't
       exist for this project (i.e. `getTabRootPath` returns `null`) is a 404, matching
-      `/api/tree/:tab`'s existing convention (feature 002) — NOT a 400, which is only for
+      `/api/tree/:tab`'s existing convention (feature 002) - NOT a 400, which is only for
       an unrecognized `:tab` value or a missing `path`. Wire the route into
       `src/server/api-router.ts`'s dispatch; depends on T007, and must make T005/T006 pass
 - [X] T010 [US1] Add a `fetchFileContent(tab, path)` helper to `web/src/api.ts`: calls
@@ -120,13 +120,13 @@ contents are unchanged underneath (per spec.md's own Independent Test for this s
       descriptive error for any other status
 - [X] T011 [US1] Implement `web/src/components/FileViewerDialog.tsx`: an MUI `Dialog` sized
       to fill the viewport minus a 20px margin on every side via `sx` (research.md § 5,
-      NOT the built-in `fullScreen` prop). Wire the `Dialog`'s own `onClose` prop — not
-      just the "X" `IconButton`'s `onClick` — to the same `onClose` callback prop passed
+      NOT the built-in `fullScreen` prop). Wire the `Dialog`'s own `onClose` prop - not
+      just the "X" `IconButton`'s `onClick` - to the same `onClose` callback prop passed
       into `FileViewerDialog`: MUI's `Dialog.onClose` is what actually fires for Escape and
       backdrop-click (spec.md's Assumptions accept backdrop-click as an accepted 4th
       closing method), so both the `IconButton` and `Dialog`'s `onClose` must call the
       identical handler or FR-010 (Escape) silently won't work. Add a loading state while
-      content is `null`, an error state, and — for this story's scope — the
+      content is `null`, an error state, and - for this story's scope - the
       `{ kind: "plain" }` rendering path via `react-syntax-highlighter` (`language="text"`,
       `showLineNumbers`); depends on T003, T010
 - [X] T012 [US1] Add an `onDoubleClick` handler to file rows only (not folder rows) in
@@ -152,20 +152,20 @@ independently (quickstart.md Scenarios 1–3)
 does, and Forward/Back move through the same history stack correctly.
 
 **Independent Test**: Open the dialog, press Escape, confirm it closes; open it again, use
-the browser's Back action, confirm it closes the same way — without navigating the
+the browser's Back action, confirm it closes the same way - without navigating the
 underlying folder/tab view, and without leaving the application (per spec.md's own
 Independent Test for this story).
 
 - [X] T014 [US2] No new implementation expected *provided T011 wired `Dialog`'s own
-      `onClose` prop as instructed* (not just the "X" `IconButton`'s `onClick`) — that's
+      `onClose` prop as instructed* (not just the "X" `IconButton`'s `onClick`) - that's
       what makes Escape (and backdrop-click) fire `closeFileDialog` for free, and Back
       already flows through T013's extended `popstate` handler. Confirm both work via
       `quickstart.md` Scenarios 4–5 (including that Forward after an X/Escape close does
-      *not* reopen the file, per the Clarifications session) — if Escape doesn't close the
+      *not* reopen the file, per the Clarifications session) - if Escape doesn't close the
       dialog, check first whether `Dialog`'s `onClose` was actually wired in T011 before
       treating this as new scope (code review confirms `<Dialog open={...} onClose={onClose}>`
       in `FileViewerDialog.tsx` is wired to the same `closeFileDialog` passed from `App.tsx`
-      as the "X" `IconButton`'s `onClick` — actual Escape/Back behavior still needs
+      as the "X" `IconButton`'s `onClick` - actual Escape/Back behavior still needs
       confirming in a real browser per T018, since no browser is available in this
       environment)
 
@@ -219,7 +219,7 @@ Independent Test for this story).
 ## Phase 7: Polish & Cross-Cutting Concerns
 
 **Purpose**: Verification that spans all four stories, plus two post-implementation
-corrections found during user review (T019/T020) — added to `spec.md` as FR-012's
+corrections found during user review (T019/T020) - added to `spec.md` as FR-012's
 addendum and new FR-017/SC-005 before being fixed here, per constitution Principle I
 
 - [X] T017 [P] Run `npm run typecheck` and resolve any strict-mode type errors introduced
@@ -227,17 +227,17 @@ addendum and new FR-017/SC-005 before being fixed here, per constitution Princip
 - [X] T019 [US1] Post-implementation correction (FR-012 addendum): wrap the close ("X")
       `IconButton` in `web/src/components/FileViewerDialog.tsx` in a `Box` with a
       semi-opaque background (`rgba(0, 0, 0, 0.6)`) and 4px padding, so it stays visible
-      over arbitrary file content rendered behind it — found during user review, not
+      over arbitrary file content rendered behind it - found during user review, not
       caught by any automated test since it's a visual/rendering concern
 - [X] T020 Post-implementation correction (new FR-017/SC-005): apply dark-theme-consistent
-      colors to all three rendering modes in `web/src/components/FileViewerDialog.tsx` —
+      colors to all three rendering modes in `web/src/components/FileViewerDialog.tsx` -
       `react-syntax-highlighter`'s `style` prop set to `vscDarkPlus` (was using Prism's
       light default), and the Markdown container's `sx` given explicit dark-compatible
-      `color`/table-border/inline-code colors — found during user review; verified via
+      `color`/table-border/inline-code colors - found during user review; verified via
       server-side rendering that the resulting inline styles use a dark background
       (`#1e1e1e`) and light text (`#d4d4d4`) instead of the previous light defaults
 - [X] T018 Execute `quickstart.md` Scenarios 1–9 in a real desktop browser and confirm each
-      matches its expected outcome (partial — no browser is available in this environment,
+      matches its expected outcome (partial - no browser is available in this environment,
       so only the HTTP/data layer was verified: every fixture file's `GET /api/file/infra`
       status matches its expected rendering-mode outcome (200 for `.txt`/`.csv`/unknown-ext/
       `.gitignore`/`.md`/`.yaml`/`.toml`/`.py`, 415 for the binary fixture), and
@@ -246,7 +246,7 @@ addendum and new FR-017/SC-005 before being fixed here, per constitution Princip
       `<table>` for Markdown; colored token spans for yaml/toml/python). Along the way,
       found and fixed a real bug in quickstart.md's own binary fixture: `head -c 32
       /dev/urandom` has a ~89% chance of containing zero null bytes, so it wasn't a
-      reliable way to trigger the 415 binary-rejection path — replaced with a fixture that
+      reliable way to trigger the 415 binary-rejection path - replaced with a fixture that
       guarantees a null byte. The actual double-click/dialog/Escape/Back/Forward/visual
       behavior across all 4 user stories has **not** been human-confirmed in a real
       browser)
@@ -262,7 +262,7 @@ addendum and new FR-017/SC-005 before being fixed here, per constitution Princip
   (`getFileRenderMode` is the one piece every story's rendering decision routes through)
 - **User Story 1 (Phase 3)**: Depends on Foundational; no dependency on US2/US3/US4
 - **User Story 2 (Phase 4)**: Depends on User Story 1 (there is no dialog to close until
-  US1 builds it) — expected to require no new code, only verification
+  US1 builds it) - expected to require no new code, only verification
 - **User Story 3 (Phase 5)**: Depends on User Story 1 (`FileViewerDialog.tsx` must exist);
   independent of US2/US4
 - **User Story 4 (Phase 6)**: Depends on User Story 1 (`FileViewerDialog.tsx` must exist);
@@ -274,7 +274,7 @@ addendum and new FR-017/SC-005 before being fixed here, per constitution Princip
 - **User Story 1 (P1)**: The foundation every other story extends; not independent of
   Foundational, but independent of US2/US3/US4
 - **User Story 2 (P2)**: Independently *testable* on its own, but adds no new file
-  changes — it verifies behavior T011/T013 already provide
+  changes - it verifies behavior T011/T013 already provide
 - **User Story 3 (P3)**: Independently testable; extends `FileViewerDialog.tsx` from US1
   but has no dependency on US2/US4, so could be built in parallel with US4 by a second
   contributor
@@ -292,10 +292,10 @@ addendum and new FR-017/SC-005 before being fixed here, per constitution Princip
 ### Parallel Opportunities
 
 - T002 (Foundational) has no dependency on Setup beyond it completing
-- T004, T005, T006 (US1 tests) can run in parallel — different files
-- T007 (US1, `http-server.ts`) can run in parallel with T004/T005/T006 — different file,
+- T004, T005, T006 (US1 tests) can run in parallel - different files
+- T007 (US1, `http-server.ts`) can run in parallel with T004/T005/T006 - different file,
   no dependency
-- T015 (US3) and T016 (US4) can run in parallel — both extend `FileViewerDialog.tsx` but
+- T015 (US3) and T016 (US4) can run in parallel - both extend `FileViewerDialog.tsx` but
   add independent rendering branches; sequence their merge if built by different
   contributors
 - T017 (typecheck) can run in parallel with T018 (manual quickstart run) in Polish
@@ -338,12 +338,12 @@ Task: "Integration test GET /api/file/:tab in tests/integration/web-server.test.
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
-- User Story 2 is expected to require zero new code — it exists as its own phase because
+- User Story 2 is expected to require zero new code - it exists as its own phase because
   it's independently *specified and testable* in spec.md, even though its mechanics are a
   byproduct of building User Story 1 correctly (the same pattern seen in feature 001's
   T012/T013 and feature 002's T019/T020)
 - The dialog (`FileViewerDialog.tsx`, `App.tsx`, `ContentsTable.tsx`) is validated manually
-  via `quickstart.md`, per constitution Principle V's UI-rendering carve-out — the *pure*
+  via `quickstart.md`, per constitution Principle V's UI-rendering carve-out - the *pure*
   logic that happens to live alongside it (`fileRenderMode.ts`, `looksBinary`,
   `statesEqual`) still gets test-first treatment since it's data/decision logic, not
   rendering

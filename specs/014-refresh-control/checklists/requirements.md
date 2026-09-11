@@ -32,9 +32,9 @@
 ## Notes
 
 - All 16 items pass. Zero [NEEDS CLARIFICATION] markers remained after `/speckit-specify`
-  — most judgment calls (selection/expansion state preserved when still valid; an open
+  - most judgment calls (selection/expansion state preserved when still valid; an open
   file-viewer dialog left untouched; in-progress visual feedback with no overlapping
   refreshes; error surfacing on failure) had a reasonably confident default backed by
   common conventions in comparable tools, recorded in Assumptions. The one genuinely
-  uncertain call — refresh scope across all tabs vs. just the active one — was confirmed
+  uncertain call - refresh scope across all tabs vs. just the active one - was confirmed
   via `/speckit-clarify` (Session 2026-09-09): every tab refreshes at once (FR-004).

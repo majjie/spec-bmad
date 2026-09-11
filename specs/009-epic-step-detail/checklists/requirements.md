@@ -31,6 +31,6 @@
 
 ## Notes
 
-- All 16 items pass. No [NEEDS CLARIFICATION] markers were needed — every ambiguous point
+- All 16 items pass. No [NEEDS CLARIFICATION] markers were needed - every ambiguous point
   (spec-file tie-breaks, malformed-index fallback, collapse-state persistence) had a
   reasonable default, recorded under Assumptions/Edge Cases rather than left open.

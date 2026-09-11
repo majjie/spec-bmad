@@ -32,8 +32,8 @@
 ## Notes
 
 - No [NEEDS CLARIFICATION] markers were needed. One real ambiguity in the source
-  description — "three types" followed by a four-item list (done/review/backlog/
-  in-progress) — had an unambiguous resolution (the explicit list wins) and is recorded
+  description - "three types" followed by a four-item list (done/review/backlog/
+  in-progress) - had an unambiguous resolution (the explicit list wins) and is recorded
   in Assumptions rather than spent against the clarification budget. The empty-epics
   edge case for "Active Epic" (FR-010) was added proactively since the stated rules would
   otherwise be vacuously true for zero epics.

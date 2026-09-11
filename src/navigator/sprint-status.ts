@@ -56,7 +56,7 @@ export function calculateActiveEpic(epics: EpicStatusGroup[]): string {
  * Shapes an already-parsed YAML object into a Summary plus per-epic Status groups, per
  * data-model.md and research.md § 4's two-pass derivation. Tolerant of a missing/absent/
  * non-object `development_status` (yields `epics: []`) and of missing Summary fields
- * (each defaults to an empty string) — only a malformed YAML *document* is an error, and
+ * (each defaults to an empty string) - only a malformed YAML *document* is an error, and
  * that's caught one layer up, by the route that calls `js-yaml`'s `load()` before this.
  */
 interface RawStep {
@@ -109,7 +109,7 @@ export function parseSprintStatus(
   }
 
   // Second pass: attach every remaining numbered-story key to the epic whose number it
-  // starts with (FR-013's delimiter-based match — "11-2-foo" starts with "11-", not "1-",
+  // starts with (FR-013's delimiter-based match - "11-2-foo" starts with "11-", not "1-",
   // so epic 1 and epic 11 are never confused). No matching epic → left out (FR-015).
   for (const [key, value] of entries) {
     const storyMatch = key.match(STORY_NUMBER_PATTERN);

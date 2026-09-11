@@ -38,7 +38,7 @@ function MemlogSegmentView({
       sx={{
         all: "unset",
         cursor: "pointer",
-        color: "info.light",
+        color: "var(--color-accent)",
         textDecoration: "underline",
       }}
     >
@@ -47,8 +47,8 @@ function MemlogSegmentView({
   );
 }
 
-// FR-012/FR-013: alternating row background by index — the same candy-striping
-// convention SprintStatusView.tsx's StepRow already uses — with the category (when
+// FR-012/FR-013: alternating row background by index - the same candy-striping
+// convention SprintStatusView.tsx's StepRow already uses - with the category (when
 // present) broken into its own primary.light header, separate from the body text.
 function MemlogEntryRow({
   entry,
@@ -76,7 +76,7 @@ function MemlogEntryRow({
 }
 
 /**
- * The memory log tile's bespoke dialog (feature 013) — structurally modeled on
+ * The memory log tile's bespoke dialog (feature 013) - structurally modeled on
  * FileViewerDialog.tsx's own shell (the corner controls as a sibling of the scrolling
  * content, never a descendant of it, research.md § 6) but rendering `.memlog.md`'s bullets
  * via parseMemlogEntries instead of passing the content through ReactMarkdown.
@@ -117,7 +117,7 @@ export default function MemoryLogDialog({
           zIndex: 10,
           padding: "4px",
           borderRadius: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: "var(--color-scrim)",
           display: "flex",
           alignItems: "center",
           gap: 0.5,

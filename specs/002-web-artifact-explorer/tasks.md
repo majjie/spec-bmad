@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Included for server/data logic — constitution Principle V requires test-first for
+**Tests**: Included for server/data logic - constitution Principle V requires test-first for
 this feature's parsing/data logic (tree filtering, contents enrichment, sort ordering).
 The React UI itself is validated manually per Principle V's explicit UI-rendering carve-out
 (see quickstart.md), so no automated component-rendering tests are included.
@@ -65,7 +65,7 @@ implemented
       `web/dist/index.html` for any unrecognized path (contracts/http-api.md)
 - [X] T006 [P] Scaffold the Vite/React entry point: `web/src/main.tsx` mounting a
       placeholder `web/src/App.tsx` (e.g. a loading message), so `npm run build:web`
-      produces a working, if empty, page — depends on T001
+      produces a working, if empty, page - depends on T001
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -73,8 +73,8 @@ implemented
 
 ## Phase 3: User Story 1 - Browse the Infra tab's folder tree (Priority: P1) 🎯 MVP
 
-**Goal**: A working Infra tab — folder tree on the left bound to `_bmad`, sortable-later
-contents table on the right, click-to-navigate in both directions — served by the CLI's
+**Goal**: A working Infra tab - folder tree on the left bound to `_bmad`, sortable-later
+contents table on the right, click-to-navigate in both directions - served by the CLI's
 existing valid-folder path instead of that path just exiting.
 
 **Independent Test**: Open the UI against a project with a populated `_bmad` folder;
@@ -103,8 +103,8 @@ story).
       unrelated to the fixture project>` → 403 (contracts/http-api.md)
 - [X] T010 [US1] Update BOTH existing feature-001 tests in
       `tests/integration/cli-folder-resolution.test.ts` that exercise the valid-folder path
-      — "valid folder: exits 0 with no error output" AND "no folder argument: defaults to
-      the current working directory" — since both currently use `spawnSync` and assert an
+      - "valid folder: exits 0 with no error output" AND "no folder argument: defaults to
+      the current working directory" - since both currently use `spawnSync` and assert an
       immediate `exit 0`, which no longer happens once a valid folder starts a persistent
       server. Switch both to the Node.js async `child_process.spawn` (not `spawnSync`,
       which would hang forever waiting for a process that no longer exits on its own),
@@ -123,10 +123,10 @@ story).
 - [X] T012 [US1] Implement the contents-enrichment helper and `GET /api/contents/:tab`
       route (reading the `path` query param) in `src/server/routes/contents.ts`,
       `fs.stat()`-ing each direct child. Before touching the filesystem, the route MUST
-      verify `path` is equal to, or a descendant of, `:tab`'s own root folder path — using
+      verify `path` is equal to, or a descendant of, `:tab`'s own root folder path - using
       `path.relative(root, path)` and rejecting if the result starts with `..` or is
       absolute, not a naive string-prefix check (which would wrongly accept a sibling like
-      `/foo/bar-evil` as a descendant of `/foo/bar`) — and respond 403 if not —
+      `/foo/bar-evil` as a descendant of `/foo/bar`) - and respond 403 if not -
       `path` is caller-supplied and this server has no other access control
       (contracts/http-api.md, constitution Principle II). Also return 400 when `path` is
       missing and 404 when it's within the tree but no longer exists on disk. Depends on
@@ -179,7 +179,7 @@ unaffected (per spec.md's own Independent Test for this story).
 - [X] T019 [US2] Implement the FR-012 missing-folder response (404) in
       `src/server/routes/tree.ts` when the requested tab's folder is absent; depends on
       T011, T013, and must make T017/T018 pass (already satisfied by T011's
-      `getCachedTabTree` returning `undefined` when a tab's root path is `null` —
+      `getCachedTabTree` returning `undefined` when a tab's root path is `null` -
       confirmed by T017/T018 passing with no further code changes)
 - [X] T020 [US2] Implement per-tab independent view state in `web/src/App.tsx` (separate
       `expandedPaths`/`selectedPath` per `TabId`, so switching tabs never resets the
@@ -234,12 +234,12 @@ Scenario 6)
       across the app (FR-015); depends on T014
 - [X] T025 [P] Review the implementation for FR-014 (desktop-only): confirm no
       mobile-specific breakpoints/layout were introduced in `web/src/App.tsx` or its
-      components; depends on T014, T015 (confirmed via grep — no `useMediaQuery`,
+      components; depends on T014, T015 (confirmed via grep - no `useMediaQuery`,
       breakpoint-keyed `sx`, or `Drawer` usage anywhere in `web/src/`)
 - [X] T026 [P] Run `npm run typecheck` across `src/` and `web/src/` and resolve any
       strict-mode type errors
 - [X] T027 Execute `quickstart.md` Scenarios 1–8 manually against a real fixture project
-      and confirm each matches its expected outcome (partial — see implementation notes:
+      and confirm each matches its expected outcome (partial - see implementation notes:
       no browser is available in this environment, so only the HTTP/data layer behind
       Scenarios 1, 3, 4, 5, 7 was verified; Scenarios 2, 6, 8 and the actual click/visual
       interactions need a human to confirm in a real browser)
@@ -254,16 +254,16 @@ Scenario 6)
 - **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
 - **User Story 1 (Phase 3)**: Depends on Foundational; no dependency on US2/US3
 - **User Story 2 (Phase 4)**: Depends on Foundational and on `tree.ts`/`tabs.ts`/`App.tsx`/
-  `FolderTree.tsx` existing from US1 — extends those same files, so implement after US1
+  `FolderTree.tsx` existing from US1 - extends those same files, so implement after US1
 - **User Story 3 (Phase 5)**: Depends on Foundational and on `ContentsTable.tsx` existing
-  from US1 — extends that same file, so implement after US1 (independent of US2)
+  from US1 - extends that same file, so implement after US1 (independent of US2)
 - **Polish (Phase 6)**: Depends on all three user stories being complete
 
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Independently testable once Foundational is done
 - **User Story 2 (P2)**: Independently testable on its own once implemented, but its
-  implementation tasks extend files US1 creates (`tree.ts`, `App.tsx`, `FolderTree.tsx`) —
+  implementation tasks extend files US1 creates (`tree.ts`, `App.tsx`, `FolderTree.tsx`) -
   sequence after US1 to avoid file conflicts
 - **User Story 3 (P3)**: Independently testable on its own once implemented; extends
   `ContentsTable.tsx` from US1 but has no dependency on US2, so it could be built in
@@ -279,11 +279,11 @@ Scenario 6)
 
 ### Parallel Opportunities
 
-- T003, T004, T005, T006 (Foundational) can all run in parallel — different files, no
+- T003, T004, T005, T006 (Foundational) can all run in parallel - different files, no
   dependency between them
-- T007, T008, T009 (US1 tests) can run in parallel — different files
-- T017, T018 (US2 tests) can run in parallel — different files
-- T024, T025, T026 (Polish) can run in parallel — different concerns, T027 last since it
+- T007, T008, T009 (US1 tests) can run in parallel - different files
+- T017, T018 (US2 tests) can run in parallel - different files
+- T024, T025, T026 (Polish) can run in parallel - different concerns, T027 last since it
   validates the finished whole
 
 ---
@@ -334,10 +334,10 @@ Task: "Integration test HTTP round trip in tests/integration/web-server.test.ts"
 - [Story] label maps task to specific user story for traceability
 - US2 and US3 extend files US1 creates (`tree.ts`, `App.tsx`, `FolderTree.tsx`,
   `ContentsTable.tsx`); this mirrors feature 001's pattern of later stories extending
-  earlier stories' files rather than each introducing a parallel set — not a coupling of
+  earlier stories' files rather than each introducing a parallel set - not a coupling of
   behavior, since each story's tests exercise only that story's requirements
 - The React UI (`App.tsx`, `FolderTree.tsx`, `ContentsTable.tsx`, `theme.ts`) is validated
-  manually via `quickstart.md`, per constitution Principle V's UI-rendering carve-out — the
+  manually via `quickstart.md`, per constitution Principle V's UI-rendering carve-out - the
   *pure data-transformation* logic that happens to live in `web/` (`sortEntries.ts`) still
   gets test-first treatment since it's data logic, not rendering
 - Verify tests fail before implementing

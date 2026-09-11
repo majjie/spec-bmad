@@ -17,7 +17,7 @@ function asStringOrNull(value: unknown): string | null {
 /**
  * Shapes an already-parsed YAML object's `action_items` list into `ActionItem[]`, per
  * data-model.md's derivation rules. Tolerant of a missing/non-array `action_items` (yields
- * `[]`) and of a non-object entry within it (skipped) — matching `parseSprintStatus`'s own
+ * `[]`) and of a non-object entry within it (skipped) - matching `parseSprintStatus`'s own
  * tolerant-parsing style. Each entry's `ref`, when present, is resolved against
  * `projectRootPath` at parse time (research.md § 1) rather than left for the client to
  * guess at.

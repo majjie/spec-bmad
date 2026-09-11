@@ -1,7 +1,7 @@
 # Phase 1 Data Model: Web Artifact Explorer
 
 Derived from `spec.md` § Key Entities, translated into the concrete shapes the API and
-frontend exchange. Nothing here is persisted — it's all derived on request from feature
+frontend exchange. Nothing here is persisted - it's all derived on request from feature
 001's in-memory `HierarchyCache` plus on-demand `fs.stat()` calls (research.md § 3).
 
 ## TabId
@@ -33,11 +33,11 @@ the left-hand tree, only in the right-hand table).
 | Field | Type | Notes |
 |---|---|---|
 | `name` | `string` | Folder's own name |
-| `path` | `string` | Absolute path — used as the row/selection key and passed back as the `path` query param to `/api/contents` |
+| `path` | `string` | Absolute path - used as the row/selection key and passed back as the `path` query param to `/api/contents` |
 | `children` | `FolderTreeNode[]` | Child folders only; always present (possibly empty) |
 
 Derived by filtering feature 001's `ArtifactNode` tree down to `type === "folder"` nodes,
-recursively — no filesystem access beyond what feature 001 already cached (research.md
+recursively - no filesystem access beyond what feature 001 already cached (research.md
 § 3).
 
 ## ContentsEntry
@@ -56,12 +56,12 @@ The **Folder Contents Entry** entity from spec.md: one row in the right-hand tab
 **Validation rules**:
 - `type: "folder"` entries always have `size: null`.
 - The set of entries returned for a folder is exactly that folder's direct children (no
-  further recursion) — matches feature 001's `ArtifactNode.children` for that path, one
+  further recursion) - matches feature 001's `ArtifactNode.children` for that path, one
   level deep.
 
 ## Sort state (frontend-only)
 
-Not transmitted over the API — purely client-side per-view state, since sort choice does
+Not transmitted over the API - purely client-side per-view state, since sort choice does
 not persist across a folder/tab change (User Story 3, Acceptance Scenario 4).
 
 | Field | Type | Notes |

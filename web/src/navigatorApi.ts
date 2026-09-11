@@ -2,7 +2,7 @@ import type { NavigatorTree, PrdDateEntry, PrdGroupingResult, PrdNonConformingEn
 
 /**
  * Finds the folder entry (a date node or a non-conforming node) matching `itemId` by its
- * `path`, returning the whole entry — not just `folderName` — so callers can also read its
+ * `path`, returning the whole entry - not just `folderName` - so callers can also read its
  * `path`. Takes a grouping result directly (not a whole `NavigatorTree`) so the identical
  * traversal serves both `tree.prd` and `tree.architecture` lookups (feature 015) rather
  * than duplicating it. Shared by `NavigatorDetailPane.tsx` (to render a PRD or

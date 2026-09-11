@@ -24,7 +24,7 @@ rooted at that tab's `_bmad`/`_bmad-output` folder.
 ```
 
 - **200**: `:tab`'s folder exists (`TabAvailability` for it is `true`).
-- **404**: `:tab`'s folder does not exist for this project (matches FR-012 — the frontend
+- **404**: `:tab`'s folder does not exist for this project (matches FR-012 - the frontend
   uses this, or the `/api/tabs` result, to show that tab's empty state instead).
 - **404**: `:tab` is neither `infra` nor `output`.
 
@@ -32,7 +32,7 @@ rooted at that tab's `_bmad`/`_bmad-output` folder.
 
 Returns the direct children of `path` as `ContentsEntry[]` (data-model.md). `path` MUST be
 a folder path that appears somewhere in `:tab`'s tree (either the tab's own root, or a
-`path` value returned by `/api/tree/:tab`). **The server MUST verify this itself** —
+`path` value returned by `/api/tree/:tab`). **The server MUST verify this itself** -
 `path` is caller-supplied and reachable by anything that can reach `127.0.0.1:<port>`, so
 containment is enforced here, not merely assumed of well-behaved callers (constitution
 Principle II's Read-Only *Artifact* Viewer scope: this server exposes `_bmad`/
@@ -47,7 +47,7 @@ Principle II's Read-Only *Artifact* Viewer scope: this server exposes `_bmad`/
 
 - **200**: `path` exists and is a folder within `:tab`'s tree.
 - **400**: `path` query parameter is missing.
-- **403**: `path` is not equal to, or a descendant of, `:tab`'s own root folder path — the
+- **403**: `path` is not equal to, or a descendant of, `:tab`'s own root folder path - the
   server rejects it without touching the filesystem outside that root.
 - **404**: `path` is within `:tab`'s tree but no longer exists on disk (mirrors feature
   001's FR-012 "report the folder cannot be found" stance, applied here to a single folder
@@ -55,6 +55,6 @@ Principle II's Read-Only *Artifact* Viewer scope: this server exposes `_bmad`/
 
 ## `GET /` and other static asset paths
 
-Serves `web/dist/`'s built frontend (`index.html`, JS/CSS bundles). Not JSON — plain
+Serves `web/dist/`'s built frontend (`index.html`, JS/CSS bundles). Not JSON - plain
 static file serving, with the built `index.html` returned for any unrecognized path so the
 frontend's own routing (if any) can take over client-side.

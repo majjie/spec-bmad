@@ -24,9 +24,9 @@ A user opens the new tab and, instead of scrolling through a flat, alphabeticall
 folder listing, sees PRD folders organized into a tree: one node per distinct project, and
 under each project, its PRD folders ordered from most recent to oldest. Folders that don't
 follow the project-and-date naming pattern still show up, listed by their own folder name,
-so nothing is hidden — it's just not grouped.
+so nothing is hidden - it's just not grouped.
 
-**Why this priority**: This is the concrete, explicit ask behind the whole feature — making
+**Why this priority**: This is the concrete, explicit ask behind the whole feature - making
 PRDs easier to navigate than the existing raw folder tree.
 
 **Independent Test**: With a project containing several PRD folders spanning at least two
@@ -50,7 +50,7 @@ folder-level node shows that folder's name in the right-hand pane.
    non-conforming folder's node, **Then** the right-hand pane shows that folder's name as
    placeholder text (richer detail is future work).
 4. **Given** the PRD tree is expanded, **When** the user selects the "PRD" root node or a
-   project node itself (not a date leaf), **Then** it only expands or collapses — the
+   project node itself (not a date leaf), **Then** it only expands or collapses - the
    right-hand pane's content does not change.
 
 ---
@@ -62,7 +62,7 @@ tracking metadata plus one tile per epic showing that epic's own status, the sta
 of its stories, and whether its retrospective is done.
 
 **Why this priority**: A valuable secondary insight, but User Story 1 already delivers the
-feature's core navigation value on its own — a project can have PRDs without sprint
+feature's core navigation value on its own - a project can have PRDs without sprint
 tracking, or vice versa.
 
 **Independent Test**: With a project containing a valid sprint-status file matching the
@@ -133,7 +133,7 @@ numbered stories and showing its retrospective's status.
   in the right-hand pane, placeholder text naming that folder; richer detail is explicitly
   deferred to a future feature.
 - **FR-010**: Selecting the "PRD" root node or a project node MUST only expand or collapse
-  it — the right-hand pane's content MUST NOT change.
+  it - the right-hand pane's content MUST NOT change.
 - **FR-011**: A "Sprint Status" root node MUST appear only when
   `_bmad-output/implementation-artifacts/sprint-status.yaml` exists.
 - **FR-012**: Selecting the "Sprint Status" node MUST show, in the right-hand pane, a
@@ -143,7 +143,7 @@ numbered stories and showing its retrospective's status.
   file's `development_status` data, in the order the file declares them. Each tile MUST
   show: the epic's own status; its numbered child stories, each with its own status,
   matched only when a story's key starts with that epic's number followed immediately by a
-  hyphen (e.g. epic `1`'s stories start with `1-`) — this distinguishes epic `1`'s stories
+  hyphen (e.g. epic `1`'s stories start with `1-`) - this distinguishes epic `1`'s stories
   from epic `10`'s or `11`'s, whose keys start with `10-`/`11-` instead; and the epic's own
   retrospective status. Stories within a tile MUST appear in the order the file declares
   them, not a numeric re-sort, since story keys (e.g. `1-6a`) aren't purely numeric.
@@ -157,7 +157,7 @@ numbered stories and showing its retrospective's status.
 
 - **PRD Project**: A distinct project identified by a case-sensitive value shared by one or
   more PRD folder names; has one or more dated PRD folders.
-- **PRD Folder**: A single dated snapshot of a PRD — its extracted date and the path to its
+- **PRD Folder**: A single dated snapshot of a PRD - its extracted date and the path to its
   backing folder.
 - **Non-conforming PRD Folder**: A folder under the prds directory whose name doesn't match
   the project-and-date convention; shown by its own literal folder name.
@@ -177,29 +177,29 @@ numbered stories and showing its retrospective's status.
   stories are done versus remaining, within a few seconds of opening the Sprint Status view.
 - **SC-003**: Users of a project without a `_bmad-output` folder never see this tab, so
   there's no dead or confusing navigation entry to encounter.
-- **SC-004**: PRD folders that don't follow the naming convention remain discoverable —
-  never silently hidden — even though they aren't grouped with the rest.
+- **SC-004**: PRD folders that don't follow the naming convention remain discoverable -
+  never silently hidden - even though they aren't grouped with the rest.
 
 ## Assumptions
 
 - The tab is labeled "Navigator" (a placeholder name capturing its purpose; easy to rename
   without affecting behavior).
 - The "PRD" root node's top-level children (project nodes and non-conforming-folder nodes)
-  are ordered alphabetically by their displayed label, case-sensitive — consistent with the
+  are ordered alphabetically by their displayed label, case-sensitive - consistent with the
   case-sensitive project grouping itself, and with the plain alphabetical ordering already
   used elsewhere in this app's trees.
 - A folder name matches the project-and-date convention only when its final three
   dash-separated segments are exactly 4, 2, and 2 digits (e.g. `-2026-08-28`); those digits
-  don't need to form a calendar-valid date (no month/day range checking) — this keeps the
+  don't need to form a calendar-valid date (no month/day range checking) - this keeps the
   rule about naming shape, not calendar correctness. A folder name that's only a bare date
   with no project text before it doesn't match either (an empty project isn't meaningful),
   so it's treated as non-conforming.
-- Surfacing `action_items` from the sprint-status file is out of scope for this feature —
+- Surfacing `action_items` from the sprint-status file is out of scope for this feature -
   the description names only a Summary tile and per-epic Status tiles. This may be a future
   enhancement.
 - Both new root views (PRD and Sprint Status) start expanded by default when the tab is
   first opened, consistent with this app's existing "root starts expanded" convention.
-- This feature only introduces read-only viewing of PRD and sprint-status data — no
+- This feature only introduces read-only viewing of PRD and sprint-status data - no
   editing, reordering, or writing of any kind, consistent with the project's read-only
   principle.
 - The right-hand pane's placeholder text for a PRD folder (FR-009) is exactly the folder's

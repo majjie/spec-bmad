@@ -1,6 +1,6 @@
 # Phase 1 Data Model: File Content Viewer
 
-Derived from `spec.md` § Key Entities. Nothing here is persisted — file content is read
+Derived from `spec.md` § Key Entities. Nothing here is persisted - file content is read
 fresh from disk on each request (research.md § 1), and the open/closed dialog state lives
 only in the browser's history stack for the session (research.md § 6).
 
@@ -30,7 +30,7 @@ type FileRenderMode =
 
 ## FileContentResponse
 
-Not a JSON envelope — `GET /api/file/:tab?path=...` (contracts/http-api-addendum.md)
+Not a JSON envelope - `GET /api/file/:tab?path=...` (contracts/http-api-addendum.md)
 returns the file's raw text as the response body (`Content-Type: text/plain`) on success,
 or a bare non-200 status with no body on failure, matching the existing
 `tabs`/`tree`/`contents` routes' minimalist error style.
@@ -57,7 +57,7 @@ Feature 003's `NavigationState` gains one optional field:
 - `statesEqual` (feature 003) is extended to also compare `openFile`, so a state with a
   file open is never mistaken for one without, or for a different open file.
 - Every state pushed while opening a file carries the *same* `tab`/`path` the user was
-  already on — opening a file never changes which folder/tab is considered active.
+  already on - opening a file never changes which folder/tab is considered active.
 
 ## FileDialogState (frontend-only)
 

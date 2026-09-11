@@ -22,7 +22,7 @@ function toDisplayName(fileName: string): string {
 /**
  * Detects every `review-*.md` file among a PRD folder's own contents entries (already
  * fetched via `fetchContents`), deriving each one's friendly display name and sorting the
- * result alphabetically by that name — not by raw filename, since the two can diverge
+ * result alphabetically by that name - not by raw filename, since the two can diverge
  * once casing/prefix transforms are applied (FR-001/FR-003/FR-004).
  */
 export function buildReviewFileList(entries: ContentsEntry[]): ReviewFileReference[] {

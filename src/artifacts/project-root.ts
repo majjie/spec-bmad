@@ -8,7 +8,7 @@ const BMAD_OUTPUT_FOLDER_NAME = "_bmad-output";
 /**
  * Checks `folderPath` for a real (non-symlink) `_bmad` and/or `_bmad-output` child
  * directory (FR-007). Returns `null` when neither is present. Rejects if `folderPath`
- * itself cannot be read (e.g. it does not exist, or a permissions error) — callers that
+ * itself cannot be read (e.g. it does not exist, or a permissions error) - callers that
  * need to treat an unreadable folder as "not a candidate" instead (the discovery crawl)
  * must catch that themselves.
  */

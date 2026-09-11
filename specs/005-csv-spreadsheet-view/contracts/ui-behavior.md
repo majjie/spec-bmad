@@ -1,7 +1,7 @@
-# Contract: UI Behavior (frontend) — CSV Spreadsheet Grid
+# Contract: UI Behavior (frontend) - CSV Spreadsheet Grid
 
 Extends feature 004's own `contracts/ui-behavior.md` (unchanged for every other file
-type). No HTTP API changes — this feature only adds a new rendering branch inside
+type). No HTTP API changes - this feature only adds a new rendering branch inside
 `FileViewerDialog.tsx` for files `getFileRenderMode` classifies as `{ kind: "csv-grid" }`.
 
 ## Rendering
@@ -22,12 +22,12 @@ type). No HTTP API changes — this feature only adds a new rendering branch ins
   - Every cell (header or data) is one field from its row array, or empty when that row is
     shorter than the widest row (FR-010).
 - The whole grid uses the application's existing dark theme (File Content Viewer feature,
-  FR-017) — no light/white background at any point (FR-007).
-- No cell, row, or column has any control for editing, adding, or removing data (FR-008) —
+  FR-017) - no light/white background at any point (FR-007).
+- No cell, row, or column has any control for editing, adding, or removing data (FR-008) -
   the grid has no such affordances to begin with.
 
 ## Scope boundary
 
-- This rendering applies only when `getFileRenderMode` returns `{ kind: "csv-grid" }` —
+- This rendering applies only when `getFileRenderMode` returns `{ kind: "csv-grid" }` -
   i.e. only for `.csv` files (FR-013). Every other file type's existing rendering path in
   `FileViewerDialog.tsx` (Markdown, syntax-highlighted, plain) is untouched.

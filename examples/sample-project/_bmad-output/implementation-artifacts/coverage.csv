@@ -1,0 +1,7 @@
+component,tier,consumers,last_changed
+Button,core,42,2026-08-12
+TextField,core,38,2026-08-18
+TokenTable,extended,11,2026-09-01
+AdoptionChart,extended,7,2026-09-03
+ExperimentalChip,experimental,2,2026-09-05
+LegacyBanner,experimental,0,2026-07-22

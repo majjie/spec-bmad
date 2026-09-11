@@ -7,7 +7,7 @@ export interface RouteResponse {
   body?: unknown;
   /**
    * When set and `body` is a `string`, the body is sent as-is with this content type
-   * instead of being JSON-encoded (feature 004 — serving a file's raw text contents).
+   * instead of being JSON-encoded (feature 004 - serving a file's raw text contents).
    */
   contentType?: string;
 }

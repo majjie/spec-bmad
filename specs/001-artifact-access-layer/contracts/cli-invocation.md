@@ -1,7 +1,7 @@
 # Contract: CLI Folder Resolution (observable behavior)
 
 This describes what a user running the CLI actually sees for this feature's scope
-(folder resolution only — no artifact browsing UI exists yet in this feature). It is the
+(folder resolution only - no artifact browsing UI exists yet in this feature). It is the
 CLI's user-facing contract, built on top of `resolveProjectFolder` in
 `contracts/access-layer.md`.
 
@@ -16,7 +16,7 @@ bmad-browser [folder]
 ## Outcome: valid folder
 
 - Exit code `0`.
-- No error output. (What happens next — launching the web server — is out of scope for
+- No error output. (What happens next - launching the web server - is out of scope for
   this feature; this contract covers only that resolution succeeds silently.)
 
 ## Outcome: invalid folder, candidates found
@@ -27,7 +27,7 @@ bmad-browser [folder]
   1. A message stating the given/defaulted folder is not a recognizable BMAD project
      (FR-008).
   2. One suggested invocation line per discovered candidate (FR-010), each of the form
-     `bmad-browser <absolute-path-to-candidate>` — one line per entry in
+     `bmad-browser <absolute-path-to-candidate>` - one line per entry in
      `DiscoveryResult.candidates`.
 
 ## Outcome: invalid folder, no candidates found

@@ -12,7 +12,7 @@ description: "Task list template for feature implementation"
 **Tests**: Only `web/src/prdIndex.ts`'s new `styles` parameter (genuine derivation-logic
 change) gets test-first unit-test tasks, per constitution Principle V's main clause.
 `reviewFiles.ts`, `memlogParser.ts`, and `MemoryLogDialog.tsx` are reused completely
-unmodified (already fully tested in feature 013) — nothing new to test there. Everything
+unmodified (already fully tested in feature 013) - nothing new to test there. Everything
 else in this feature is UI/rendering, covered by manual `quickstart.md` verification
 instead, per that same principle's explicit carve-out.
 
@@ -37,17 +37,17 @@ Single project with a bundled web frontend (per plan.md): frontend code lives un
 **Purpose**: Confirm the feature needs no new dependencies before touching any code.
 
 - [X] T001 Verify `web/package.json` already lists `react-markdown`, `remark-gfm`, and
-      `@mui/icons-material` (for `RateReview`, `History` — no `PostAdd` needed, no
-      addendum tile) — all already used by `PrdDetailView.tsx` — and that no
+      `@mui/icons-material` (for `RateReview`, `History` - no `PostAdd` needed, no
+      addendum tile) - all already used by `PrdDetailView.tsx` - and that no
       `npm install` is required.
 
-**Checkpoint**: No dependency work needed — proceed directly to Foundational.
+**Checkpoint**: No dependency work needed - proceed directly to Foundational.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: The new component's basic shell and its wiring into the Navigator — the
+**Purpose**: The new component's basic shell and its wiring into the Navigator - the
 plumbing every user story's work sits on top of.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
@@ -62,12 +62,12 @@ plumbing every user story's work sits on top of.
 - [X] T003 In `web/src/components/NavigatorDetailPane.tsx`, render
       `<ArchitectureDetailView entry={architectureEntry} onOpenFile={onOpenFile} />` for an
       architecture leaf selection, replacing feature 015's bare
-      `<Typography>{architectureEntry.folderName}</Typography>` placeholder — leave every
+      `<Typography>{architectureEntry.folderName}</Typography>` placeholder - leave every
       other branch (`"sprint-status"`, PRD, `null`, unmatched) untouched (depends on T002;
       FR-001, contracts/ui-behavior.md "Dispatch").
 
-**Checkpoint**: Foundation ready — User Stories 1, 3, and 4 can now start (User Story 2
-also needs User Story 1's rendering in place first — see Dependencies below).
+**Checkpoint**: Foundation ready - User Stories 1, 3, and 4 can now start (User Story 2
+also needs User Story 1's rendering in place first - see Dependencies below).
 
 ---
 
@@ -91,20 +91,20 @@ informational control used for PRD and every other Markdown file in this tool.
       (still-empty) tile row and a scrollable content region (depends on T002; FR-001/
       FR-002).
 - [X] T005 [US1] In `ArchitectureDetailView.tsx`, render `FrontmatterInfoControl` as a
-      sibling of — never a descendant of — the scrolling content Box (both children of one
+      sibling of - never a descendant of - the scrolling content Box (both children of one
       shared `position: relative` wrapper), fixed top-right, whenever a non-empty preamble
       was found; render nothing when it wasn't. Get this structurally right from the start
       (the sibling-not-descendant placement is a lesson feature 012 already had to fix once
       after shipping it wrong) (depends on T004; FR-003).
 - [X] T006 [US1] In `ArchitectureDetailView.tsx`, render a clear "no document" message (not
-      an error, not a blank pane) when `fetchFileContentOrNull` resolves to `null` —
+      an error, not a blank pane) when `fetchFileContentOrNull` resolves to `null` -
       distinct from the genuine-fetch-error branch, which still shows the thrown error's
       message (depends on T002; FR-004).
 - [X] T007 [US1] Manually verify quickstart.md Scenario 1 via Playwright: full-pane render
       with no dialog/close control, frontmatter tooltip present and correct, "no document"
       message for a folder with no `ARCHITECTURE-SPINE.md`.
 
-**Checkpoint**: User Story 1 is fully functional and independently testable — an
+**Checkpoint**: User Story 1 is fully functional and independently testable - an
 architecture document now renders full-pane with its frontmatter tooltip.
 
 ---
@@ -116,20 +116,20 @@ codes only, lets a user find and jump to any detected requirement code without s
 the document by hand (FR-005–FR-010).
 
 **Independent Test**: Open an architecture document containing several heading-style
-requirement codes (e.g. `### AD-1 — Some decision`) across at least two different
+requirement codes (e.g. `### AD-1 - Some decision`) across at least two different
 prefixes; confirm one tile appears per unique prefix, hovering one lists every code under
 it in numerical order, and clicking a code scrolls the document to its location.
 
 ### Tests for User Story 2 ⚠️
 
-> Genuine derivation-logic change (constitution Principle V) — write these first and
+> Genuine derivation-logic change (constitution Principle V) - write these first and
 > confirm they fail before implementing T009.
 
 - [X] T008 [P] [US2] Extend `tests/unit/web/prdIndex.test.ts` with new cases for
       `buildRequirementCodeIndex`'s new optional `styles` parameter: called with no second
       argument still detects both bullet- and header-style codes exactly as before (no
       regression); called with `["header"]` detects a header-style code (e.g.
-      `### AD-1 — Some decision`) but does NOT detect a bullet-style occurrence
+      `### AD-1 - Some decision`) but does NOT detect a bullet-style occurrence
       (`**AD-1**`) present elsewhere in the same content; called with `["bullet"]` detects
       only bullet-style codes; an empty content string still produces an empty array
       regardless of `styles` (data-model.md; research.md § 1).
@@ -145,7 +145,7 @@ it in numerical order, and clicking a code scrolls the document to its location.
       `buildRequirementCodeIndex(body, ["header"])` → `groupByPrefix(...)` (depends on
       T004, T009).
 - [X] T011 [US2] In `ArchitectureDetailView.tsx`, add a custom `h3` `ReactMarkdown`
-      `components` override only (no `strong` override — architecture never detects
+      `components` override only (no `strong` override - architecture never detects
       bullet-style codes, so no anchor target for that style is ever needed) that attaches
       each matching heading's corresponding `RequirementCodeReference.id` as its anchor,
       using a per-render counter that consumes T010's ordered array in document order,
@@ -155,11 +155,11 @@ it in numerical order, and clicking a code scrolls the document to its location.
       (re-declared here, matching `PrdDetailView.tsx`'s own file-local, non-exported
       shape) and render the requirement-code index column as a structurally separate flex
       sibling of the document region (`borderLeft` divider, its own `overflow: auto`,
-      never inside the document's own scroll container) — one tile per prefix group,
+      never inside the document's own scroll container) - one tile per prefix group,
       entirely absent when no codes are detected (depends on T010; FR-006).
 - [X] T013 [US2] Add a controlled `Tooltip` to each `PrefixTile` (matching
       `PrdDetailView.tsx`'s own established `open`/`onOpen`/`onClose`/`leaveDelay={400}`/
-      opaque-and-scrollable `slotProps.tooltip.sx` configuration, applied from the start —
+      opaque-and-scrollable `slotProps.tooltip.sx` configuration, applied from the start -
       no separate later fix needed this time), listing its group's references in
       numerical order by full code text. Leave `disableInteractive` unset (MUI's own
       default) so hover-through from the tile onto the tooltip's own content keeps it open
@@ -172,7 +172,7 @@ it in numerical order, and clicking a code scrolls the document to its location.
       it, the bullet-style `**AD-1**` occurrence is confirmed absent from the tooltip
       listing, and zero detected codes suppresses the column entirely.
 
-**Checkpoint**: User Stories 1 and 2 both work independently — the architecture document
+**Checkpoint**: User Stories 1 and 2 both work independently - the architecture document
 renders full-pane and its heading-style requirement codes are indexed and jumpable.
 
 ---
@@ -190,7 +190,7 @@ name, alphabetically, and selecting one opens its content in a file-viewer dialo
 ### Implementation for User Story 3
 
 - [X] T016 [US3] In `ArchitectureDetailView.tsx`, add a local `ReviewsTile` component
-      (re-declared here, matching `PrdDetailView.tsx`'s own — the same
+      (re-declared here, matching `PrdDetailView.tsx`'s own - the same
       `ResizeObserver`-matched tooltip width, controlled `open` state, and alphabetical
       listing) (depends on T002).
 - [X] T017 [US3] In `ArchitectureDetailView.tsx`, add an effect that fetches
@@ -225,7 +225,7 @@ renders as plain text, not a link.
 ### Implementation for User Story 4
 
 - [X] T020 [US4] In `ArchitectureDetailView.tsx`, add an effect that fetches
-      `fetchContents("output", entry.path)` (the leaf folder's own direct contents — a
+      `fetchContents("output", entry.path)` (the leaf folder's own direct contents - a
       separate fetch from T017's `reviews`-subfolder listing) on mount and whenever
       `entry.path` changes, storing the result in local state; used only to detect a file
       named exactly `.memlog.md` (depends on T002; FR-015, FR-016).
@@ -239,7 +239,7 @@ renders as plain text, not a link.
       `prdReferences={[]}` always (never a real detected-codes array), and
       `onSelectReference` simply closing the dialog (never actually reachable in practice,
       since an empty `prdReferences` array means `MemoryLogDialog` never renders a
-      clickable segment — kept only for prop-shape parity with `PrdDetailView`'s own
+      clickable segment - kept only for prop-shape parity with `PrdDetailView`'s own
       usage) (depends on T021; FR-017, FR-018, FR-019, research.md § 4).
 - [X] T023 [US4] Manually verify quickstart.md Scenario 4 via Playwright: bespoke
       candy-striped/category-header rendering matches PRD's own; a bullet mentioning a
@@ -256,7 +256,7 @@ renders as plain text, not a link.
 regressed across the whole test suite and PRD's own existing view.
 
 - [X] T024 Manually verify quickstart.md Scenario 5 via Playwright: the tile row contains
-      exactly two tiles (reviews, memory log) — no third, addendum-shaped tile anywhere,
+      exactly two tiles (reviews, memory log) - no third, addendum-shaped tile anywhere,
       regardless of what files exist in the folder (FR-020).
 - [X] T025 [P] Run the full `npm test` suite and confirm `prdIndex.test.ts`'s extended
       cases (T008) pass alongside every pre-existing test with zero regressions.
@@ -274,16 +274,16 @@ regressed across the whole test suite and PRD's own existing view.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all user stories.
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories.
 - **User Story 1 (Phase 3)**: Depends on Foundational only.
 - **User Story 2 (Phase 4)**: Depends on Foundational; its rendering tasks (T010+) also
   depend on User Story 1's T004 (the frontmatter-stripped content and Markdown render it
-  attaches anchors to) — so in practice, complete Phase 3 before Phase 4, even though both
+  attaches anchors to) - so in practice, complete Phase 3 before Phase 4, even though both
   are P1.
-- **User Story 3 (Phase 5)**: Depends on Foundational only (T002) — independent of Phases
+- **User Story 3 (Phase 5)**: Depends on Foundational only (T002) - independent of Phases
   3 and 4, and can run in parallel with either.
-- **User Story 4 (Phase 6)**: Depends on Foundational only (T002) — independent of Phases
+- **User Story 4 (Phase 6)**: Depends on Foundational only (T002) - independent of Phases
   3, 4, and 5, and can run in parallel with any of them.
 - **Polish (Phase 7)**: Depends on all four user stories being complete.
 
@@ -320,11 +320,11 @@ Task: "Extend tests/unit/web/prdIndex.test.ts with styles-parameter cases"
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup.
-2. Complete Phase 2: Foundational (CRITICAL — blocks all stories).
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories).
 3. Complete Phase 3: User Story 1.
 4. **STOP and VALIDATE**: Run quickstart.md Scenario 1 independently.
 5. This alone already replaces feature 015's bare-folder-name placeholder with a real,
-   readable architecture document view — a meaningful increment even before the index or
+   readable architecture document view - a meaningful increment even before the index or
    tiles exist.
 
 ### Incremental Delivery
@@ -343,6 +343,6 @@ Task: "Extend tests/unit/web/prdIndex.test.ts with styles-parameter cases"
 - [Story] label maps task to specific user story for traceability.
 - Unlike User Story 2 (which needs User Story 1's rendering in place first for practical
   file-dependency reasons), User Stories 3 and 4 genuinely need only the Foundational
-  phase — either can be built and validated before or alongside Stories 1/2.
+  phase - either can be built and validated before or alongside Stories 1/2.
 - Commit after each task or logical group.
 - Stop at any checkpoint to validate a story independently.

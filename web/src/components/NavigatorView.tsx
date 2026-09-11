@@ -1,7 +1,9 @@
 import Box from "@mui/material/Box";
 import NavigatorTree from "./NavigatorTree.js";
 import NavigatorDetailPane from "./NavigatorDetailPane.js";
-import type { NavigatorTree as NavigatorTreeData } from "../api.js";
+import type { NavigatorTree as NavigatorTreeData, SprintStatusResult } from "../api.js";
+
+export type NavigatorFocusRoot = "prd" | "architecture" | "sprint";
 
 interface NavigatorViewProps {
   tree: NavigatorTreeData | null;
@@ -10,22 +12,19 @@ interface NavigatorViewProps {
   onExpandedChange: (expandedItems: Set<string>) => void;
   onNavigate: (itemId: string) => void;
   onOpenFile: (path: string) => void;
-  // Bumped by App.tsx once per completed refresh (feature 014). Applied as `key` on
-  // NavigatorDetailPane only (not the tree sidebar) so a refresh remounts just the detail
-  // pane, forcing whichever view it owns (Sprint Status or the PRD detail view) to re-run
-  // its own fetch effect from scratch — no changes needed inside either component.
   refreshToken: number;
+  focusRoot: NavigatorFocusRoot;
+  sprintStatus: SprintStatusResult | null;
+  sprintStatusError: string | null;
 }
 
-/**
- * The "PRD"/"Architecture" roots and every project itemId (`prd:${project}`,
- * `architecture:${project}`) are structural only (FR-010, and feature 015's own FR-004) —
- * clicking them must not change the detail pane. `NavigatorTree` reports every click
- * uniformly; filtering out the non-selectable ones lives here rather than in `App.tsx`,
- * which has no reason to know this tab's itemId scheme.
- */
 function isStructuralOnly(itemId: string): boolean {
-  return itemId === "prd" || itemId.startsWith("prd:") || itemId === "architecture" || itemId.startsWith("architecture:");
+  return (
+    itemId === "prd" ||
+    itemId.startsWith("prd:") ||
+    itemId === "architecture" ||
+    itemId.startsWith("architecture:")
+  );
 }
 
 export default function NavigatorView({
@@ -36,10 +35,20 @@ export default function NavigatorView({
   onNavigate,
   onOpenFile,
   refreshToken,
+  focusRoot,
+  sprintStatus,
+  sprintStatusError,
 }: NavigatorViewProps) {
   return (
     <>
-      <Box sx={{ width: 280, overflow: "auto", borderRight: 1, borderColor: "divider" }}>
+      <Box
+        sx={{
+          width: 280,
+          overflow: "auto",
+          borderRight: "1px solid var(--color-border-default)",
+          bgcolor: "var(--color-bg-surface)",
+        }}
+      >
         <NavigatorTree
           tree={tree}
           expandedItems={expandedItems}
@@ -50,6 +59,7 @@ export default function NavigatorView({
               onNavigate(itemId);
             }
           }}
+          focusRoot={focusRoot}
         />
       </Box>
       <Box sx={{ flex: 1, overflow: "auto" }}>
@@ -58,6 +68,9 @@ export default function NavigatorView({
           tree={tree}
           selectedItemId={selectedItemId}
           onOpenFile={onOpenFile}
+          focusRoot={focusRoot}
+          sprintStatus={sprintStatus}
+          sprintStatusError={sprintStatusError}
         />
       </Box>
     </>

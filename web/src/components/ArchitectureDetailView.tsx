@@ -48,10 +48,12 @@ function textOf(children: ReactNode): string {
   return typeof children === "string" ? children : "";
 }
 
-// Header-style match only, for `### AD-1 — Some decision` — architecture never detects
+// Header-style match only, for `### AD-1 - Some decision` - architecture never detects
 // bullet-style codes at all (FR-005), so there is deliberately no `strong` override here,
 // unlike PrdDetailView.tsx's own anchor-rendering.
-const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s—/;
+// NOTE: the — here is DATA, not prose - one of the two accepted separators.
+// Never include it in a punctuation sweep (see prdIndex.ts).
+const HEADING_CODE_PATTERN = /^([A-Z]{2,})-(\d+)\s[—-]/;
 
 interface PrefixTileProps {
   prefix: string;
@@ -62,7 +64,7 @@ interface PrefixTileProps {
   onSelectReference: (id: string) => void;
 }
 
-// Re-declared here rather than imported — this is PrdDetailView.tsx's own file-local,
+// Re-declared here rather than imported - this is PrdDetailView.tsx's own file-local,
 // non-exported component (plan.md, Structure Decision).
 function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReference }: PrefixTileProps) {
   return (
@@ -108,7 +110,7 @@ function PrefixTile({ prefix, references, open, onOpen, onClose, onSelectReferen
   );
 }
 
-// Re-declared here rather than imported — PrdDetailView.tsx's own file-local, non-exported
+// Re-declared here rather than imported - PrdDetailView.tsx's own file-local, non-exported
 // ReviewsTile (feature 013). FR-013/FR-014: hovering (or clicking) reveals a tooltip
 // listing each review by its friendly name, alphabetically; selecting one opens it via
 // onOpenFile.
@@ -144,7 +146,7 @@ function ReviewsTile({
       >
         <RateReviewIcon fontSize="small" color="disabled" />
         <Typography variant="body2" color="text.disabled">
-          reviews
+          Reviews
         </Typography>
       </Paper>
     );
@@ -201,14 +203,14 @@ function ReviewsTile({
         sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1, cursor: "pointer" }}
       >
         <RateReviewIcon fontSize="small" color="primary" />
-        <Typography variant="body2">reviews</Typography>
+        <Typography variant="body2">Reviews</Typography>
       </Paper>
     </Tooltip>
   );
 }
 
-// Re-declared here rather than imported — PrdDetailView.tsx's own file-local, non-exported
-// SingleFileTile (feature 013). No addendum tile in this feature (FR-020) — only the
+// Re-declared here rather than imported - PrdDetailView.tsx's own file-local, non-exported
+// SingleFileTile (feature 013). No addendum tile in this feature (FR-020) - only the
 // memory log tile uses this.
 function SingleFileTile({
   title,
@@ -225,6 +227,8 @@ function SingleFileTile({
     <Paper
       variant="outlined"
       onClick={enabled ? onClick : undefined}
+      aria-disabled={!enabled}
+      title={enabled ? undefined : "Not in this folder"}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -237,7 +241,7 @@ function SingleFileTile({
     >
       <Icon fontSize="small" color={enabled ? "primary" : "disabled"} />
       <Typography variant="body2" color={enabled ? "text.primary" : "text.disabled"}>
-        {title}
+        {enabled ? title : `${title} · not in this folder`}
       </Typography>
     </Paper>
   );
@@ -279,7 +283,7 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
     };
   }, [entry.path]);
 
-  // The reviews tile's own listing — the folder's "reviews" subfolder, not the leaf folder
+  // The reviews tile's own listing - the folder's "reviews" subfolder, not the leaf folder
   // itself (FR-011). A rejected fetch (subfolder absent) is treated as an empty listing,
   // the same catch-and-default-to-[] pattern PrdDetailView.tsx already uses for its own
   // folder-contents fetch (research.md § 3).
@@ -303,7 +307,7 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
     };
   }, [entry.path]);
 
-  // A separate fetch of the leaf folder's own direct contents — used only to gate the
+  // A separate fetch of the leaf folder's own direct contents - used only to gate the
   // memory log tile (a file named exactly ".memlog.md", FR-015/FR-016), not the reviews
   // tile (contracts/ui-behavior.md).
   useEffect(() => {
@@ -330,13 +334,13 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
   const { body, preamble } = fileBody({ state });
   const hasPreamble = preamble !== null && Object.keys(preamble).length > 0;
 
-  // Header-style only (FR-005) — bullet-style codes are never detected in an architecture
+  // Header-style only (FR-005) - bullet-style codes are never detected in an architecture
   // document, unlike PRD's own index (research.md § 1).
   const references = useMemo(() => (body !== null ? buildRequirementCodeIndex(body, ["header"]) : []), [body]);
   const groups = useMemo(() => groupByPrefix(references), [references]);
 
   // Reset once per render, before ReactMarkdown's own custom-renderer callback runs
-  // (during this same synchronous render pass) — it consumes the next entry from
+  // (during this same synchronous render pass) - it consumes the next entry from
   // `references`, in document order, matching how buildRequirementCodeIndex assembled that
   // same order (mirroring PrdDetailView.tsx's own nextAnchorId technique).
   const anchorIndexRef = useRef(0);
@@ -377,14 +381,14 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Box sx={{ display: "flex", gap: 1, p: 1, flexShrink: 0 }}>
           <ReviewsTile reviews={reviews} onSelectReview={onOpenFile} />
-          <SingleFileTile title="memory log" Icon={HistoryIcon} enabled={hasMemlog} onClick={handleOpenMemlog} />
+          <SingleFileTile title="Memory log" Icon={HistoryIcon} enabled={hasMemlog} onClick={handleOpenMemlog} />
         </Box>
       </Box>
       <MemoryLogDialog
         open={memlogDialog.open}
         content={memlogDialog.content}
         error={memlogDialog.error}
-        // Always empty — this feature never resolves a memory-log-mentioned requirement
+        // Always empty - this feature never resolves a memory-log-mentioned requirement
         // code to a link, regardless of whether that code exists in the architecture
         // document (FR-019). An empty array means MemoryLogDialog's own existing
         // cross-referencing never matches anything, so every code renders as plain text
@@ -396,7 +400,7 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
       <Box sx={{ flex: 1, minHeight: 0, display: "flex" }}>
         <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           {hasPreamble && (
-            // A sibling of the scrolling Box below, not a descendant of it — an
+            // A sibling of the scrolling Box below, not a descendant of it - an
             // absolutely-positioned descendant of the element that itself scrolls would
             // scroll away with it, the exact bug PrdDetailView.tsx (feature 012) had to fix
             // once after shipping it wrong the first time.
@@ -421,6 +425,7 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
               </Typography>
             )}
             {state.kind === "ready" && body !== null && (
+              <Box sx={{ maxWidth: "65ch", px: 3, py: 2 }}>
               <MarkdownContent
                 content={body}
                 components={{
@@ -435,6 +440,7 @@ export default function ArchitectureDetailView({ entry, onOpenFile }: Architectu
                   },
                 }}
               />
+              </Box>
             )}
           </Box>
         </Box>
