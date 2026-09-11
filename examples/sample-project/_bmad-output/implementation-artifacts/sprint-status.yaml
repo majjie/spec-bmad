@@ -1,0 +1,39 @@
+generated: "09-01-2026 09:00"
+last_updated: "09-10-2026 16:45"
+project: "harbor"
+project_key: "HARBOR"
+tracking_system: "file-system"
+story_location: "_bmad-output/implementation-artifacts"
+
+development_status:
+  epic-1: done
+  1-1-scaffold-the-workspace: done
+  1-2-serve-static-ui: done
+  1-6a-walk-the-artifact-tree-safely: done
+  epic-1-retrospective: done
+  epic-2: in-progress
+  2-1-group-prd-folders: done
+  2-2-render-sprint-status: review
+  2-3-architecture-detail-view: in-progress
+  epic-3: backlog
+  3-1-watch-mode-opt-in: backlog
+  3-2-perf-harness-for-nfr-1: backlog
+
+action_items:
+  - id: ai-1
+    epic: 1
+    action: "Capture cold-start timings against a 600-component fixture"
+    owner: "dx-platform"
+    status: "open"
+    ref: "_bmad-output/implementation-artifacts/retro-epic-1.md"
+  - id: ai-2
+    epic: 2
+    action: "Document Navigator refresh behaviour in the operator runbook"
+    owner: "design-platform"
+    status: "open"
+  - id: ai-3
+    epic: 1
+    action: "Close epic-1 retrospective notes"
+    owner: "dx-platform"
+    status: "done"
+    ref: "_bmad-output/implementation-artifacts/retro-epic-1.md"

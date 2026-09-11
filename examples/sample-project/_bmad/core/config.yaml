@@ -1,0 +1,7 @@
+# Harbor sample — thin BMAD core config for Infra browsing
+project_name: harbor
+project_key: HARBOR
+output_folder: _bmad-output
+user_name: Harbor Ops
+communication_language: English
+document_output_language: English
