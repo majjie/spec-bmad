@@ -83,7 +83,7 @@
   --radius-nav-item: 0;
   --radius-card: 2px;
   --radius-overlay: 2px;
-  --button-radius: 2px;
+  --button-radius: var(--radius-full);
 
   --shadow-sm:
     0 1px 2px color-mix(in srgb, var(--color-shadow) 45%, transparent),

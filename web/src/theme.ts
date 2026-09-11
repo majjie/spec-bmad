@@ -71,14 +71,14 @@ const theme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          borderRadius: "var(--button-radius)",
+          borderRadius: "var(--radius-full)",
         },
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: "var(--button-radius)",
+          borderRadius: "var(--radius-full)",
         },
       },
     },

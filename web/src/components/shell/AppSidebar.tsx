@@ -150,7 +150,6 @@ export default function AppSidebar({
                 >
                   <NavRow
                     id={headerId}
-                    flush
                     label={project.title}
                     {...(summary ? { secondary: summary } : {})}
                     selected={!open && ownsSelection}
@@ -170,11 +169,7 @@ export default function AppSidebar({
                       dense
                       disablePadding
                       sx={{
-                        ml: 0,
-                        mr: 0,
                         mb: 0.5,
-                        pl: 2.75,
-                        borderLeft: "none",
                         borderTop: "1px solid var(--color-border-subtle)",
                       }}
                     >
@@ -185,7 +180,6 @@ export default function AppSidebar({
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "prd", path: leaf.path })}
                               onClick={() => onSelect({ kind: "prd", path: leaf.path })}
@@ -200,7 +194,6 @@ export default function AppSidebar({
                             <NavRow
                               key={leaf.path}
                               depth={1}
-                              flush
                               label={leaf.isLatest ? `${leaf.date} · latest` : leaf.date || leaf.folderName}
                               selected={isSelected({ kind: "architecture", path: leaf.path })}
                               onClick={() => onSelect({ kind: "architecture", path: leaf.path })}
@@ -213,7 +206,6 @@ export default function AppSidebar({
                           <GroupLabel>Delivery</GroupLabel>
                           <NavRow
                             depth={1}
-                            flush
                             label="Sprint status"
                             selected={selection.kind === "sprint"}
                             onClick={() => onSelect({ kind: "sprint" })}
@@ -224,7 +216,6 @@ export default function AppSidebar({
                         <NavRow
                           key={entry.path}
                           depth={1}
-                          flush
                           label={entry.folderName}
                           selected={isSelected({ kind: "prd", path: entry.path })}
                           onClick={() => onSelect({ kind: "prd", path: entry.path })}
