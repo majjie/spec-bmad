@@ -17,10 +17,10 @@ function PreambleReadout({ preamble }: { preamble: Record<string, unknown> }) {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
       {Object.entries(preamble).map(([key, value]) => (
         <Box key={key} sx={{ display: "flex", gap: 1 }}>
-          <Box component="span" sx={{ color: "info.light", fontWeight: 600 }}>
+          <Box component="span" sx={{ color: "var(--color-label)", fontWeight: 600 }}>
             {key}:
           </Box>
-          <Box component="span" sx={{ color: "warning.light" }}>
+          <Box component="span" sx={{ color: "var(--color-value)", fontFamily: "var(--font-mono)", fontSize: "0.85em" }}>
             {stringifyPreambleValue(value)}
           </Box>
         </Box>

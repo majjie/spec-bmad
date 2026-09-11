@@ -2,6 +2,8 @@ import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import Typography from "@mui/material/Typography";
 import type { NavigatorTree as NavigatorTreeData } from "../api.js";
+import { humanizeProjectSlug } from "../shell.js";
+import type { NavigatorFocusRoot } from "./NavigatorView.js";
 
 interface NavigatorTreeProps {
   tree: NavigatorTreeData | null;
@@ -9,30 +11,29 @@ interface NavigatorTreeProps {
   selectedItemId: string | null;
   onExpandedChange: (expandedItems: Set<string>) => void;
   onItemSelected: (itemId: string) => void;
+  focusRoot: NavigatorFocusRoot;
 }
 
-/**
- * Renders the Navigator tab's multi-root tree (contracts/ui-behavior.md): a "PRD" root
- * grouping projects/dates/non-conforming folders, an "Architecture" root grouping
- * architecture folders the exact same way (feature 015), and a "Sprint Status" root
- * (FR-011). The "PRD"/"Architecture" roots and each project node beneath them are
- * structural only (FR-010) — every click is reported up via `onItemSelected`, and it's the
- * caller's job (NavigatorView) to decide which itemIds actually change the detail pane.
- */
 export default function NavigatorTree({
   tree,
   expandedItems,
   selectedItemId,
   onExpandedChange,
   onItemSelected,
+  focusRoot,
 }: NavigatorTreeProps) {
   if (!tree || (tree.prd === null && tree.architecture === null && !tree.sprintStatusAvailable)) {
     return (
       <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-        Nothing to show yet.
+        No curated documents in this project yet. If BMAD has not produced planning or sprint
+        artifacts, check Generated files for raw output.
       </Typography>
     );
   }
+
+  const showPrd = focusRoot === "prd" && tree.prd;
+  const showArchitecture = focusRoot === "architecture" && tree.architecture;
+  const showSprint = focusRoot === "sprint" && tree.sprintStatusAvailable;
 
   return (
     <SimpleTreeView
@@ -44,13 +45,26 @@ export default function NavigatorTree({
           onItemSelected(itemId);
         }
       }}
+      sx={{ px: 1, py: 1, "& .MuiTreeItem-label": { fontSize: "0.875rem" } }}
     >
-      {tree.prd && (
-        <TreeItem itemId="prd" label="PRD">
+      {showPrd && tree.prd && (
+        <TreeItem itemId="prd" label="Requirements">
           {tree.prd.projects.map((projectGroup) => (
-            <TreeItem key={projectGroup.project} itemId={`prd:${projectGroup.project}`} label={projectGroup.project}>
-              {projectGroup.dates.map((dateEntry) => (
-                <TreeItem key={dateEntry.path} itemId={dateEntry.path} label={dateEntry.date} />
+            <TreeItem
+              key={projectGroup.project}
+              itemId={`prd:${projectGroup.project}`}
+              label={
+                <Typography component="span" sx={{ textTransform: "capitalize" }}>
+                  {humanizeProjectSlug(projectGroup.project)}
+                </Typography>
+              }
+            >
+              {projectGroup.dates.map((dateEntry, index) => (
+                <TreeItem
+                  key={dateEntry.path}
+                  itemId={dateEntry.path}
+                  label={index === 0 ? `${dateEntry.date} · latest` : dateEntry.date}
+                />
               ))}
             </TreeItem>
           ))}
@@ -59,16 +73,24 @@ export default function NavigatorTree({
           ))}
         </TreeItem>
       )}
-      {tree.architecture && (
+      {showArchitecture && tree.architecture && (
         <TreeItem itemId="architecture" label="Architecture">
           {tree.architecture.projects.map((projectGroup) => (
             <TreeItem
               key={projectGroup.project}
               itemId={`architecture:${projectGroup.project}`}
-              label={projectGroup.project}
+              label={
+                <Typography component="span" sx={{ textTransform: "capitalize" }}>
+                  {humanizeProjectSlug(projectGroup.project)}
+                </Typography>
+              }
             >
-              {projectGroup.dates.map((dateEntry) => (
-                <TreeItem key={dateEntry.path} itemId={dateEntry.path} label={dateEntry.date} />
+              {projectGroup.dates.map((dateEntry, index) => (
+                <TreeItem
+                  key={dateEntry.path}
+                  itemId={dateEntry.path}
+                  label={index === 0 ? `${dateEntry.date} · latest` : dateEntry.date}
+                />
               ))}
             </TreeItem>
           ))}
@@ -77,7 +99,7 @@ export default function NavigatorTree({
           ))}
         </TreeItem>
       )}
-      {tree.sprintStatusAvailable && <TreeItem itemId="sprint-status" label="Sprint Status" />}
+      {showSprint && <TreeItem itemId="sprint-status" label="Sprint status" />}
     </SimpleTreeView>
   );
 }

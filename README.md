@@ -223,3 +223,4 @@ Features shipped so far:
 | 015 | [Architecture tree](specs/015-architecture-tree/spec.md) |
 | 016 | [Architecture detail view](specs/016-architecture-detail-view/spec.md) |
 | 017 | [Markdown render polish](specs/017-markdown-render-polish/spec.md) |
+| 018 | [Instrumental console redesign](specs/018-instrumental-console/spec.md) |

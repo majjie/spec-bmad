@@ -77,7 +77,7 @@ function ReviewsTile({
       >
         <RateReviewIcon fontSize="small" color="disabled" />
         <Typography variant="body2" color="text.disabled">
-          reviews
+          Reviews
         </Typography>
       </Paper>
     );
@@ -134,7 +134,7 @@ function ReviewsTile({
         sx={{ display: "flex", alignItems: "center", gap: 0.75, px: 1.5, py: 0.75, flex: 1, cursor: "pointer" }}
       >
         <RateReviewIcon fontSize="small" color="primary" />
-        <Typography variant="body2">reviews</Typography>
+        <Typography variant="body2">Reviews</Typography>
       </Paper>
     </Tooltip>
   );
@@ -158,6 +158,8 @@ function SingleFileTile({
     <Paper
       variant="outlined"
       onClick={enabled ? onClick : undefined}
+      aria-disabled={!enabled}
+      title={enabled ? undefined : "Not in this folder"}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -170,7 +172,7 @@ function SingleFileTile({
     >
       <Icon fontSize="small" color={enabled ? "primary" : "disabled"} />
       <Typography variant="body2" color={enabled ? "text.primary" : "text.disabled"}>
-        {title}
+        {enabled ? title : `${title} · not in this folder`}
       </Typography>
     </Paper>
   );
@@ -374,13 +376,13 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
         <Box sx={{ display: "flex", gap: 1, p: 1, flexShrink: 0 }}>
           <ReviewsTile reviews={reviews} onSelectReview={onOpenFile} />
           <SingleFileTile
-            title="addendum"
+            title="Addendum"
             Icon={PostAddIcon}
             enabled={hasAddendum}
             onClick={() => onOpenFile(`${entry.path}/addendum.md`)}
           />
           <SingleFileTile
-            title="memory log"
+            title="Memory log"
             Icon={HistoryIcon}
             enabled={hasMemlog}
             onClick={handleOpenMemlog}
@@ -426,6 +428,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
               </Typography>
             )}
             {state.kind === "ready" && body !== null && (
+              <Box sx={{ maxWidth: "65ch", px: 3, py: 2 }}>
               <MarkdownContent
                 content={body}
                 components={{
@@ -449,6 +452,7 @@ export default function PrdDetailView({ entry, onOpenFile }: PrdDetailViewProps)
                   },
                 }}
               />
+              </Box>
             )}
           </Box>
         </Box>

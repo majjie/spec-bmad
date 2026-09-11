@@ -5,27 +5,38 @@ import PrdDetailView from "./PrdDetailView.js";
 import SprintStatusView from "./SprintStatusView.js";
 import type { NavigatorTree, SprintStatusResult } from "../api.js";
 import { fetchSprintStatus, findFolderEntry } from "../navigatorApi.js";
+import type { NavigatorFocusRoot } from "./NavigatorView.js";
 
 interface NavigatorDetailPaneProps {
   tree: NavigatorTree | null;
   selectedItemId: string | null;
   onOpenFile: (path: string) => void;
+  focusRoot: NavigatorFocusRoot;
+  sprintStatus: SprintStatusResult | null;
+  sprintStatusError: string | null;
 }
 
-/**
- * Dispatches on `selectedItemId` per contracts/ui-behavior.md. Note that "PRD" root and
- * project itemIds (FR-010) never reach this component as `selectedItemId` at all —
- * NavigatorView only updates it for a selectable leaf, so this component never needs to
- * special-case them; the pane simply keeps rendering whatever it last rendered.
- */
-export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }: NavigatorDetailPaneProps) {
-  const [sprintStatus, setSprintStatus] = useState<SprintStatusResult | null>(null);
-  const [sprintStatusError, setSprintStatusError] = useState<string | null>(null);
+export default function NavigatorDetailPane({
+  tree,
+  selectedItemId,
+  onOpenFile,
+  focusRoot,
+  sprintStatus: sprintFromParent,
+  sprintStatusError: sprintErrorFromParent,
+}: NavigatorDetailPaneProps) {
+  const [sprintStatus, setSprintStatus] = useState<SprintStatusResult | null>(sprintFromParent);
+  const [sprintStatusError, setSprintStatusError] = useState<string | null>(sprintErrorFromParent);
 
-  // Fetches once per "sprint-status" selection, not once per click — re-selecting an
-  // already-fetched (or already-failed) result doesn't trigger another request.
   useEffect(() => {
-    if (selectedItemId !== "sprint-status" || sprintStatus !== null || sprintStatusError !== null) {
+    setSprintStatus(sprintFromParent);
+    setSprintStatusError(sprintErrorFromParent);
+  }, [sprintFromParent, sprintErrorFromParent]);
+
+  useEffect(() => {
+    if (selectedItemId !== "sprint-status") {
+      return;
+    }
+    if (sprintStatus !== null || sprintStatusError !== null) {
       return;
     }
     let cancelled = false;
@@ -46,8 +57,12 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
     };
   }, [selectedItemId, sprintStatus, sprintStatusError]);
 
-  if (selectedItemId === "sprint-status") {
-    if (sprintStatusError) {
+  const showSprint =
+    selectedItemId === "sprint-status" ||
+    (focusRoot === "sprint" && (sprintStatus !== null || sprintStatusError !== null));
+
+  if (showSprint) {
+    if (sprintStatusError && sprintStatus === null) {
       return (
         <Typography variant="body2" color="error" sx={{ p: 2 }}>
           {sprintStatusError}
@@ -57,7 +72,7 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
     if (sprintStatus === null) {
       return (
         <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-          Loading…
+          Loading sprint status…
         </Typography>
       );
     }
@@ -65,9 +80,15 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
   }
 
   if (selectedItemId === null) {
+    const hint =
+      focusRoot === "prd"
+        ? "Select a dated Requirements folder on the left to read its PRD."
+        : focusRoot === "architecture"
+          ? "Select a dated Architecture folder on the left to read its spine."
+          : "Open Sprint from the sidebar to see status and stories.";
     return (
-      <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-        Select an item on the left to see its details.
+      <Typography variant="body2" color="text.secondary" sx={{ p: 3, maxWidth: "42ch" }}>
+        {hint}
       </Typography>
     );
   }
@@ -83,7 +104,7 @@ export default function NavigatorDetailPane({ tree, selectedItemId, onOpenFile }
   }
 
   return (
-    <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
+    <Typography variant="body2" color="text.secondary" sx={{ p: 3 }}>
       Select an item on the left to see its details.
     </Typography>
   );

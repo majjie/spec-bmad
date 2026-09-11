@@ -112,7 +112,7 @@ export default function ActionItemsTile({ actionItems, onOpenFile, height }: Act
     >
       {/* primary.light: the blue accent, deliberately pinned in theme.ts (feature 011
           FR-005, research.md § 4). */}
-      <Typography variant="subtitle2" color="primary.light" sx={{ mb: 1 }}>
+      <Typography variant="subtitle2" sx={{ color: "var(--color-accent)", mb: 1 }}>
         Action Items
       </Typography>
       <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
