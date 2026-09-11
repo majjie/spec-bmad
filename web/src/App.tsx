@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import FolderTree from "./components/FolderTree.js";
 import ContentsTable from "./components/ContentsTable.js";
 import FileViewerDialog from "./components/FileViewerDialog.js";
-import NavigatorView from "./components/NavigatorView.js";
+import PrdDetailView from "./components/PrdDetailView.js";
+import ArchitectureDetailView from "./components/ArchitectureDetailView.js";
+import SprintStatusView from "./components/SprintStatusView.js";
 import AppHeader from "./components/shell/AppHeader.js";
 import AppSidebar from "./components/shell/AppSidebar.js";
 import OverviewView from "./components/shell/OverviewView.js";
@@ -26,7 +29,7 @@ import {
 import { fetchNavigatorTree, fetchSprintStatus, findFolderEntry } from "./navigatorApi.js";
 import { createBaselineState, statesEqual, type NavigationState } from "./navigationHistory.js";
 import { shouldShowWelcome, writeOnboardingState } from "./onboarding/onboarding.js";
-import { type ShellSection } from "./shell.js";
+import { type ShellSelection } from "./shell.js";
 
 interface FileDialogState {
   path: string;
@@ -49,33 +52,46 @@ function createEmptyTabState(): TabViewState {
 
 const FOLDER_TAB_IDS: FolderTabId[] = ["infra", "output"];
 
-function inferSectionFromHistory(
-  state: NavigationState,
-  tree: NavigatorTree | null,
-): ShellSection {
+function selectionFromHistory(state: NavigationState, tree: NavigatorTree | null): ShellSelection {
   if (state.tab === "infra") {
-    return "method";
+    return { kind: "method" };
   }
   if (state.tab === "output") {
-    return "generated";
+    return { kind: "generated" };
   }
   if (state.path === "sprint-status") {
-    return "sprint";
+    return { kind: "sprint" };
   }
   if (state.path === "" || state.path === "overview") {
-    return "overview";
-  }
-  if (findFolderEntry(tree?.prd ?? null, state.path)) {
-    return "requirements";
+    return { kind: "overview" };
   }
   if (findFolderEntry(tree?.architecture ?? null, state.path)) {
-    return "architecture";
+    return { kind: "architecture", path: state.path };
   }
-  return "overview";
+  if (findFolderEntry(tree?.prd ?? null, state.path)) {
+    return { kind: "prd", path: state.path };
+  }
+  return { kind: "overview" };
+}
+
+function historyPathFor(selection: ShellSelection, folderPath: string): NavigationState {
+  switch (selection.kind) {
+    case "overview":
+      return { tab: "navigator", path: "overview" };
+    case "sprint":
+      return { tab: "navigator", path: "sprint-status" };
+    case "prd":
+    case "architecture":
+      return { tab: "navigator", path: selection.path };
+    case "method":
+      return { tab: "infra", path: folderPath };
+    case "generated":
+      return { tab: "output", path: folderPath };
+  }
 }
 
 export default function App() {
-  const [activeSection, setActiveSection] = useState<ShellSection>("overview");
+  const [selection, setSelection] = useState<ShellSelection>({ kind: "overview" });
   const [availability, setAvailability] = useState<TabAvailability | null>(null);
   const [tabStates, setTabStates] = useState<Record<FolderTabId, TabViewState>>({
     infra: createEmptyTabState(),
@@ -84,13 +100,9 @@ export default function App() {
   const [openFile, setOpenFile] = useState<FileDialogState | null>(null);
 
   const [navigatorTree, setNavigatorTree] = useState<NavigatorTree | null>(null);
-  const [navigatorExpandedItems, setNavigatorExpandedItems] = useState<Set<string>>(new Set());
-  const [navigatorSelectedItemId, setNavigatorSelectedItemId] = useState<string | null>(null);
 
   const [sprintStatus, setSprintStatus] = useState<SprintStatusResult | null>(null);
   const [sprintStatusError, setSprintStatusError] = useState<string | null>(null);
-  const [projectName, setProjectName] = useState<string | null>(null);
-
   const [refreshing, setRefreshing] = useState(false);
   const [refreshFailed, setRefreshFailed] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
@@ -117,9 +129,35 @@ export default function App() {
     }
   }, []);
 
+  function applySelection(next: ShellSelection, options: { fromHistory?: boolean } = {}) {
+    setSelection(next);
+    if (next.kind === "method") {
+      const path = tabStates.infra.selectedPath ?? tabStates.infra.tree?.path ?? "";
+      pushHistory(historyPathFor(next, path), options.fromHistory);
+      if (path) {
+        updateTabState("infra", { selectedPath: path });
+        void fetchContents("infra", path).then((contents) => updateTabState("infra", { contents }));
+      }
+      return;
+    }
+    if (next.kind === "generated") {
+      const path = tabStates.output.selectedPath ?? tabStates.output.tree?.path ?? "";
+      pushHistory(historyPathFor(next, path), options.fromHistory);
+      if (path) {
+        updateTabState("output", { selectedPath: path });
+        void fetchContents("output", path).then((contents) => updateTabState("output", { contents }));
+      }
+      return;
+    }
+    if (next.kind === "sprint") {
+      void loadSprintIfNeeded();
+    }
+    pushHistory(historyPathFor(next, ""), options.fromHistory);
+  }
+
   const navigateFolder = useCallback(
     (tab: FolderTabId, path: string, options: { fromHistory?: boolean } = {}) => {
-      setActiveSection(tab === "infra" ? "method" : "generated");
+      setSelection({ kind: tab === "infra" ? "method" : "generated" });
       pushHistory({ tab, path }, options.fromHistory);
       if (path) {
         updateTabState(tab, { selectedPath: path });
@@ -127,16 +165,6 @@ export default function App() {
           updateTabState(tab, { contents });
         });
       }
-    },
-    [pushHistory],
-  );
-
-  const navigateNavigator = useCallback(
-    (section: ShellSection, itemId: string, options: { fromHistory?: boolean } = {}) => {
-      setActiveSection(section);
-      setNavigatorSelectedItemId(itemId === "overview" || itemId === "" ? null : itemId);
-      const path = itemId === "" ? "overview" : itemId;
-      pushHistory({ tab: "navigator", path }, options.fromHistory);
     },
     [pushHistory],
   );
@@ -177,41 +205,8 @@ export default function App() {
       const result = await fetchSprintStatus();
       setSprintStatus(result);
       setSprintStatusError(null);
-      if (result.summary.project) {
-        setProjectName(result.summary.project);
-      }
     } catch (error: unknown) {
       setSprintStatusError(error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  function handleSelectSection(section: ShellSection, itemId?: string) {
-    if (section === "overview") {
-      navigateNavigator("overview", "overview");
-      if (navigatorTree?.sprintStatusAvailable) {
-        void loadSprintIfNeeded();
-      }
-      return;
-    }
-    if (section === "sprint") {
-      navigateNavigator("sprint", "sprint-status");
-      void loadSprintIfNeeded();
-      return;
-    }
-    if (section === "requirements") {
-      navigateNavigator("requirements", itemId ?? "");
-      return;
-    }
-    if (section === "architecture") {
-      navigateNavigator("architecture", itemId ?? "");
-      return;
-    }
-    if (section === "method") {
-      navigateFolder("infra", tabStates.infra.selectedPath ?? tabStates.infra.tree?.path ?? "");
-      return;
-    }
-    if (section === "generated") {
-      navigateFolder("output", tabStates.output.selectedPath ?? tabStates.output.tree?.path ?? "");
     }
   }
 
@@ -246,18 +241,6 @@ export default function App() {
 
       const tree = await fetchNavigatorTree();
       setNavigatorTree(tree);
-      setNavigatorSelectedItemId((current) => {
-        if (current === null) {
-          return null;
-        }
-        if (current === "sprint-status") {
-          return tree.sprintStatusAvailable ? current : null;
-        }
-        return findFolderEntry(tree.prd, current) || findFolderEntry(tree.architecture, current)
-          ? current
-          : null;
-      });
-
       setSprintStatus(null);
       setSprintStatusError(null);
       if (tree.sprintStatusAvailable) {
@@ -283,13 +266,13 @@ export default function App() {
       setAvailability(tabs);
 
       if (!tabs.navigator) {
-        setActiveSection(tabs.infra ? "method" : "generated");
+        setSelection({ kind: tabs.infra ? "method" : "generated" });
       } else if (!baselineEstablishedRef.current) {
         baselineEstablishedRef.current = true;
         const baseline = createBaselineState("navigator", "overview");
         currentNavStateRef.current = baseline;
         window.history.replaceState(baseline, "");
-        setActiveSection("overview");
+        setSelection({ kind: "overview" });
       }
 
       if (tabs.navigator) {
@@ -298,21 +281,11 @@ export default function App() {
           return;
         }
         setNavigatorTree(tree);
-        setNavigatorExpandedItems(
-          new Set([
-            ...(tree.prd ? ["prd"] : []),
-            ...(tree.architecture ? ["architecture"] : []),
-            ...(tree.sprintStatusAvailable ? ["sprint-status"] : []),
-          ]),
-        );
         if (tree.sprintStatusAvailable) {
           try {
             const result = await fetchSprintStatus();
             if (!cancelled) {
               setSprintStatus(result);
-              if (result.summary.project) {
-                setProjectName(result.summary.project);
-              }
             }
           } catch (error: unknown) {
             if (!cancelled) {
@@ -365,18 +338,14 @@ export default function App() {
       if (!state) {
         return;
       }
-      const section = inferSectionFromHistory(state, navigatorTree);
-      setActiveSection(section);
       currentNavStateRef.current = state;
-      if (state.tab === "navigator") {
-        setNavigatorSelectedItemId(
-          state.path === "overview" || state.path === "" ? null : state.path,
-        );
-      } else {
-        const folder = state.tab;
-        updateTabState(folder, { selectedPath: state.path });
-        void fetchContents(folder, state.path).then((contents) => {
-          updateTabState(folder, { contents });
+      const next = selectionFromHistory(state, navigatorTree);
+      setSelection(next);
+      if (state.tab === "infra" || state.tab === "output") {
+        const folderTabId: FolderTabId = state.tab;
+        updateTabState(folderTabId, { selectedPath: state.path });
+        void fetchContents(folderTabId, state.path).then((contents) => {
+          updateTabState(folderTabId, { contents });
         });
       }
       if (state.openFile) {
@@ -392,7 +361,14 @@ export default function App() {
   }, [navigatorTree]);
 
   const folderTab: FolderTabId | null =
-    activeSection === "method" ? "infra" : activeSection === "generated" ? "output" : null;
+    selection.kind === "method" ? "infra" : selection.kind === "generated" ? "output" : null;
+
+  const prdEntry =
+    selection.kind === "prd" ? findFolderEntry(navigatorTree?.prd ?? null, selection.path) : undefined;
+  const architectureEntry =
+    selection.kind === "architecture"
+      ? findFolderEntry(navigatorTree?.architecture ?? null, selection.path)
+      : undefined;
 
   return (
     <Box
@@ -414,14 +390,12 @@ export default function App() {
           color: "var(--color-text-default)",
           px: 2,
           py: 1,
-          borderRadius: 1,
           "&:focus": { left: 8 },
         }}
       >
         Skip to main content
       </Link>
       <AppHeader
-        projectName={projectName}
         refreshing={refreshing}
         refreshFailed={refreshFailed}
         onRefresh={() => void handleRefresh()}
@@ -434,58 +408,63 @@ export default function App() {
         <AppSidebar
           availability={availability}
           navigatorTree={navigatorTree}
-          activeSection={activeSection}
-          onSelect={(section) => handleSelectSection(section)}
+          sprintProject={sprintStatus?.summary.project ?? null}
+          selection={selection}
+          onSelect={(next) => applySelection(next)}
         />
         <Box
           component="main"
           id="main-stage"
           data-tour="main-stage"
+          key={refreshToken}
           sx={{ flex: 1, display: "flex", overflow: "hidden", bgcolor: "var(--color-bg-canvas)" }}
         >
-          {activeSection === "overview" && (
+          {selection.kind === "overview" && (
             <Box sx={{ flex: 1, overflow: "auto" }}>
               <OverviewView
                 tree={navigatorTree}
                 sprintStatus={sprintStatus}
                 sprintStatusError={sprintStatusError}
-                onOpenSection={(section, itemId) => handleSelectSection(section, itemId)}
+                onOpenSelection={(next) => applySelection(next)}
                 onOpenFile={(path) => openFileDialog("navigator", "overview", path)}
               />
             </Box>
           )}
-          {(activeSection === "requirements" ||
-            activeSection === "architecture" ||
-            activeSection === "sprint") && (
-            <NavigatorView
-              tree={navigatorTree}
-              expandedItems={navigatorExpandedItems}
-              selectedItemId={navigatorSelectedItemId}
-              onExpandedChange={setNavigatorExpandedItems}
-              onNavigate={(itemId) => {
-                if (itemId === "sprint-status") {
-                  navigateNavigator("sprint", itemId);
-                  void loadSprintIfNeeded();
-                } else if (findFolderEntry(navigatorTree?.architecture ?? null, itemId)) {
-                  navigateNavigator("architecture", itemId);
-                } else {
-                  navigateNavigator("requirements", itemId);
-                }
-              }}
-              onOpenFile={(path) =>
-                openFileDialog("navigator", navigatorSelectedItemId ?? "", path)
-              }
-              refreshToken={refreshToken}
-              focusRoot={
-                activeSection === "requirements"
-                  ? "prd"
-                  : activeSection === "architecture"
-                    ? "architecture"
-                    : "sprint"
-              }
-              sprintStatus={sprintStatus}
-              sprintStatusError={sprintStatusError}
-            />
+          {selection.kind === "sprint" && (
+            <Box sx={{ flex: 1, overflow: "auto" }}>
+              {sprintStatusError && !sprintStatus && (
+                <Typography variant="body2" color="error" sx={{ p: 2 }}>
+                  {sprintStatusError}
+                </Typography>
+              )}
+              {!sprintStatus && !sprintStatusError && (
+                <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
+                  Loading sprint status…
+                </Typography>
+              )}
+              {sprintStatus && (
+                <SprintStatusView
+                  data={sprintStatus}
+                  onOpenFile={(path) => openFileDialog("navigator", "sprint-status", path)}
+                />
+              )}
+            </Box>
+          )}
+          {selection.kind === "prd" && prdEntry && (
+            <Box sx={{ flex: 1, overflow: "hidden" }}>
+              <PrdDetailView
+                entry={prdEntry}
+                onOpenFile={(path) => openFileDialog("navigator", selection.path, path)}
+              />
+            </Box>
+          )}
+          {selection.kind === "architecture" && architectureEntry && (
+            <Box sx={{ flex: 1, overflow: "hidden" }}>
+              <ArchitectureDetailView
+                entry={architectureEntry}
+                onOpenFile={(path) => openFileDialog("navigator", selection.path, path)}
+              />
+            </Box>
           )}
           {folderTab && (
             <>

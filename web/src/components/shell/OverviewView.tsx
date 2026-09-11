@@ -4,14 +4,13 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import type { ActionItem, NavigatorTree, SprintStatusResult } from "../../api.js";
-import { humanizeProjectSlug } from "../../shell.js";
-import type { ShellSection } from "../../shell.js";
+import { buildProjectNav, titleCaseProject, type ShellSelection } from "../../shell.js";
 
 interface OverviewViewProps {
   tree: NavigatorTree | null;
   sprintStatus: SprintStatusResult | null;
   sprintStatusError: string | null;
-  onOpenSection: (section: ShellSection, itemId?: string) => void;
+  onOpenSelection: (selection: ShellSelection) => void;
   onOpenFile: (path: string) => void;
 }
 
@@ -42,14 +41,14 @@ function Card({
   title: string;
   subtitle?: string;
   children: ReactNode;
-  action?: React.ReactNode;
+  action?: ReactNode;
 }) {
   return (
     <Paper
       variant="outlined"
       sx={{
         p: 2.5,
-        borderRadius: "var(--radius-md)",
+        borderRadius: "2px",
         bgcolor: "var(--color-bg-raised)",
       }}
     >
@@ -109,23 +108,38 @@ export default function OverviewView({
   tree,
   sprintStatus,
   sprintStatusError,
-  onOpenSection,
+  onOpenSelection,
   onOpenFile,
 }: OverviewViewProps) {
   const latestPrd = latestLeaf(tree, "prd");
   const latestArch = latestLeaf(tree, "architecture");
   const hasSprint = tree?.sprintStatusAvailable === true;
+  const projects = buildProjectNav(tree, sprintStatus?.summary.project ?? null);
 
   return (
     <Box sx={{ p: 3, maxWidth: 960, display: "flex", flexDirection: "column", gap: 2.5 }}>
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 650, letterSpacing: "-0.02em", mb: 0.5, textWrap: "balance" }}>
-          Project overview
+          Workspace overview
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: "60ch", textWrap: "pretty" }}>
-          A read-only map of this project&apos;s BMAD artifacts — what was decided, the technical
-          spine, and what is in progress.
+        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: "62ch", textWrap: "pretty" }}>
+          Projects in the left nav are BMAD product lineages from your folders (names like{" "}
+          <Box component="span" sx={{ fontFamily: "var(--font-mono)", fontSize: "0.85em" }}>
+            Harbor
+          </Box>{" "}
+          come from <code>prd-harbor-…</code> / sprint metadata — not this app&apos;s brand). Expand a
+          project to open its Requirements, Architecture, and Sprint.
         </Typography>
+        {projects.length > 0 && (
+          <Typography variant="body2" sx={{ mt: 1.25, color: "var(--color-text-muted)" }}>
+            In this workspace:{" "}
+            {projects
+              .filter((p) => p.key !== "_other")
+              .map((p) => p.title)
+              .join(", ") || "unsorted folders only"}
+            .
+          </Typography>
+        )}
       </Box>
 
       {hasSprint ? (
@@ -133,7 +147,7 @@ export default function OverviewView({
           title="Sprint"
           subtitle="What engineering is tracking right now"
           action={
-            <Button size="small" variant="outlined" onClick={() => onOpenSection("sprint")}>
+            <Button size="small" variant="outlined" onClick={() => onOpenSelection({ kind: "sprint" })}>
               Open Sprint
             </Button>
           }
@@ -170,24 +184,22 @@ export default function OverviewView({
       ) : (
         <Card title="Sprint">
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-            No sprint-status.yaml in this project — open Requirements to read the latest PRD.
+            No sprint-status.yaml in this workspace — open a project&apos;s latest Requirements run
+            from the left nav.
           </Typography>
-          <Button size="small" variant="contained" onClick={() => onOpenSection("requirements")}>
-            Open Requirements
-          </Button>
         </Card>
       )}
 
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
         <Card
-          title="Requirements"
-          subtitle="Product decisions (PRD)"
+          title="Latest requirements"
+          subtitle="Most recent PRD run"
           action={
             latestPrd ? (
               <Button
                 size="small"
                 variant="outlined"
-                onClick={() => onOpenSection("requirements", latestPrd.entry.path)}
+                onClick={() => onOpenSelection({ kind: "prd", path: latestPrd.entry.path })}
               >
                 Open latest
               </Button>
@@ -196,8 +208,8 @@ export default function OverviewView({
         >
           {latestPrd ? (
             <Typography variant="body2">
-              <Box component="span" sx={{ textTransform: "capitalize", fontWeight: 600 }}>
-                {humanizeProjectSlug(latestPrd.project)}
+              <Box component="span" sx={{ fontWeight: 600 }}>
+                {titleCaseProject(latestPrd.project)}
               </Box>
               {latestPrd.entry.date ? ` · ${latestPrd.entry.date}` : ""}
             </Typography>
@@ -208,14 +220,14 @@ export default function OverviewView({
           )}
         </Card>
         <Card
-          title="Architecture"
-          subtitle="Technical spine"
+          title="Latest architecture"
+          subtitle="Most recent spine"
           action={
             latestArch ? (
               <Button
                 size="small"
                 variant="outlined"
-                onClick={() => onOpenSection("architecture", latestArch.entry.path)}
+                onClick={() => onOpenSelection({ kind: "architecture", path: latestArch.entry.path })}
               >
                 Open latest
               </Button>
@@ -224,8 +236,8 @@ export default function OverviewView({
         >
           {latestArch ? (
             <Typography variant="body2">
-              <Box component="span" sx={{ textTransform: "capitalize", fontWeight: 600 }}>
-                {humanizeProjectSlug(latestArch.project)}
+              <Box component="span" sx={{ fontWeight: 600 }}>
+                {titleCaseProject(latestArch.project)}
               </Box>
               {latestArch.entry.date ? ` · ${latestArch.entry.date}` : ""}
             </Typography>

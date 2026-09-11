@@ -6,7 +6,6 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 interface AppHeaderProps {
-  projectName: string | null;
   refreshing: boolean;
   refreshFailed: boolean;
   onRefresh: () => void;
@@ -14,7 +13,6 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({
-  projectName,
   refreshing,
   refreshFailed,
   onRefresh,
@@ -38,32 +36,15 @@ export default function AppHeader({
         <Box
           aria-hidden
           sx={{
-            width: 22,
-            height: 22,
-            borderRadius: "5px",
-            background: "linear-gradient(135deg, var(--color-accent) 0%, var(--color-amber-600) 100%)",
-            boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.25)",
+            width: 18,
+            height: 18,
+            bgcolor: "var(--color-accent)",
             flexShrink: 0,
           }}
         />
         <Typography variant="subtitle1" sx={{ fontWeight: 650, letterSpacing: "-0.02em" }}>
           BMAD Browser
         </Typography>
-        {projectName && (
-          <>
-            <Typography color="text.disabled" aria-hidden>
-              /
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              noWrap
-              sx={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}
-            >
-              {projectName}
-            </Typography>
-          </>
-        )}
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
         <Tooltip title="Replay the guided tour">

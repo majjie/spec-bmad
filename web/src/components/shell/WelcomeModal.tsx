@@ -14,16 +14,16 @@ interface WelcomeModalProps {
 
 const GLOSSARY = [
   {
+    term: "Projects",
+    detail: "Named product lineages from your BMAD folders (for example Harbor). Expand one to see its documents.",
+  },
+  {
     term: "Requirements",
-    detail: "The product — PRDs that capture what the organisation decided to build.",
+    detail: "PRDs — what the organisation decided to build, grouped by date (newest first).",
   },
   {
-    term: "Architecture",
-    detail: "The technical spine — decisions that keep independently built epics compatible.",
-  },
-  {
-    term: "Sprint",
-    detail: "What is in progress — epic and story status from sprint-status.yaml.",
+    term: "Architecture & Sprint",
+    detail: "The technical spine for that product, plus delivery status from sprint-status.yaml when present.",
   },
 ];
 
@@ -33,13 +33,15 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
 
   useEffect(() => {
     if (open) {
-      startRef.current?.focus();
+      const t = window.setTimeout(() => startRef.current?.focus(), 50);
+      return () => window.clearTimeout(t);
     }
   }, [open]);
 
   return (
     <Dialog
       open={open}
+      disableEscapeKeyDown={false}
       onClose={(_event, reason) => {
         if (reason === "backdropClick") {
           return;
@@ -53,7 +55,7 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
         sx: {
           bgcolor: "var(--color-bg-raised)",
           border: "1px solid var(--color-border-default)",
-          borderRadius: "var(--radius-lg)",
+          borderRadius: "2px",
           backgroundImage: "none",
         },
       }}
@@ -63,10 +65,9 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           <Box
             aria-hidden
             sx={{
-              width: 36,
-              height: 36,
-              borderRadius: "8px",
-              background: "linear-gradient(135deg, var(--color-accent) 0%, var(--color-amber-600) 100%)",
+              width: 28,
+              height: 28,
+              bgcolor: "var(--color-accent)",
             }}
           />
           <Typography id={titleId} variant="h6" sx={{ fontWeight: 650 }}>
@@ -74,8 +75,8 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
           </Typography>
         </Box>
         <Typography variant="body1" sx={{ mb: 2.5, textWrap: "pretty", maxWidth: "48ch" }}>
-          A read-only map of this project&apos;s BMAD artifacts — so you can understand decisions
-          and progress without already knowing the method.
+          A read-only map of this workspace&apos;s BMAD artifacts. Projects in the left nav are
+          the products BMAD has been planning — not this viewer&apos;s brand.
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2.5 }}>
           {GLOSSARY.map((row) => (
@@ -97,7 +98,7 @@ export default function WelcomeModal({ open, onStartTour, onSkip }: WelcomeModal
         <Button onClick={onSkip} color="inherit">
           Skip, take me to the project
         </Button>
-        <Button ref={startRef} variant="contained" onClick={onStartTour}>
+        <Button ref={startRef} variant="contained" onClick={onStartTour} disableElevation>
           Start the tour
         </Button>
       </DialogActions>

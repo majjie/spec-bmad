@@ -125,7 +125,7 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
             left: rect.left - 4,
             width: rect.width + 8,
             height: rect.height + 8,
-            borderRadius: "8px",
+            borderRadius: 0,
             boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)",
             border: "2px solid var(--color-accent)",
             pointerEvents: "none",
@@ -147,7 +147,7 @@ export default function GuidedTour({ open, onClose }: GuidedTourProps) {
           pointerEvents: "auto",
           bgcolor: "var(--color-bg-raised)",
           border: "1px solid var(--color-border-default)",
-          borderRadius: "var(--radius-md)",
+          borderRadius: "2px",
           backgroundImage: "none",
         }}
       >

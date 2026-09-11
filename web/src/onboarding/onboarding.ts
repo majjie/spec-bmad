@@ -1,4 +1,4 @@
-export const ONBOARDING_STORAGE_KEY = "bmad-browser:onboarding";
+export const ONBOARDING_STORAGE_KEY = "bmad-browser:onboarding:v2";
 
 export type OnboardingState = "pending" | "skipped" | "completed";
 
@@ -14,32 +14,32 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "sidebar",
     anchor: "sidebar",
-    title: "Find your way",
-    body: "Overview and the three document types live up top. Method files and Generated files are the raw BMAD folders when you need them.",
+    title: "Projects live here",
+    body: "Each project is an accordion. Expand one to open its Requirements (PRDs), Architecture spines, and Sprint status — the three document types BMAD produces.",
   },
   {
     id: "overview",
     anchor: "nav-overview",
     title: "Start on Overview",
-    body: "When you do not know the method yet, Overview shows what is in progress and the latest planning documents.",
+    body: "Overview summarises what is in progress across this workspace when you do not know where to click yet.",
   },
   {
     id: "stage",
     anchor: "main-stage",
-    title: "Read the documents",
-    body: "Requirements, Architecture, and Sprint open in this stage — PRDs, the architecture spine, and sprint status.",
+    title: "Documents open here",
+    body: "Selecting a PRD date, architecture run, or Sprint status fills this stage. Method files and Generated files are the raw folders underneath.",
   },
   {
     id: "refresh",
     anchor: "refresh",
     title: "Reload from disk",
-    body: "BMAD workflows write files on disk. Refresh reloads the cached folder tree without restarting the server. This viewer never writes to your project.",
+    body: "BMAD workflows write files on disk. Reload refreshes the tree without restarting. This viewer never writes to your project.",
   },
   {
     id: "help",
     anchor: "help",
     title: "Replay anytime",
-    body: "Use Help in the header to run this tour again. You can skip it whenever you like.",
+    body: "Use Help in the header to run this tour again — including after you skip it.",
   },
 ];
 
@@ -50,7 +50,7 @@ export function readOnboardingState(): OnboardingState {
       return raw;
     }
   } catch {
-    // private mode / blocked storage — treat as pending so welcome still shows once per session
+    // private mode / blocked storage
   }
   return "pending";
 }
@@ -58,6 +58,14 @@ export function readOnboardingState(): OnboardingState {
 export function writeOnboardingState(state: Exclude<OnboardingState, "pending">): void {
   try {
     localStorage.setItem(ONBOARDING_STORAGE_KEY, state);
+  } catch {
+    // ignore
+  }
+}
+
+export function clearOnboardingState(): void {
+  try {
+    localStorage.removeItem(ONBOARDING_STORAGE_KEY);
   } catch {
     // ignore
   }

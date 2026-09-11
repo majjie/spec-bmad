@@ -50,7 +50,7 @@ const theme = createTheme({
       fontWeight: 600,
     },
   },
-  shape: { borderRadius: 8 },
+  shape: { borderRadius: 2 },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -70,13 +70,13 @@ const theme = createTheme({
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 6 },
+        root: { borderRadius: 2 },
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 2,
         },
       },
     },
@@ -86,6 +86,14 @@ const theme = createTheme({
           borderColor: "var(--color-border-default)",
           backgroundImage: "none",
           backgroundColor: "var(--color-bg-raised)",
+          borderRadius: 2,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
         },
       },
     },
