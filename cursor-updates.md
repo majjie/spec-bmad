@@ -12,3 +12,4 @@
 - Added horizontal padding to ListRow (and Overview project captions) so date/Latest labels aren’t flush to the row highlight.
 - Added a header light/dark mode switcher with persisted preference, light semantic tokens, and scheme-aware syntax highlighting.
 - Aligned IA to Workspace / Products / Folders: Sprint sits under Workspace, Overview is product-first, and nav leaves use document dates instead of ISO.
+- Redesigned the file viewer modal: centered ~880px panel with a proper header (title, status, type/date/filename) and calmer reader markdown.

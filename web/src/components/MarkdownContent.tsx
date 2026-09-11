@@ -8,6 +8,8 @@ import { useColorScheme } from "./shell/ColorSchemeProvider.js";
 interface MarkdownContentProps {
   content: string;
   components?: Components;
+  /** `reader` adds calmer type rhythm for modal document viewing. */
+  density?: "default" | "reader";
 }
 
 // A `className` match only ever occurs for a fenced code block whose fence actually
@@ -26,9 +28,14 @@ const FENCE_LANGUAGE_PATTERN = /language-(\w+)/;
  * merged in underneath this component's own `code` override, which always wins
  * (data-model.md, "Merge rule").
  */
-export default function MarkdownContent({ content, components }: MarkdownContentProps) {
+export default function MarkdownContent({
+  content,
+  components,
+  density = "default",
+}: MarkdownContentProps) {
   const { scheme } = useColorScheme();
   const syntaxStyle = scheme === "light" ? oneLight : vscDarkPlus;
+  const reader = density === "reader";
 
   // The same Prism pairing FileViewerDialog.tsx's own whole-file "syntax" mode already
   // uses (FR-005), switched to oneLight when the shell is in light mode.
@@ -52,13 +59,86 @@ export default function MarkdownContent({ content, components }: MarkdownContent
     <Typography
       component="div"
       sx={{
-        p: 2,
-        color: "text.primary",
-        "& table": { borderCollapse: "collapse" },
-        "& table, & th, & td": { border: "1px solid", borderColor: "divider" },
-        "& code": { backgroundColor: "action.hover", borderRadius: 0.5, px: 0.5 },
-        "& pre": { backgroundColor: "action.hover", borderRadius: 1, p: 1.5, overflowX: "auto" },
+        p: reader ? "var(--space-5)" : 2,
+        px: reader ? "var(--space-6)" : 2,
+        color: "var(--color-text-default)",
+        maxWidth: reader ? "72ch" : "none",
+        mx: reader ? "auto" : 0,
+        lineHeight: reader ? 1.65 : undefined,
+        "& h1": {
+          fontSize: reader ? "1.35rem" : undefined,
+          fontWeight: 650,
+          letterSpacing: "-0.02em",
+          lineHeight: 1.25,
+          mt: 0,
+          mb: reader ? "var(--space-4)" : undefined,
+          textWrap: "balance",
+        },
+        "& h2": {
+          fontSize: reader ? "1.05rem" : undefined,
+          fontWeight: 650,
+          letterSpacing: "-0.01em",
+          mt: reader ? "var(--space-6)" : undefined,
+          mb: reader ? "var(--space-3)" : undefined,
+          paddingBottom: reader ? "var(--space-2)" : undefined,
+          borderBottom: reader ? "1px solid var(--color-border-subtle)" : undefined,
+        },
+        "& h3, & h4": {
+          fontWeight: 650,
+          mt: reader ? "var(--space-5)" : undefined,
+          mb: reader ? "var(--space-2)" : undefined,
+        },
+        "& p, & li": {
+          color: "var(--color-text-default)",
+          textWrap: "pretty",
+        },
+        "& p": {
+          mb: reader ? "var(--space-3)" : undefined,
+        },
+        "& ul, & ol": {
+          pl: reader ? "var(--space-5)" : undefined,
+          mb: reader ? "var(--space-3)" : undefined,
+        },
+        "& table": { borderCollapse: "collapse", width: "100%", my: reader ? "var(--space-4)" : undefined },
+        "& table, & th, & td": { border: "1px solid var(--color-border-default)" },
+        "& th, & td": {
+          px: reader ? "var(--space-3)" : undefined,
+          py: reader ? "var(--space-2)" : undefined,
+          textAlign: "left",
+        },
+        "& th": {
+          bgcolor: "var(--color-bg-subtle)",
+          fontWeight: 650,
+          color: "var(--color-text-muted)",
+        },
+        "& code": {
+          backgroundColor: "var(--color-bg-subtle)",
+          borderRadius: "var(--radius-sm)",
+          px: 0.5,
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.85em",
+        },
+        "& pre": {
+          backgroundColor: "var(--color-bg-subtle)",
+          borderRadius: "var(--radius-control)",
+          border: "1px solid var(--color-border-subtle)",
+          p: reader ? "var(--space-4)" : 1.5,
+          overflowX: "auto",
+          my: reader ? "var(--space-4)" : undefined,
+        },
         "& pre code": { backgroundColor: "transparent", padding: 0 },
+        "& blockquote": {
+          borderLeft: "3px solid var(--color-accent)",
+          m: 0,
+          pl: "var(--space-4)",
+          color: "var(--color-text-muted)",
+        },
+        "& a": { color: "var(--color-accent-strong)" },
+        "& hr": {
+          border: "none",
+          borderTop: "1px solid var(--color-border-subtle)",
+          my: "var(--space-5)",
+        },
       }}
     >
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ ...components, code: CodeBlock }}>

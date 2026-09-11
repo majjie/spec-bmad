@@ -47,10 +47,10 @@ export default function FrontmatterInfoControl({ preamble }: FrontmatterInfoCont
       slotProps={{
         tooltip: {
           sx: {
-            // Opaque (not MUI's default translucent grey) and a larger base font size,
-            // per feedback - the readout was hard to read against varied Markdown content
-            // showing through it.
-            bgcolor: "grey.900",
+            bgcolor: "var(--color-bg-subtle)",
+            color: "var(--color-text-default)",
+            border: "1px solid var(--color-border-default)",
+            boxShadow: "var(--shadow-md)",
             fontSize: "0.85rem",
             maxWidth: "none",
           },
@@ -61,7 +61,7 @@ export default function FrontmatterInfoControl({ preamble }: FrontmatterInfoCont
         onClick={() => setInfoOpen(true)}
         aria-label="Frontmatter info"
         size="small"
-        sx={{ color: "common.white" }}
+        sx={{ color: "var(--color-text-muted)" }}
       >
         <InfoOutlinedIcon fontSize="small" />
       </IconButton>
