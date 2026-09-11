@@ -17,8 +17,9 @@ manually per `quickstart.md` - nothing in this project can assert contrast autom
 testing of each story.
 
 > **Retrospective task list.** T001-T014 reconstruct delivered work and are marked `[X]`.
-> T015-T017 were done **during** this retrospective, fixing a defect it found. Phase 6 is
-> genuinely outstanding.
+> T015-T017 were done **during** this retrospective, fixing a defect it found. Phase 6 is now
+> closed too - T020 by building the missing guard, T018 and T019 by recording the choices
+> already made as requirements rather than leaving them as debt.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -139,20 +140,34 @@ untested. Fixed here rather than merely recorded.
 
 ## Phase 6: Outstanding
 
-- [ ] T018 Decide whether "follow the system" should be reachable from the interface. Today
-      it is not: once the reader uses the control they hold an explicit preference until they
-      clear site data by hand (`contracts/ui-behavior.md`, Known limitation). The trade was
-      deliberate - a predictable two-state control over a reachable third state - but it was
-      never a recorded decision, and the fix if it matters is a menu, not a longer cycle.
-      **Requires a decision, not just implementation.**
-- [ ] T019 Consider automating the contrast check behind SC-004. Nothing in the suite verifies
-      it, and `lightThemeTokens.test.ts` is easy to mistake for coverage that it does not
-      provide. research § 7 sets out the cost - a browser-based harness, weighed against
-      Principle III - and recommends revisiting if a third appearance is ever added.
-- [ ] T020 Guard the pre-paint script in `web/index.html` against silent removal. It is the
-      entirety of FR-007, it duplicates a little resolution logic by necessity, and no
-      automated test in this project would notice if it disappeared - a build-time assertion
-      that the key and the attribute still appear in the built HTML would be cheap insurance.
+- [X] T018 **CLOSED by decision: the two-state control is the intended design.** "Follow the
+      system" is deliberately not reachable from the interface once the reader has chosen. The
+      trade is a control whose effect is always predictable from what is on screen, against a
+      third state a reader is unlikely to want back - and a three-position cycle would include
+      a position that appears to do nothing whenever the system already agrees with the current
+      appearance. Recorded as **FR-004** (the control is two-state by requirement) and
+      **FR-004a** (returning to system-following is out of scope), and the contract's section
+      reframed from "Known limitation" to a stated design position. If it ever needs solving,
+      the answer is a menu, not a longer cycle.
+- [X] T019 **CLOSED: manual verification is the prescribed method, not a shortfall.**
+      Constitution Principle V requires UI and rendering changes to be verified in a running
+      browser and does not ask for automated checks of appearance. SC-004 now says so
+      explicitly, and says what `lightThemeTokens.test.ts` does and does not prove - it asserts
+      which primitive each semantic name resolves to, which guards the mapping against
+      accidental damage but is **not** a contrast measurement. Adding a headless-browser
+      harness for this one criterion would mean a new dependency weighed against Principle III,
+      for a check a person performs in seconds. research § 7 keeps the option on record should
+      a third appearance ever make it worthwhile.
+- [X] T020 **DONE.** The pre-paint script is now guarded by `tests/unit/web/indexHtml.test.ts`.
+      It was the entirety of FR-007, it necessarily duplicates a little resolution logic, and
+      nothing in this project would have noticed its removal - the most deletable code in the
+      codebase with the most conspicuous failure. Six assertions: the inline script precedes
+      the module bundle (otherwise it cannot run before first paint), it reads the same storage
+      key `colorScheme.ts` writes (imported from the module, so the two cannot drift), it
+      stamps both the data attribute and the native colour-scheme style, it guards the storage
+      read, and - locking feature 018's T037 - the page references no font CDN and no external
+      origin at all. XML namespace URIs are excluded by exact value rather than by hostname, so
+      a genuine request to the same host would still fail the assertion.
 
 ---
 
@@ -164,7 +179,7 @@ untested. Fixed here rather than merely recorded.
   run before any of it exists.
 - **US4's requirements** (legibility in both appearances) are satisfied by T005's palette work
   and verified in quickstart § D; it has no implementation task of its own.
-- **Phase 6** is independent, and T018 is a decision before it is a task.
+- **Phase 6** was independent of the rest and is now complete.
 
 ## Parallel opportunities
 

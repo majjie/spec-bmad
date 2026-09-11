@@ -111,6 +111,12 @@ from the same `expanded` flag. Keeping the sizes named and testable makes that p
 explicit rather than leaving two components to drift apart through separately-edited inline
 values.
 
+Keeping the sizes in their own module rather than in the token layer is a settled decision,
+not a deferral: the renderer's measure is conditional logic rather than a value, so a token
+would still need the flag passed alongside it, leaving the pairing split across two mechanisms
+instead of one. research § 6 records the alternative so it is not rediscovered from scratch;
+it becomes worth revisiting only if a third size state appears.
+
 `MarkdownContent` is extended rather than forked. Feature 017 extracted it precisely so that
 all three rendering sites stay identical; adding a second renderer for the reading surface
 would reintroduce the duplication 017 removed. `density` and `wide` are presentation

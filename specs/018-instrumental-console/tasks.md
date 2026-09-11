@@ -20,8 +20,9 @@ testing of each story.
 > **Retrospective task list.** Tasks T001-T036 reconstruct the work already delivered on
 > `ux-polish-console` and are marked `[X]` because the code implementing them is present and
 > verified. They are recorded so the feature is traceable, not because they were worked from.
-> **Phase 8 is different**: those items were surfaced *by* writing these artifacts. T036a and
-> T037 were fixed in the course of the retrospective; T038-T041 remain open.
+> **Phase 8 is different**: those items were surfaced *by* writing these artifacts, and all of
+> them are now closed - most by being fixed, two (T039c, T041) by recording the current
+> behavior as the intended one in the specification.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -263,9 +264,11 @@ runs labelled and the accordion state machine respecting the user's collapses.
 
 ## Phase 8: Surfaced by this retrospective
 
-Identified while reconstructing the artifacts above; each cites its evidence. **T037 is
-done** - it was a constitution violation serious enough to fix immediately rather than
-schedule. The rest are genuinely outstanding, and T041 needs a decision before it is work.
+Identified while reconstructing the artifacts above; each cites its evidence. All are closed.
+Six were defects and were fixed - two of them, T037 and T038b, only became visible *because*
+writing the artifacts forced someone to look. Two were not defects at all: T039c and T041
+describe behavior that is correct, and are closed by stating it in the specification so the
+next reader meets a decision rather than a discrepancy.
 
 - [X] T037 **[CRITICAL - constitution Principle III] - DONE during this retrospective.**
       Removed the third-party font dependency. The typeface was fetched from a remote font CDN
@@ -352,61 +355,15 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
       The onboarding storage key is deliberately **not** bumped: the key versions the
       persisted shape, not the copy, and re-onboarding every user for a wording change would
       be a poor trade.
-- [ ] T039c The tour does not mention per-lineage nesting, which now renders in the demo
-      corpus following T038. Step 1's "Requirements and Architecture hold this project's
-      planning runs" is not wrong, but a reader of a multi-lineage corpus sees a level the
-      tour never accounts for. Lowest priority of the three.
-- [X] T040 **DONE during this retrospective.** Reconciled the punctuation left behind when
-      `ab69439` swept the rest of the repository but not the code landing alongside it.
-      An audit of the seventeen remaining em dashes found four categories needing **opposite**
-      treatment, which is why this was never a sweep:
-      1. **Load-bearing (3)** - the em dash inside the `[\u2014-]` character class in
-         `prdIndex.ts`, `PrdDetailView.tsx` and `ArchitectureDetailView.tsx` is *data*: one of
-         the two separators a heading may use. Replacing it collapses the class to a hyphen
-         and silently stops indexing em-dash headings - the exact regression `ab69439`
-         introduced. Verified by running both patterns against a two-heading document: the
-         swept form drops the em-dash heading entirely. **Left alone**, and each now carries a
-         comment saying so, so the trap is visible in the code rather than only in this task.
-         The `\u2014` escapes in `prdIndex.test.ts` remain the behavioural guard.
-      2. **Placeholder glyph (6)** - `"\u2014"` as the "no value" mark in `SprintStatusView.tsx`,
-         `Stage.tsx`, `OverviewView.tsx` and now `ContentsTable.tsx`. An em dash is the
-         conventional glyph for this; a hyphen reads as a stray minus. `ab69439` had converted
-         `ContentsTable`'s alone and then rewrote feature 002's contract to match, leaving one
-         semantic role rendering two different glyphs. **Standardised on the em dash**, and
-         002's contract reverted to describe it.
-      3. **Prose (2)** - `WelcomeModal.tsx` and `SprintStatusView.tsx`'s sprint lede. The only
-         two instances the original sweep was actually aiming at. **Converted to hyphens.**
-      4. **Code comments (7)** - invisible to users, zero risk. **Converted** for internal
-         consistency.
-      Deliberately **not** touched: the ten `\u2026` ellipses in "Loading..." strings, where a
-      single ellipsis character is correct typography, and the six curly-quote pairs in
-      `examples/`, which are sample BMAD artifacts - realistic fixtures are worth more than
-      uniform punctuation, since real documents contain smart quotes and these are what
-      exercise the renderer against them.
-- [X] T041 **DONE during this retrospective. Decision taken: the current behavior is the
-      intended one, recorded as a conscious supersession rather than reverted.**
-      The audit that raised this described `ActionItemsTile.tsx` as "deleted, its role
-      absorbed into Overview's open-item count". **That was an overstatement and is corrected
-      here**: no capability was lost. Sprint status still renders every action item, in a
-      full-width "Action items" section, with the owner indication, completion indication,
-      jump-to-document control, missing-property omission and outstanding-before-completed
-      ordering that feature 008 specified. The ordering is still enforced in
-      `src/navigator/action-items.ts`, which carries an explicit `FR-009` comment, and that
-      whole derivation layer plus its tests is untouched. What changed is presentation only.
-      What feature 008 genuinely loses: **FR-001** (a tile beside the Summary tile),
-      **FR-002** and **FR-003** (matched height and internal scrolling - the section now
-      renders at its natural height), and **FR-014** (candy-stripe shading, replaced by the
-      divider-separated list treatment this feature uses everywhere). **FR-004 to FR-013
-      remain in force.**
-      Recorded in both directions, which is the point: 018 claims the change in **FR-025**
-      and **FR-026** and states the relationship in its Assumptions, while 008 carries a
-      dated amendment naming exactly which of its requirements are retired and which still
-      stand. That is deliberately the opposite of how `ab69439` handled a conflict between
-      code and an approved spec - it silently rewrote the spec to match the code, with no
-      note that anything had changed. An amendment a reader can find, from either document,
-      is the difference between a decision and a cover-up.
-      Adding FR-025 and FR-026 mid-sequence renumbered the five requirements that followed;
-      every cross-reference in this feature's other artifacts was remapped in the same change.
+- [X] T039c **CLOSED as intended behavior, not deferred work.** The tour does not mention
+      per-lineage nesting, and should not. It is an orientation to *where things are*, not an
+      enumeration of features: a reader either never meets a multi-lineage corpus, or meets it
+      and understands a labelled accordion faster by looking than by being told. A tour that
+      grows a step per feature stops being skippable in spirit, which is the property US2
+      exists to protect. Recorded in **FR-016**, which now states the exclusion explicitly so
+      the gap reads as a boundary rather than an oversight. **FR-016a** and **SC-004a** were
+      added alongside to capture the absent-anchor rule from T039a, which had been implemented
+      and contract-documented but never stated as a requirement.
 
 ---
 
@@ -420,8 +377,7 @@ schedule. The rest are genuinely outstanding, and T041 needs a decision before i
 - **US4 (Phase 6) depends on** the shared stage primitives (T015) and `formatStatusLabel`
   (T010).
 - **US5 (Phase 7) touches components from every prior phase** and is therefore sequenced last.
-- **Phase 8 is independent** of the rest and can be worked in any order - except T041, which
-  is a decision before it is a task.
+- **Phase 8 was independent** of the rest and is now complete.
 
 ## Parallel opportunities
 

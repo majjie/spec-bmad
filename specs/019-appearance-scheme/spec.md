@@ -132,7 +132,15 @@ surface is pure white and no status becomes indistinguishable.
 - **FR-003**: While following the system, the tool MUST react to a change in the system
   preference without requiring a reload.
 - **FR-004**: The header MUST offer a control that switches to the other appearance, labelled
-  so that its effect is clear before activation.
+  so that its effect is clear before activation. The control is deliberately two-state: it
+  always applies the opposite of what is shown and always records an explicit preference. It
+  MUST NOT cycle through a third "follow the system" position, because activating that
+  position appears to do nothing whenever the system already agrees with the current
+  appearance.
+- **FR-004a**: Returning to "follow the system" after an explicit choice is **out of scope**.
+  The tool is opened many times a day and the control's predictability is worth more than
+  reaching a state a reader is unlikely to want back; someone who does want it can clear the
+  stored preference. If this ever needs solving, the answer is a menu, not a longer cycle.
 - **FR-005**: An explicit reader choice MUST be remembered across sessions in the same
   browser, and MUST take precedence over the system preference.
 - **FR-006**: An unrecognised stored preference MUST be treated as "follow the system".
@@ -166,7 +174,11 @@ surface is pure white and no status becomes indistinguishable.
   system change.
 - **SC-003**: No frame in the wrong appearance is painted on load, at any network speed.
 - **SC-004**: Body text and focus indicators meet WCAG 2.1 AA contrast in **both**
-  appearances.
+  appearances. Verified by inspection in a running browser per `quickstart.md` § D3, which is
+  the method constitution Principle V prescribes for rendering changes - not by an automated
+  check. `lightThemeTokens.test.ts` asserts which primitive each semantic name resolves to,
+  which guards the mapping against accidental damage but is **not** a contrast measurement,
+  and should not be read as one.
 - **SC-005**: Every status remains distinguishable in both appearances, and in greyscale.
 - **SC-006**: Adding a future appearance would require changing only the shared token layer,
   not any individual view.

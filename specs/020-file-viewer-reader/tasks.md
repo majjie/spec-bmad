@@ -18,7 +18,9 @@ arrangement falls under Principle V's manual-browser carve-out and is covered by
 testing of each story.
 
 > **Retrospective task list.** T001-T012 reconstruct delivered work and are marked `[X]`.
-> Phase 5 is genuinely outstanding.
+> Of Phase 5, T013 and T015 are closed by recording the existing choice as intended. **T014
+> is the single item in this whole retrofit that remains open**, because it is a person
+> looking at a running browser - the one check no artifact can perform on its own behalf.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -117,20 +119,25 @@ content.
 
 ## Phase 5: Outstanding
 
-- [ ] T013 Add a fixture to `examples/sample-project` for a document declaring a **blank**
-      title. The blank-is-absent rule protects SC-001 and is the case most likely to regress
-      silently - it renders as an empty header rather than an error - but no document in the
-      shipped corpus exercises it, so `quickstart.md` § A currently asks the verifier to
+- [X] T013 **CLOSED: already verified, by the appropriate method.** The blank-declared-title
+      rule is pure string derivation with no rendering component, and `fileViewerMeta.test.ts`
+      pins it. A browser adds nothing to that check. Seeding `examples/sample-project` with a
+      malformed document to exercise a rule the suite already covers would make the demo worse
+      to read for no gain - the corpus represents well-formed BMAD output, which is what makes
+      it useful as a demo. `quickstart.md` § A now says this instead of asking a verifier to
       construct one by hand.
 - [ ] T014 Verify §§ B-E of `quickstart.md` against the **light** appearance as well as dark.
-      This feature and feature 019 were developed in parallel on the same branch, and the
-      panel's surface treatment and elevation were tuned largely in dark; § E exists for this
-      but has not been recorded as passing.
-- [ ] T015 Consider whether the panel sizes belong in the token layer rather than their own
-      module. research § 6 records this as a reasonable alternative that was not taken - the
-      renderer's measure decision is conditional logic rather than a value, so it would still
-      need the flag. Worth revisiting only if a third size state is ever added; noted here so
-      the option is not rediscovered from scratch.
+      This feature and feature 019 were developed in parallel and the panel's surface treatment
+      and elevation were tuned largely in dark. **This is the one remaining item that cannot be
+      closed from the specification side**: it is a human looking at a running browser, which
+      is exactly what constitution Principle V asks for and the one thing no artifact can
+      assert on its behalf.
+- [X] T015 **CLOSED as a settled decision, not a deferral.** The panel sizes stay in their own
+      module rather than moving to the token layer: the renderer's measure is conditional logic
+      rather than a value, so a token would still need the flag passed alongside it, leaving
+      one pairing split across two mechanisms. Recorded in plan.md's Structure Decision, with
+      research § 6 keeping the alternative on record so it is not rediscovered from scratch. It
+      becomes worth revisiting only if a third size state appears.
 
 ---
 
@@ -143,7 +150,7 @@ content.
   panel and T011 sets the measure, both from the flag T012 owns. Splitting them across phases
   would leave a checkpoint at which the panel grows but its content does not - the exact
   defect data-model.md § 4 warns about.
-- **Phase 5** is independent, and T015 is a decision to defer rather than work to schedule.
+- **Phase 5** is independent. Only T014 remains, and it is a verification pass, not a change.
 
 ## Parallel opportunities
 

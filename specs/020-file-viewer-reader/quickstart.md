@@ -28,8 +28,11 @@ into the viewer.
 | A6 | Open a file whose name matches no convention - e.g. `coverage.csv` | Still a readable, non-empty title (SC-001) |
 
 > A blank declared title (`title:` with no value) must be treated as **absent**, not honoured.
-> If no document in the sample corpus has one, add it temporarily to a copy - this is the case
-> most likely to regress, and it renders as an empty header when it does.
+> That rule is verified by unit test (`fileViewerMeta.test.ts`), not here: it is pure string
+> derivation with no rendering component, so a browser adds nothing to the check. The sample
+> corpus deliberately does not carry such a document - it represents well-formed BMAD output,
+> and seeding it with a malformed one to exercise a rule the test suite already pins would
+> make the demo worse to read for no gain.
 
 ## B. Reading comfort (US2)
 

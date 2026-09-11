@@ -32,13 +32,13 @@ No HTTP contract changes. This feature is entirely client-side.
   immediately, without a reload (FR-003).
 - Once an explicit preference is stored, system changes do **not** override it (FR-005).
 
-### Known limitation
+### Returning to "follow the system"
 
-There is **no way to return to "follow the system" from the interface.** Once the reader has
-used the control, they hold an explicit preference until they clear the stored value by hand.
-This is a consequence of the two-state toggle chosen in research § 2, and it is recorded here
-rather than hidden: the trade was a predictable control against a reachable third state. If
-this proves to matter, the fix is a menu rather than a longer cycle.
+There is **no way to return to "follow the system" from the interface**, by design (FR-004a).
+Once the reader has used the control they hold an explicit preference until they clear the
+stored value by hand. The trade is a predictable control against a reachable third state, and
+it is recorded here so the absence reads as a decision rather than an oversight. If it ever
+needs solving, the answer is a menu, not a longer cycle.
 
 ## Appearance itself
 

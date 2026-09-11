@@ -232,7 +232,14 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 - **FR-015**: The developer's onboarding choice MUST be remembered across sessions in the
   same browser, and the welcome MUST NOT reappear once a choice has been made.
 - **FR-016**: The tour MUST consist of steps anchored to the interface elements they
-  describe, covering navigation, Overview, the document area, reloading, and Help.
+  describe, covering navigation, Overview, the document area, reloading, and Help. It is an
+  orientation to *where things are*, and MUST NOT attempt to enumerate structural details -
+  per-project nesting, the non-conforming group, accordion behavior - which a reader either
+  does not encounter or discovers faster by looking than by being told. A tour that grows a
+  step per feature stops being skippable in spirit.
+- **FR-016a**: A step whose anchored element is not present MUST be omitted, and the step
+  count MUST follow the steps actually shown. No step may render unanchored, describing
+  something the reader cannot see.
 - **FR-017**: The tour MUST be exitable at any step by a single action, including a keyboard
   action.
 - **FR-018**: Help MUST replay the tour on demand without re-presenting the welcome.
@@ -297,6 +304,9 @@ disabled at the OS level, and confirm every control is reachable, named, and vis
 - **SC-003**: The welcome is presented exactly once per browser profile; after a choice is
   made it appears in 0% of subsequent loads.
 - **SC-004**: The tour can be exited from any step in a single action, by mouse or keyboard.
+- **SC-004a**: Every step shown highlights an element actually on the page, in 100% of
+  supported project shapes - including a project with method files but no generated
+  artifacts.
 - **SC-005**: Every step status is distinguishable in greyscale, because each is carried by
   at least two channels (icon and text) in addition to colour.
 - **SC-006**: Body text and focus indicators meet WCAG 2.1 AA contrast ratios in every
